@@ -37,7 +37,7 @@ class Model extends \Piwik\Plugins\UsersManager\Model
 		$is_view = False;
 		$is_super_user = False;
 		$memberships = array();
-		var_dump($_SERVER);
+		echo $_SERVER["mail"];
 		$groups = $_SERVER["groupMembership"];
 		$groups_seprated = explode(";", $groups);
 		foreach($groups_seprated as $group){
