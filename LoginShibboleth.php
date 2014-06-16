@@ -8,7 +8,7 @@
  * @category Piwik_Plugins
  * @package LoginLdap
  */
-namespace Piwik\Plugins\LoginLdap;
+namespace Piwik\Plugins\LoginShibboleth;
 
 use Exception;
 use Piwik\Config;
@@ -23,7 +23,7 @@ use Piwik\Session;
  *
  * @package LoginLdap
  */
-class LoginLdap extends \Piwik\Plugin
+class LoginShibboleth extends \Piwik\Plugin
 {
     /**
      * @see Piwik_Plugin::getListHooksRegistered
@@ -43,29 +43,6 @@ class LoginLdap extends \Piwik\Plugin
     public function getJsFiles(&$jsFiles)
     {
         $jsFiles[] = "plugins/Login/javascripts/login.js";
-    }
-
-    /**
-     * Set config parameters during install
-     */
-    public function install()
-    {
-        Config::getInstance()->LoginLdap = array(
-            'serverUrl'      => 'ldap://localhost/',
-            'ldapPort'       => '389',
-            'baseDn'         => 'OU=users,DC=localhost,DC=com',
-            'userIdField'    => 'userPrincipalName',
-            'mailField'      => 'mail',
-            'aliasField'     => 'cn',
-            'usernameSuffix' => '',
-            'adminUser'      => '',
-            'adminPass'      => '',
-            'memberOf'       => '',
-            'filter'         => '(objectClass=person)',
-            'useKerberos'    => 'false',
-            'debugEnabled'    => 'false'
-        );
-        Config::getInstance()->forceSave();
     }
 
     /**
@@ -96,17 +73,17 @@ class LoginLdap extends \Piwik\Plugin
     {
         $exceptionMessage = $exception->getMessage();
 
-        echo FrontController::getInstance()->dispatch('LoginLdap', 'login', array($exceptionMessage));
+        echo FrontController::getInstance()->dispatch('LoginShibboleth', 'login', array($exceptionMessage));
     }
 
     /**
      * Add admin menu items
      */
-    function addMenu()
-    {
-        MenuAdmin::getInstance()->add('CoreAdminHome_MenuManage', 'LoginLdap_MenuLdap', array('module' => 'LoginLdap', 'action' => 'admin'),
-            Piwik::hasUserSuperUserAccess(), $order = 3);
-    }
+    //function addMenu()
+    //{
+    //    MenuAdmin::getInstance()->add('CoreAdminHome_MenuManage', 'LoginLdap_MenuLdap', array('module' => 'LoginShibboleth', 'action' => 'admin'),
+    //        Piwik::hasUserSuperUserAccess(), $order = 3);
+    //}
 
     /**
      * Set login name and autehntication token for authentication request.
@@ -124,10 +101,9 @@ class LoginLdap extends \Piwik\Plugin
      */
     function initAuthenticationObject($activateCookieAuth = false)
     {
-        $auth = new LdapAuth();
+        $auth = new LoginShibbolethAuth();
         \Piwik\Registry::set('auth', $auth);
 
         Login::initAuthenticationFromCookie($auth, $activateCookieAuth);
     }
-
 }

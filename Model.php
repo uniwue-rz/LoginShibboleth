@@ -6,7 +6,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
-namespace Piwik\Plugins\LoginLdap;
+namespace Piwik\Plugins\LoginShibboleth;
 
 use Piwik\Common;
 use Piwik\Db;
@@ -47,7 +47,6 @@ class Model extends \Piwik\Plugins\UsersManager\Model
 			if(in_array("cn=RZ-Piwik-View", $group_as_array) && !$is_super_user && !$is_view ){
 				$is_view = True;
 			}
-
 		}
 		if($is_view){
 			array_push($memberships, "view");
@@ -85,10 +84,7 @@ class Model extends \Piwik\Plugins\UsersManager\Model
 
 	//get email for the user that have email.
 	public function getEmail(){
-		$mail = "dummy@uni-wuerzburg.de";
-		if (in_array("mail", $_SERVER)){
-			$mail = $_SERVER["mail"];
-		}
+		$mail = $_SERVER["mail"];
 		return $mail;
 	}
 
