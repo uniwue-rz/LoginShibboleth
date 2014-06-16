@@ -58,7 +58,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
     public function logout()
     {
-        header("Location: http://www.google.com/");
+        header("Location: http://www.rz.uni-wuerzburg.de/dienste/rzserver/zvd/shibboleth/");
     }
     /**
      * @param $password
