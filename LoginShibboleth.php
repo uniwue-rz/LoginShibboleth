@@ -31,7 +31,6 @@ class LoginShibboleth extends \Piwik\Plugin
     public function getListHooksRegistered()
     {
         $hooks = array(
-            'Menu.Admin.addItems'              => 'addMenu',
             'Request.initAuthenticationObject' => 'initAuthenticationObject',
             'User.isNotAuthorized'             => 'noAccess',
             'API.Request.authenticate'         => 'ApiRequestAuthenticate',
@@ -74,15 +73,6 @@ class LoginShibboleth extends \Piwik\Plugin
         $exceptionMessage = $exception->getMessage();
 
         echo FrontController::getInstance()->dispatch('LoginShibboleth', 'login', array($exceptionMessage));
-    }
-
-    /**
-     * Add admin menu items
-     */
-    function addMenu()
-    {
-        MenuAdmin::getInstance()->add('CoreAdminHome_MenuManage', 'LoginLdap_MenuLdap', array('module' => 'LoginShibboleth', 'action' => 'admin'),
-            Piwik::hasUserSuperUserAccess(), $order = 3);
     }
 
     /**
