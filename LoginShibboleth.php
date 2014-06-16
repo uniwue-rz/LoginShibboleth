@@ -79,11 +79,11 @@ class LoginShibboleth extends \Piwik\Plugin
     /**
      * Add admin menu items
      */
-    //function addMenu()
-    //{
-    //    MenuAdmin::getInstance()->add('CoreAdminHome_MenuManage', 'LoginLdap_MenuLdap', array('module' => 'LoginShibboleth', 'action' => 'admin'),
-    //        Piwik::hasUserSuperUserAccess(), $order = 3);
-    //}
+    function addMenu()
+    {
+        MenuAdmin::getInstance()->add('CoreAdminHome_MenuManage', 'LoginLdap_MenuLdap', array('module' => 'LoginShibboleth', 'action' => 'admin'),
+            Piwik::hasUserSuperUserAccess(), $order = 3);
+    }
 
     /**
      * Set login name and autehntication token for authentication request.
