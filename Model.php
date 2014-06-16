@@ -85,7 +85,7 @@ class Model extends \Piwik\Plugins\UsersManager\Model
 
 	//get email for the user that have email.
 	public function getEmail(){
-		$mail = (array_key_exists("mail",$_SREVER) ? $_SERVER["mail"] : "user@uni-wuerzburg.de");
+		$mail = (array_key_exists("mail",$_SERVER) ? $_SERVER["mail"] : "user@uni-wuerzburg.de");
 		return $mail;
 	}
 
