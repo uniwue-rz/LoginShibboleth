@@ -8,7 +8,7 @@
  * @category Piwik_Plugins
  * @package LoginShibboleth
  */
-namespace Piwik\Plugins\ShibbolethLogin;
+namespace Piwik\Plugins\LoginShibboleth;
 
 use Exception;
 use Piwik\Common;

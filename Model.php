@@ -34,7 +34,6 @@ class Model extends \Piwik\Plugins\UsersManager\Model
 	*@return which access group user will be set.
 	*/
 	public function getUserAccessShib(){
-		var_dump($_SERVER);
 		$is_view = False;
 		$is_super_user = False;
 		$memberships = array();

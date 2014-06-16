@@ -37,7 +37,7 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
      */
     public function getName()
     {
-        return 'Login';
+        return 'LoginShibboleth';
     }
 
     /**
