@@ -6,7 +6,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  * @category Piwik_Plugins
- * @package Piwik_LoginLdap
+ * @package LoginShibboleth
  */
 namespace Piwik\Plugins\LoginShibboleth;
 
@@ -37,7 +37,7 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
      */
     public function getName()
     {
-        return 'LoginShibboleth';
+        return 'Login';
     }
 
     /**
