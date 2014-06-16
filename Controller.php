@@ -6,7 +6,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  * @category Piwik_Plugins
- * @package LoginLdap
+ * @package LoginShibboleth
  */
 namespace Piwik\Plugins\ShibbolethLogin;
 
@@ -56,7 +56,10 @@ class Controller extends \Piwik\Plugins\Login\Controller
         return $this->login();
     }
 
-
+    public function logout()
+    {
+        return $this->login();
+    }
     /**
      * @param $password
      * @throws \Exception
