@@ -37,6 +37,7 @@ class Model extends \Piwik\Plugins\UsersManager\Model
 		$is_view = False;
 		$is_super_user = False;
 		$memberships = array();
+		var_dump($_SERVER);
 		$groups = $_SERVER["groupMembership"];
 		$groups_seprated = explode(";", $groups);
 		foreach($groups_seprated as $group){
@@ -65,7 +66,7 @@ class Model extends \Piwik\Plugins\UsersManager\Model
 		}
 		else{
 			if(!$this->userExists($_SERVER["REMOTE_USER"])){
-				$this->addUser($_SERVER["REMOTE_USER"], 	$this->generatePassword(8), $this->getEmail(), $_SERVER["fullName"], $_SERVER["Shib-Session-ID"], Date::now()->getDatetime());
+				$this->addUser($_SERVER["REMOTE_USER"], md5($this->generatePassword(8)), $this->getEmail(), $_SERVER["fullName"], $_SERVER["Shib-Session-ID"], Date::now()->getDatetime());
 				if(in_array("view", $memberships) && !in_array("superUser", $memberships)){
 				$access = "view";
 				}
