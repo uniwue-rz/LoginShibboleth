@@ -58,7 +58,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
     public function logout()
     {
-        return $this->login();
+        header("Location: http://www.google.com/");
     }
     /**
      * @param $password
