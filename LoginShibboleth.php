@@ -93,7 +93,6 @@ class LoginShibboleth extends \Piwik\Plugin
     {
         $auth = new LoginShibbolethAuth();
         \Piwik\Registry::set('auth', $auth);
-
         Login::initAuthenticationFromCookie($auth, $activateCookieAuth);
     }
 }
