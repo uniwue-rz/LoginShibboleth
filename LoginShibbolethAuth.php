@@ -55,7 +55,7 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
      */
     public function authenticate()
     {
-        //ShibolethLogin
+        if (is_null($this->login)) {
          if(isset($_SERVER["REMOTE_USER"])){
              $this->login = $_SERVER["REMOTE_USER"];
               $this->password = '';
@@ -63,7 +63,18 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
               $user = $model->getUser($this->login);
               $code = $user['superuser_access'] ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
               return new AuthResult($code, $this->login, $this->token_auth);
-         }
+         }}
+         else if (!empty($this->login)) {
+         $login = $this->login;
+
+                $model = new UserModel();
+                $user = $model->getUser($login);
+
+                $userToken = null;
+                if (!empty($user['token_auth'])) {
+                    $userToken = $user['token_auth'];
+        }
+    }
         return new AuthResult(AuthResult::FAILURE, $this->login, $this->token_auth);
     }
 
