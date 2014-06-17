@@ -63,8 +63,40 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
               $code = $user['superuser_access'] ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
               return new AuthResult($code, $this->login, $this->token_auth);
         }
-         else if (!empty($this->login)) {
-         $login = $this->login;
+if (is_null($this->login)) {
+
+            $model = new UserModel();
+            $user = $model->getUserByTokenAuth($this->token_auth);
+
+            if (!empty($user['login'])) {
+                $this->LdapLog("INFO: ldapauth authenticate() - token login success.", 0);
+                $code = $user['superuser_access'] ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
+
+                return new AuthResult($code, $user['login'], $this->token_auth);
+            } else {
+                $this->LdapLog("WARN: ldapauth authenticate() - token login tried, but user info missing!", 1);
+            }
+        } else if (!empty($this->login)) {
+
+            $ldapException = null;
+            if ($this->login != "anonymous") {
+                try {
+                    if ($this->authenticateLDAP($this->login, $this->password, $kerberosEnabled)) {
+                        $this->LdapLog("INFO: ldapauth authenticate() - not anonymous login ok by authenticateLDAP().", 0);
+                        $model = new UserModel();
+                        $user = $model->getUserByTokenAuth($this->token_auth);
+                        $code = $user['superuser_access'] ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
+                        return new AuthResult($code, $this->login, $this->token_auth);
+                    } else {
+                        $this->LdapLog("WARN: ldapauth authenticate() - not anonymous login failed by authenticateLDAP()!", 1);
+                    }
+                } catch (Exception $ex) {
+                    $this->LdapLog("WARN: ldapauth authenticate() - not anonymous login exception: " . $ex->getMessage(), 1);
+                    $ldapException = $ex;
+                }
+
+                $this->LdapLog("INFO: ldapauth authenticate() - login: " . $this->login, 0);
+                $login = $this->login;
 
                 $model = new UserModel();
                 $user = $model->getUser($login);
@@ -72,8 +104,32 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
                 $userToken = null;
                 if (!empty($user['token_auth'])) {
                     $userToken = $user['token_auth'];
+                }
+
+                if (!empty($userToken)
+                    && (($this->getHashTokenAuth($login, $userToken) === $this->token_auth)
+                        || $userToken === $this->token_auth)
+                ) {
+                    $this->setTokenAuth($userToken);
+                    $this->LdapLog("INFO: ldapauth authenticate() - success, setTokenAuth: " . $userToken, 0);
+
+                    $code = !empty($user['superuser_access']) ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
+
+                    return new AuthResult($code, $login, $userToken);
+                } else {
+                    $this->LdapLog("WARN: ldapauth authenticate() - userToken empty or does not match!", 1);
+                }
+
+                if (!is_null($ldapException)) {
+                    $this->LdapLog("WARN: ldapauth authenticate() - ldapException: " . $ldapException->getMessage(), 0);
+                    throw $ldapException;
+                }
+            } else {
+                $this->LdapLog("WARN: ldapauth authenticate() - login variable is set to anonymous and this is not expected!", 1);
+            }
+        } else {
+            $this->LdapLog("WARN: ldapauth authenticate() - problem with login variable, this should not happen!", 1);
         }
-    }
         return new AuthResult(AuthResult::FAILURE, $this->login, $this->token_auth);
     }
 
