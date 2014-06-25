@@ -1,6 +1,6 @@
 {
     "name": "Shibboleth Login",
-    "version": "0.0.5",
+    "version": "0.1.0",
     "description": "Shibboleth Login Plugin for Piwik",
     "theme": false,
     "keywords": ["shibboleth", "login", "authentication", "active", "directory", "singlelogon"],
