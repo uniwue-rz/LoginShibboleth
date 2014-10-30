@@ -69,7 +69,7 @@ class Model extends \Piwik\Plugins\UsersManager\Model
 				$access = "view";
 				}
 				if(sizeof($this->getSitesAccessFromUser($_SERVER["REMOTE_USER"]))==0 && !in_array("superUser", $memberships)){
-					$this->addUserAccess($_SERVER["REMOTE_USER"],$access,array(2));
+					$this->addUserAccess($_SERVER["REMOTE_USER"],$access,array(5));
 				}
 			}
 			return array(
