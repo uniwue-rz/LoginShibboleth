@@ -8,6 +8,7 @@
  */
 namespace Piwik\Plugins\LoginShibboleth;
 
+use Piwik\Plugins\LoginShibboleth\Ldap as Ldap;
 use Piwik\Common;
 use Piwik\Db;
 use Piwik\Piwik;
@@ -29,86 +30,183 @@ class Model extends \Piwik\Plugins\UsersManager\Model
 {
 
 	/**
-	*
-	* 
-	*@return which access group user will be set.
+	* Look if the User has access through Shibboleth.
+	* The view and admin group are exceptions that created for the user
+	* which normaly do not have the right to access to the website statistics.
+	* @return array $memberships
 	*/
 	public function getUserAccessShib(){
 		$is_view = False;
 		$is_super_user = False;
 		$memberships = array();
-		$groups = $_SERVER["groupMembership"];
-		$groups_seprated = explode(";", $groups);
-		foreach($groups_seprated as $group){
-			$group_as_array = explode(",", $group);
-			if(in_array("cn=RZ-Piwik-Admin", $group_as_array) && !$is_super_user){
-				$is_super_user = True;
-			}
-			if(in_array("cn=RZ-Piwik-View", $group_as_array) && !$is_super_user && !$is_view ){
-				$is_view = True;
-			}
+		$groups = False;
+		if(array_key_exists("groupMembership",$_SERVER)){
+			$groups = $_SERVER["groupMembership"];
 		}
-		if($is_view){
-			array_push($memberships, "view");
-		}
-		if($is_super_user){
-			array_push($memberships, "superUser");
+		if($groups){
+			$groups_seprated = explode(";", $groups);
+			foreach($groups_seprated as $group){
+				$group_as_array = explode(",", $group);
+				if(in_array("cn=RZ-Piwik-Admin", $group_as_array) 
+					&& !$is_super_user){
+						$is_super_user = True;
+				}
+				if(in_array("cn=RZ-Piwik-View", $group_as_array) 
+					&& !$is_super_user && !$is_view ){
+						$is_view = True;
+				}
+			}
+			if($is_view){
+				array_push($memberships, "view");
+			}
+			if($is_super_user){
+				array_push($memberships, "superUser");
+			}
 		}
 		return $memberships;
 	}
 
+	/**
+	* Get the User from Shibboleth or Ldap
+	*
+	*/
 	public function getUser($login){
+		$login = $_SERVER["REMOTE_USER"];
 		$memberships = $this->getUserAccessShib();
 		if(sizeof($memberships)==0){
-			return array();
+			$siteIds = array();
+			$ldap = new Ldap();
+			$res = $ldap->search($login);
+			if($res["count"]>0){
+				foreach($res as $r){
+					if(is_array($r)){
+						array_push($siteIds, $this->getSiteId($r["wueaccountwebhostdomain"][0]));
+					}
+				}
+			}
+			if(sizeof($siteIds)>0){
+				if(!$this->userExists($login)){                       
+                                	$this->addUser($login, 
+                                                md5($this->generatePassword(8)),               
+                                                $this->getEmail(),                             
+                                                $_SERVER["fullName"],                          
+                                                $_SERVER["Shib-Session-ID"],                   
+                                                Date::now()->getDatetime());
+					$this->addUserAccess($login, "view" , $siteIds);
+				}
+				else{
+					if($this->getSitesAccessFromUser($login)!=0){
+						$localSiteIds = array();
+						foreach($this->getSitesAccessFromUser($login) as $siteAccess){
+							if(!in_array($siteAccess["site"], $siteIds)){
+								$this->deleteUserAccess($login, $siteAccess["site"]);
+							}
+							else{
+								array_push($localSiteIds, $siteAccess["site"]);
+							}
+						}
+						foreach($siteIds as $si){
+							if(!in_array($si, $localSiteIds)){
+								$this->addUserAccess($login, "view" ,array($si));
+							}
+						}
+					}
+				}
+			}
+			else{
+ 	                       return array(
+					'login' => $login,
+                                	'alias' => $_SERVER["fullName"],
+                                	'email' => $this->getEmail(),
+                                	'token_auth' =>$_SERVER["Shib-Session-ID"],
+                                	'superuser_access' => 0
+ 	                       );
+			} 	
 		}
 		else{
-			if(!$this->userExists($_SERVER["REMOTE_USER"])){
-				$this->addUser($_SERVER["REMOTE_USER"], md5($this->generatePassword(8)), $this->getEmail(), $_SERVER["fullName"], $_SERVER["Shib-Session-ID"], Date::now()->getDatetime());
+			if(!$this->userExists($login)){
+				$this->addUser($login, 
+						md5($this->generatePassword(8)), 
+						$this->getEmail(), 
+						$_SERVER["fullName"], 
+						$_SERVER["Shib-Session-ID"], 
+						Date::now()->getDatetime());
 				if(in_array("view", $memberships) && !in_array("superUser", $memberships)){
-				$access = "view";
+					$access = "view";
 				}
-				if(sizeof($this->getSitesAccessFromUser($_SERVER["REMOTE_USER"]))==0 && !in_array("superUser", $memberships)){
-					$this->addUserAccess($_SERVER["REMOTE_USER"],$access,array(5));
+	
+				if(sizeof($this->getSitesAccessFromUser($login))==0 && 
+					!in_array("superUser", $memberships)){
+						$this->addUserAccess($login, $access, array(5));
 				}
 			}
 			return array(
-			'login' => $_SERVER["REMOTE_USER"],
-			'alias' => $_SERVER["fullName"],
-			'email' => $this->getEmail(),
-			'token_auth' =>$_SERVER["Shib-Session-ID"],
-			'superuser_access' => $this->hasSuperAccess($memberships)
+				'login' => $login,
+				'alias' => $_SERVER["fullName"],
+				'email' => $this->getEmail(),
+				'token_auth' =>$_SERVER["Shib-Session-ID"],
+				'superuser_access' => $this->hasSuperAccess($memberships)
 			);
 		}
 	}
 
-	//get email for the user that have email.
+	/**
+	* Get the UserEmail from Shibboleth
+	* 
+	* @return $mail (if not avaible in shibboleth, give dummy user User@uni-wuerzburg.de back)
+	*/
 	public function getEmail(){
 		$mail = (array_key_exists("mail",$_SERVER) ? $_SERVER["mail"] : "user@uni-wuerzburg.de");
 		return $mail;
 	}
 
-    /**
-     * @param $length
-     * @return string
-     */
-    private function generatePassword($length)
-    {
-        $chars = "234567890abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        $i = 0;
-        $password = "";
-        while ($i <= $length) {
-            $password .= $chars{mt_rand(0, strlen($chars) - 1)};
-            $i++;
-        }
-        return $password;
+  	/**
+     	* @param intger $length
+	* @return string $password
+     	*/
+    	private function generatePassword($length)
+    	{
+		$chars = "234567890abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        	$i = 0;
+	        $password = "";
+        	while ($i <= $length) {
+            		$password .= $chars{mt_rand(0, strlen($chars) - 1)};
+            		$i++;
+        	}
+        	return $password;
     }
 
+	/**
+	* Check if user has SuperUserAccess
+	*
+	* @return bool 0/1
+	*/
 	public function hasSuperAccess($memberships){
 		$hasSuperAccess = 0;
+		
 		if(in_array("superUser", $memberships)){
 			$hasSuperAccess = 1;
 		}
+
 		return $hasSuperAccess;
+	}
+
+	/**
+	* Get the SiteId from the given site url using mysql
+	* driver.
+	*
+	* @param string $domain
+	* @return integer $id
+	*/
+	public function getSiteId($domain){
+		$parsedDomain = parse_url($domain);
+		$domain = "http://".$parsedDomain["path"];
+		$siteId = Db::fetchOne("SELECT idsite FROM piwik_site WHERE main_url=?", 
+					array($domain));
+		if(!$siteId){
+			$siteId = Db::fetchOne("SELECT idsite FROM piwik_site_url WHERE url=?",
+					array($domain));
 		}
+		return $siteId;
+	}
 }
