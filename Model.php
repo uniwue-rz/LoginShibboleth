@@ -137,7 +137,7 @@ class Model extends \Piwik\Plugins\UsersManager\Model
 	
 				if(sizeof($this->getSitesAccessFromUser($login))==0 && 
 					!in_array("superUser", $memberships)){
-						$this->addUserAccess($login, $access, array(5));
+						$this->addUserAccess($login, $access, array());
 				}
 			}
 			return array(
