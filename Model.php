@@ -10,12 +10,10 @@
 
 namespace Piwik\Plugins\LoginShibboleth;
 
-
 use Piwik\Db;
 use Piwik\Piwik;
 use Piwik\Date;
 use Piwik\Config as PiwikConfig;
-
 
 /**
  * The UsersManager API lets you Manage Users and their permissions to access specific websites.
@@ -38,8 +36,9 @@ class Model extends \Piwik\Plugins\UsersManager\Model
      *
      * @return array $memberships
      */
-    public function __construct(){
-      protected $user_key = PiwikConfig::getInstance()->shibboleth['userkey'];
+    public function __construct()
+    {
+        $this->user_key = PiwikConfig::getInstance()->shibboleth['userkey'];
     }
     public function getUserAccessShib()
     {
