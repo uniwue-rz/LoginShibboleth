@@ -38,7 +38,9 @@ class Model extends \Piwik\Plugins\UsersManager\Model
      *
      * @return array $memberships
      */
-     protected $user_key = PiwikConfig::getInstance()->shibboleth['userkey'];
+    public function __construct(){
+      protected $user_key = PiwikConfig::getInstance()->shibboleth['userkey'];
+    }
     public function getUserAccessShib()
     {
         $is_view = false;
