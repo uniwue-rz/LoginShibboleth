@@ -10,4 +10,6 @@ port = ldapport
 user = "ldapuser"
 password = "ldappassword"
 dn = "ldapdn"
+logouturl = "ssologoutpgae" //Normally there is no logout with Shibboleth.
+userkey = "REMOTE_USER" //$_SERVER key for the username.
 ```

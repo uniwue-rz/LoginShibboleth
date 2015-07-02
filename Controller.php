@@ -50,7 +50,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
     public function logout()
     {
-        header('Location: http://www.rz.uni-wuerzburg.de/dienste/rzserver/zvd/wuelogin/');
+        header('Location: ' + PiwikConfig::getInstance()->shibboleth['logouturl']);
     }
     /**
      * @param $password

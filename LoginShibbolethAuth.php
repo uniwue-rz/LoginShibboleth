@@ -13,6 +13,7 @@
 namespace Piwik\Plugins\LoginShibboleth;
 
 use Piwik\AuthResult;
+use Piwik\Config;
 use Piwik\Plugins\LoginShibboleth\Model as UserModel;
 
 /**
@@ -23,7 +24,7 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
     protected $login = null;
     protected $password = null;
     protected $token_auth = null;
-
+    protected $user_key = PiwikConfig::getInstance()->shibboleth['userkey'];
     const SHIBB_LOG_FILE = '/tmp/logs/shibboleth.log';
 
     /**
@@ -51,8 +52,8 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
      */
     public function authenticate()
     {
-        if (isset($_SERVER['REMOTE_USER'])) {
-            $this->login = $_SERVER['REMOTE_USER'];
+        if (isset($_SERVER[$this->user_key])) {
+            $this->login = $_SERVER[$this->user_key];
             $this->password = '';
             $model = new UserModel();
             $user = $model->getUser($this->login);

@@ -14,6 +14,7 @@ namespace Piwik\Plugins\LoginShibboleth;
 use Piwik\Db;
 use Piwik\Piwik;
 use Piwik\Date;
+use Piwik\Config;
 
 /**
  * The UsersManager API lets you Manage Users and their permissions to access specific websites.
@@ -36,6 +37,7 @@ class Model extends \Piwik\Plugins\UsersManager\Model
      *
      * @return array $memberships
      */
+     protected $user_key = PiwikConfig::getInstance()->shibboleth['userkey'];
     public function getUserAccessShib()
     {
         $is_view = false;
@@ -74,7 +76,7 @@ class Model extends \Piwik\Plugins\UsersManager\Model
      */
     public function getUser($login)
     {
-        $login = $_SERVER['REMOTE_USER'];
+        $login = $_SERVER[$this->user_key];
         $memberships = $this->getUserAccessShib();
         if (sizeof($memberships) == 0) {
             $siteIds = array();
