@@ -14,7 +14,8 @@ namespace Piwik\Plugins\LoginShibboleth;
 use Piwik\Db;
 use Piwik\Piwik;
 use Piwik\Date;
-use Piwik\Config;
+use Piwik\Config as PiwikConfig;
+
 
 /**
  * The UsersManager API lets you Manage Users and their permissions to access specific websites.

@@ -12,7 +12,7 @@
 
 namespace Piwik\Plugins\LoginShibboleth;
 
-use Piwik\Config;
+use Piwik\Config as PiwikConfig;
 use Piwik\Piwik;
 
 require_once PIWIK_INCLUDE_PATH.'/core/Config.php';
