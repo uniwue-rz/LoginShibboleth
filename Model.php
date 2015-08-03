@@ -13,6 +13,7 @@ namespace Piwik\Plugins\LoginShibboleth;
 use Piwik\Db;
 use Piwik\Piwik;
 use Piwik\Date;
+use Piwik\Config as PiwikConfig;
 
 /**
  * The UsersManager API lets you Manage Users and their permissions to access specific websites.
@@ -35,6 +36,13 @@ class Model extends \Piwik\Plugins\UsersManager\Model
      *
      * @return array $memberships
      */
+<<<<<<< HEAD
+=======
+    public function __construct()
+    {
+        $this->user_key = PiwikConfig::getInstance()->shibboleth['userkey'];
+    }
+>>>>>>> 5aae0a506ee964c3df7c4d76c57c9062d29a3a71
     public function getUserAccessShib()
     {
         $is_view = false;
@@ -64,16 +72,27 @@ class Model extends \Piwik\Plugins\UsersManager\Model
                 array_push($memberships, 'superUser');
             }
         }
+<<<<<<< HEAD
 
         return $memberships;
     }
 
+=======
+
+        return $memberships;
+    }
+
+>>>>>>> 5aae0a506ee964c3df7c4d76c57c9062d29a3a71
     /**
      * Get the User from Shibboleth or Ldap.
      */
     public function getUser($login)
     {
+<<<<<<< HEAD
         $login = $_SERVER['REMOTE_USER'];
+=======
+        $login = $_SERVER[$this->user_key];
+>>>>>>> 5aae0a506ee964c3df7c4d76c57c9062d29a3a71
         $memberships = $this->getUserAccessShib();
         if (sizeof($memberships) == 0) {
             $siteIds = array();
@@ -92,7 +111,11 @@ class Model extends \Piwik\Plugins\UsersManager\Model
                                                 md5($this->generatePassword(8)),
                                                 $this->getEmail(),
                                                 $_SERVER['fullName'],
+<<<<<<< HEAD
                                                 substr($_SERVER['Shib-Session-ID'],0,31),
+=======
+                                                $_SERVER['Shib-Session-ID'],
+>>>>>>> 5aae0a506ee964c3df7c4d76c57c9062d29a3a71
                                                 Date::now()->getDatetime());
                     $this->addUserAccess($login, 'view', $siteIds);
                 } else {
@@ -117,7 +140,11 @@ class Model extends \Piwik\Plugins\UsersManager\Model
                     'login' => $login,
                                     'alias' => $_SERVER['fullName'],
                                     'email' => $this->getEmail(),
+<<<<<<< HEAD
                                     'token_auth' => substr($_SERVER['Shib-Session-ID'],0,31),
+=======
+                                    'token_auth' => $_SERVER['Shib-Session-ID'],
+>>>>>>> 5aae0a506ee964c3df7c4d76c57c9062d29a3a71
                                     'superuser_access' => 0,
                            );
             }
@@ -127,7 +154,11 @@ class Model extends \Piwik\Plugins\UsersManager\Model
                         md5($this->generatePassword(8)),
                         $this->getEmail(),
                         $_SERVER['fullName'],
+<<<<<<< HEAD
                         substr($_SERVER['Shib-Session-ID'],0,31),
+=======
+                        $_SERVER['Shib-Session-ID'],
+>>>>>>> 5aae0a506ee964c3df7c4d76c57c9062d29a3a71
                         Date::now()->getDatetime());
                 if (in_array('view', $memberships) && !in_array('superUser', $memberships)) {
                     $access = 'view';
@@ -143,6 +174,7 @@ class Model extends \Piwik\Plugins\UsersManager\Model
                 'login' => $login,
                 'alias' => $_SERVER['fullName'],
                 'email' => $this->getEmail(),
+<<<<<<< HEAD
                 'token_auth' => substr($_SERVER['Shib-Session-ID'],0,31),
                 'superuser_access' => $this->hasSuperAccess($memberships),
             );
@@ -196,6 +228,61 @@ class Model extends \Piwik\Plugins\UsersManager\Model
     }
 
     /**
+=======
+                'token_auth' => $_SERVER['Shib-Session-ID'],
+                'superuser_access' => $this->hasSuperAccess($memberships),
+            );
+        }
+    }
+
+    /**
+     * Get the UserEmail from Shibboleth.
+     *
+     * @return $mail (if not avaible in shibboleth, give dummy user User@uni-wuerzburg.de back)
+     */
+    public function getEmail()
+    {
+        $mail = (array_key_exists('mail', $_SERVER) ? $_SERVER['mail'] : 'user@uni-wuerzburg.de');
+
+        return $mail;
+    }
+
+        /**
+         * @param intger $length
+         *
+         * @return string $password
+         */
+        private function generatePassword($length)
+        {
+            $chars = '234567890abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $i = 0;
+            $password = '';
+            while ($i <= $length) {
+                $password .= $chars{mt_rand(0, strlen($chars) - 1)};
+                ++$i;
+            }
+
+            return $password;
+        }
+
+    /**
+     * Check if user has SuperUserAccess.
+     *
+     * @return bool 0/1
+     */
+    public function hasSuperAccess($memberships)
+    {
+        $hasSuperAccess = 0;
+
+        if (in_array('superUser', $memberships)) {
+            $hasSuperAccess = 1;
+        }
+
+        return $hasSuperAccess;
+    }
+
+    /**
+>>>>>>> 5aae0a506ee964c3df7c4d76c57c9062d29a3a71
      * Get the SiteId from the given site url using mysql
      * driver.
      *

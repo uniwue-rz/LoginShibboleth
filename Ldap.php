@@ -7,7 +7,6 @@
  *
  * @category Piwik_Plugins
  */
-
 namespace Piwik\Plugins\LoginShibboleth;
 
 class Ldap
@@ -39,7 +38,6 @@ class Ldap
 
         return $ldapconn;
     }
-
         /**
          *       Uses ldap bind function give bind object back.
          *

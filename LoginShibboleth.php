@@ -70,7 +70,6 @@ class LoginShibboleth extends \Piwik\Plugin
     public function noAccess(Exception $exception)
     {
         $exceptionMessage = $exception->getMessage();
-
         echo FrontController::getInstance()->dispatch('LoginShibboleth', 'login', array($exceptionMessage));
     }
 
