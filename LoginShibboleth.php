@@ -1,27 +1,25 @@
 <?php
+
 /**
- * Piwik - Open source web analytics
+ * Piwik - Open source web analytics.
  *
  * @link http://piwik.org
+ *
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  * @category Piwik_Plugins
- * @package LoginShibboleth
  */
+
 namespace Piwik\Plugins\LoginShibboleth;
 
 use Exception;
-use Piwik\Config;
 use Piwik\FrontController;
-use Piwik\Menu\MenuAdmin;
 use Piwik\Piwik;
 use Piwik\Plugin\Manager;
 use Piwik\Plugins\Login\Login;
-use Piwik\Session;
 
 /**
  *
- * @package LoginLdap
  */
 class LoginShibboleth extends \Piwik\Plugin
 {
@@ -32,35 +30,36 @@ class LoginShibboleth extends \Piwik\Plugin
     {
         $hooks = array(
             'Request.initAuthenticationObject' => 'initAuthenticationObject',
-            'User.isNotAuthorized'             => 'noAccess',
-            'API.Request.authenticate'         => 'ApiRequestAuthenticate',
-            'AssetManager.getJavaScriptFiles'  => 'getJsFiles'
+            'User.isNotAuthorized' => 'noAccess',
+            'API.Request.authenticate' => 'ApiRequestAuthenticate',
+            'AssetManager.getJavaScriptFiles' => 'getJsFiles',
         );
+
         return $hooks;
     }
 
     public function getJsFiles(&$jsFiles)
     {
-        $jsFiles[] = "plugins/Login/javascripts/login.js";
+        $jsFiles[] = 'plugins/Login/javascripts/login.js';
     }
 
     /**
-     * Deactivate default Login module, as both cannot be activated together
+     * Deactivate default Login module, as both cannot be activated together.
      */
     public function activate()
     {
-        if (Manager::getInstance()->isPluginActivated("Login") == true) {
-            Manager::getInstance()->deactivatePlugin("Login");
+        if (Manager::getInstance()->isPluginActivated('Login') == true) {
+            Manager::getInstance()->deactivatePlugin('Login');
         }
     }
 
     /**
-     * Activate default Login module, as one of them is needed to access Piwik
+     * Activate default Login module, as one of them is needed to access Piwik.
      */
     public function deactivate()
     {
-        if (Manager::getInstance()->isPluginActivated("Login") == false) {
-            Manager::getInstance()->activatePlugin("Login");
+        if (Manager::getInstance()->isPluginActivated('Login') == false) {
+            Manager::getInstance()->activatePlugin('Login');
         }
     }
 
@@ -89,7 +88,7 @@ class LoginShibboleth extends \Piwik\Plugin
      * Initializes the authentication object.
      * Listens to Request.initAuthenticationObject hook.
      */
-    function initAuthenticationObject($activateCookieAuth = false)
+    public function initAuthenticationObject($activateCookieAuth = false)
     {
         $auth = new LoginShibbolethAuth();
         \Piwik\Registry::set('auth', $auth);
