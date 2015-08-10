@@ -25,7 +25,7 @@ For the configuration following setting should be set in config/config.ini.php
 datasource["alias"] = "shib"  
 datasource["login"] = "shib"
 datasource["email"] = "shib"
-datasource["website"] = "shib, ldap"
+datasource["websites"] = "shib, ldap"
 datasource["superuser"] = "shib"
 ```
 
