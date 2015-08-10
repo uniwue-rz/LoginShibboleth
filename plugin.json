@@ -1,13 +1,13 @@
 {
   "name": "Shibboleth Login",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "description": "Shibboleth Login Plugin for Piwik",
   "theme": false,
   "keywords": ["shibboleth", "login", "authentication", "active", "directory", "singlelogon"],
   "license": "GPL v3+",
   "homepage": "https://git.rz.uni-wuerzburg.de/diffusion/PIWIKSHIB/",
   "require": {
-    "piwik": ">=2.2.1",
+    "piwik": ">=2.2.0",
     "php": ">=5.3.0"
   },
   "authors": [{

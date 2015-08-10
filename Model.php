@@ -76,6 +76,7 @@ class Model extends \Piwik\Plugins\UsersManager\Model
     {
         $login = $_SERVER['REMOTE_USER'];
         $memberships = $this->getUserAccessShib();
+        var_dump($this->getSiteId($r['wueaccountwebhostdomain'][0]));
         if (sizeof($memberships) == 0) {
             $siteIds = array();
             $ldap = new Ldap();

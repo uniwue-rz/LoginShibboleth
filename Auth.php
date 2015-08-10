@@ -1,25 +1,34 @@
 <?php
 
-use Libs\Shibboleth;
-use Libs\Ldap;
-
 namespace Piwik\Plugins\LoginShibboleth;
 
 class Auth
 {
     private $config;
-    public function __construct($login, $email, $alias, $superuser, $websites, $access_level)
+    private $shib;
+    private $ldap;
+    public function __construct()
     {
-        $this->login = $login;
-        $this->email = $email;
-        $this->alias = $alias;
-        $this->superuser = $superuser;
-        $this->websites = $websites;
-        $this->access_level = $access_level;
-        $this->config = $this->get_config();
+        $this->config = $this->getConfig();
         $this->shib = new Shibboleth();
         $this->ldap = new Ldap();
     }
+
+    /**
+     * Finds the right auth library for the given config.
+     *
+     * @return Auth (object)
+     */
+    public function findLib($lib)
+    {
+        switch ($lib) {
+        case 'shib':
+          return $this->shib;
+        case 'ldap':
+          return $this->ldap;
+      }
+    }
+
     /**
      * Get the configuration. as a sorted array. The keys will be checked
      * agianst a pre-written key list. They should cover the whole list.
@@ -27,7 +36,7 @@ class Auth
      *
      * @return array
      */
-    public function get_config()
+    public function getConfig()
     {
         $result = array();
         $config = parse_ini_file('config.ini.php');
@@ -36,20 +45,39 @@ class Auth
                               'email',
                               'alias',
                               'superuser',
-                              'access_level',
-                              'website', );
+                              'websites', );
         foreach ($config_must_key as $c) {
-            if (!array_key_exists($datasource, $c)) {
+            if (!array_key_exists($c, $datasource)) {
                 throw new \Exception("The datasource in config does not contain $c");
             }
         }
 
         foreach ($datasource as $key => $d) {
             $tmp_source = explode(',', trim($d));
-            array_push($result, $tmp_source);
+            $tmp_array = array($key => $tmp_source);
+            $result = array_merge($tmp_array, $result);
         }
 
         return $result;
+    }
+
+    /**
+     * Look in the config and find user websites.
+     *
+     * @return array of numbers.
+     */
+    public function getEmail()
+    {
+        $email_config = $this->config['email'];
+        foreach ($email_config as $lc) {
+            $email_lib = $this->findLib(trim($lc));
+            $email = $email_lib->getEmail();
+            if ($email) {
+                return $email;
+            }
+        }
+
+        return 'default@uni-wuerzburg.de';
     }
 
     /**
@@ -58,20 +86,18 @@ class Auth
      *
      * @return string
      */
-    public function get_login()
+    public function getLogin()
     {
-        switch ($this->login) {
-          case 'shib':
-            return $this->shib->get_login();
-            break;
-          case 'ldap':
-            return $this->ldap->get_login();
-            break;
-          case 'mysql':
-            break;
-          default:
-            break;
+        $login_config = $this->config['login'];
+        foreach ($login_config as $lc) {
+            $login_lib = $this->findLib(trim($lc));
+            $login = $login_lib->getLogin();
+            if ($login) {
+                return $login;
+            }
         }
+
+        return;
     }
 
     /**
@@ -80,20 +106,18 @@ class Auth
      *
      * @return string
      */
-    public function get_alias()
+    public function getAlias()
     {
-        switch ($this->login) {
-        case 'shib':
-          return $this->shib->get_alias();
-          break;
-        case 'ldap':
-          return $this->ldap->get_alias();
-          break;
-        case 'mysql':
-          break;
-        default:
-          break;
-      }
+        $alias_config = $this->config['alias'];
+        foreach ($alias_config as $lc) {
+            $alias_lib = $this->findLib(trim($lc));
+            $alias = $alias_lib->getAlias();
+            if ($alias) {
+                return $alias;
+            }
+        }
+
+        return '';
     }
 
     /**
@@ -102,25 +126,56 @@ class Auth
      *
      * @return bool
      */
-    public function get_superuser()
+    public function getSuperuser()
     {
-        switch ($this->login) {
-        case 'shib':
-          return $this->shib->get_superuser();
-          break;
-        case 'ldap':
-          return $this->ldap->get_superuser();
-          break;
-        case 'mysql':
-          break;
-        default:
-          break;
-      }
+        $superuser_config = $this->config['superuser'];
+        foreach ($superuser_config as $lc) {
+            $superuser_lib = $this->findLib(trim($lc));
+            $superuser = $superuser_lib->getSuperuser();
+            if ($superuser) {
+                return $superuser;
+            }
+        }
+
+        return false;
     }
 
-    /*
-    *
-    * Look in the config and find user websites access.
-    *
-    */
+    /**
+     * Look in the config and find user websites.
+     *
+     * @return array of numbers.
+     */
+    public function getWebsites()
+    {
+        $websites_config = $this->config['websites'];
+        foreach ($websites_config as $lc) {
+            $websites_lib = $this->findLib(trim($lc));
+            $websites = $websites_lib->getWebsites($this->getLogin());
+            if ($websites) {
+                return $websites;
+            }
+        }
+
+        return array(array('access' => 'view', 'ids' => array(0)));
+    }
+
+     /**
+      * Get the password.
+      *
+      * @return string 8char
+      */
+     public function getPassword()
+     {
+         return $this->shib->getRandomString(8);
+     }
+
+    /**
+     * Get the token.
+     *
+     * @return 32char string
+     */
+    public function getToken()
+    {
+        return $this->shib->getRandomString(31);
+    }
 }

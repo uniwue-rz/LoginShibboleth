@@ -12,7 +12,7 @@
  * @package LoginShibboleth
  **/
 
-namespace Piwik\Plugins\LoginShibboleth\Lib;
+namespace Piwik\Plugins\LoginShibboleth;
 
 class Shibboleth extends AuthLib
 {
@@ -29,7 +29,7 @@ class Shibboleth extends AuthLib
      *
      * @return string
      */
-    public function get_login()
+    public function getLogin()
     {
         return $_SERVER[$this->login];
     }
@@ -39,7 +39,7 @@ class Shibboleth extends AuthLib
      *
      * @return string
      */
-    public function get_email()
+    public function getEmail()
     {
         return $_SERVER[$this->email];
     }
@@ -49,9 +49,9 @@ class Shibboleth extends AuthLib
      *
      * @return bool
      */
-    public function get_superuser_string()
+    public function getSuperuserString()
     {
-        $groups = explode(trim($_SERVER[$this->superuser]));
+        $groups = explode(',', $_SERVER[$this->superuser]);
         if (in_array($this->superuser_param, $groups)) {
             return true;
         } else {
@@ -64,7 +64,7 @@ class Shibboleth extends AuthLib
      *
      * @return bool
      */
-    public function get_superuser_array()
+    public function getSuperuserArray()
     {
     }
 
@@ -75,7 +75,7 @@ class Shibboleth extends AuthLib
      *
      * @return bool
      */
-    public function get_superuser_custom()
+    public function getSuperuserCustom()
     {
     }
 
@@ -85,20 +85,35 @@ class Shibboleth extends AuthLib
      *
      * @return bool
      */
-    public function get_superuser()
+    public function getSuperuser()
     {
         switch ($this->superuser_type) {
         case 'string':
-          $this->get_superuser_string();
+          return $this->getSuperuserString();
           break;
         case 'array':
-          $this->get_superuser_array();
+          return $this->getSuperuserArray();
           break;
         case 'custom':
-          $this->get_superuser_custom();
+          return $this->getSuperuserCustom();
           break;
         default:
           break;
       }
+    }
+
+    public function getWebsites($login)
+    {
+        return false;
+    }
+
+    /**
+     * Get the alias.
+     *
+     * @return string
+     */
+    public function getAlias()
+    {
+        return $_SERVER[$this->alias];
     }
 }

@@ -13,7 +13,7 @@
 namespace Piwik\Plugins\LoginShibboleth;
 
 use Piwik\AuthResult;
-use Piwik\Plugins\LoginShibboleth\Model as UserModel;
+use Piwik\Plugins\LoginShibboleth\ShibbolethModel as UserModel;
 
 /**
  *
