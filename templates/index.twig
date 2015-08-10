@@ -1,0 +1,204 @@
+{% extends 'admin.twig' %}
+
+{% block content %}
+
+<h2>{{ 'LoginLdap_LoadUser'|translate }}</h2>
+<div style="float:left">
+
+  <p>{{ 'LoginLdap_LoadUserDescription'|translate }}</p>
+
+  <table class="adminTable" id='ldapLoadUserTable' style="width:750px">
+    <form action="{{ {'action':'loadUser', 'form':'loadUserForm', 'token_auth':token_auth} | urlRewriteWithParameters }}" id="loadUserForm" method="post" name="loadUserForm">
+
+      <tr>
+        <td width="150">
+          <label for="username">{{ 'General_Username'|translate }}
+          </label>
+        </td>
+        <td>
+          <input id="username" name="username" size="25" value=""/>
+          <input class="submit" type="submit" value="{{ 'LoginLdap_LoadUser'|translate }}"/>
+        </td>
+      </tr>
+
+    </form>
+  </table>
+
+</div>
+
+<h2>{{ 'LoginLdap_Settings'|translate }}</h2>
+
+<table class="adminTable" id='ldapSettingsTable' style='width:900px'>
+  <form action="{{ {'action':'saveSettings', 'form':'saveSettingsForm', 'token_auth':token_auth} | urlRewriteWithParameters }}" id="saveSettingsForm" method="post" name="saveSettingsForm">
+
+    <tr>
+      <td width="150">
+        <label for="serverUrl">{{ 'LoginLdap_ServerUrl'|translate }}
+        </label>
+      </td>
+      <td>
+        <input id="serverUrl" name="serverUrl" size="25" value="{{ serverUrl }}"/>
+        <span class='form-description'>{{ 'LoginLdap_ServerUrlDescription'|translate }}</span>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="ldapPort">{{ 'LoginLdap_LdapPort'|translate }}
+        </label>
+      </td>
+      <td>
+        <input id="ldapPort" name="ldapPort" size="25" value="{{ ldapPort }}"/>
+        <span class='form-description'>{{ 'LoginLdap_LdapPortDescription'|translate }}</span>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="baseDn">{{ 'LoginLdap_BaseDn'|translate }}
+        </label>
+      </td>
+      <td>
+        <input id="baseDn" name="baseDn" size="25" value="{{ baseDn }}"/>
+        <span class='form-description'>{{ 'LoginLdap_BaseDnDescription'|translate }}</span>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="userIdField">{{ 'LoginLdap_UserIdField'|translate }}
+        </label>
+      </td>
+      <td>
+        <input id="userIdField" name="userIdField" size="25" value="{{ userIdField }}"/>
+        <span class='form-description'>{{ 'LoginLdap_UserIdFieldDescription'|translate }}</span>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="mailField">{{ 'LoginLdap_MailField'|translate }}
+        </label>
+      </td>
+      <td>
+        <input id="mailField" name="mailField" size="25" value="{{ mailField }}"/>
+        <span class='form-description'>{{ 'LoginLdap_MailFieldDescription'|translate }}</span>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="aliasField">{{ 'LoginLdap_AliasField'|translate }}
+        </label>
+      </td>
+      <td>
+        <input id="aliasField" name="aliasField" size="25" value="{{ aliasField }}"/>
+        <span class='form-description'>{{ 'LoginLdap_AliasFieldDescription'|translate }}</span>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="usernameSuffix">{{ 'LoginLdap_UsernameSuffix'|translate }}
+        </label>
+      </td>
+      <td>
+        <input id="usernameSuffix" name="usernameSuffix" size="25" value="{{ usernameSuffix }}"/>
+        <span class='form-description'>{{ 'LoginLdap_UsernameSuffixDescription'|translate }}</span>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="adminUser">{{ 'LoginLdap_AdminUser'|translate }}
+        </label>
+      </td>
+      <td>
+        <input id="adminUser" name="adminUser" size="25" value="{{ adminUser }}"/>
+        <span class='form-description'>{{ 'LoginLdap_AdminUserDescription'|translate }}</span>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="adminPass">{{ 'LoginLdap_AdminPass'|translate }}
+        </label>
+      </td>
+      <td>
+        <input id="adminPass" name="adminPass" size="25" type="password" value="{{ adminPass }}"/>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="memberOf">{{ 'LoginLdap_MemberOf'|translate }}
+        </label>
+      </td>
+      <td>
+        <input id="memberOf" name="memberOf" size="25" value="{{ memberOf }}"/>
+        <span class='form-description'>{{ 'LoginLdap_MemberOfDescription'|translate }}</span>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="filter">{{ 'LoginLdap_Filter'|translate }}
+        </label>
+      </td>
+      <td>
+        <input id="filter" name="filter" size="25" value="{{ filter }}"/>
+        <span class='form-description'>{{ 'LoginLdap_FilterDescription'|translate }}</span>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="useKerberos">{{ 'LoginLdap_Kerberos'|translate }}
+        </label>
+      </td>
+      <td>
+        <select name="useKerberos">
+          <option selected{% endif %} value="false" {% if useKerberos == "false" %}>{{ 'General_No'|translate }}</option>
+          <option selected{% endif %} value="true" {% if useKerberos == "true" %}>{{ 'General_Yes'|translate }}</option>
+        </select>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="debugEnabled">{{ 'LoginLdap_Debug'|translate }}
+        </label>
+      </td>
+      <td>
+        <select name="debugEnabled">
+          <option selected{% endif %} value="false" {% if debugEnabled == "false" %}>{{ 'General_No'|translate }}</option>
+          <option selected{% endif %} value="true" {% if debugEnabled == "true" %}>{{ 'General_Yes'|translate }}</option>
+        </select>
+      </td>
+    </tr>
+
+    <tr>
+      <td align="left">
+        <input class="submit" type="submit" value="{{ 'General_Save'|translate }}"/>
+      </td>
+      <td></td>
+    </tr>
+
+  </form>
+</table>
+
+<h2>{{ 'LoginLdap_DisplayLog'|translate }}</h2>
+<div style="float:left">
+
+  <p>{{ 'LoginLdap_DisplayLogDescription'|translate }}
+    -
+    <a alt="{{ 'LoginLdap_DownloadLog'|translate }}" href="index.php?module=LoginLdap&action=getLog">{{ 'LoginLdap_DownloadLog'|translate }}</a>
+  </p>
+
+  <div style="width:900px;line-height:0.8em;height:200px;overflow:auto;">
+    <pre>{{ logContent }}</pre>
+  </div>
+
+</div>
+
+{% endblock %}
