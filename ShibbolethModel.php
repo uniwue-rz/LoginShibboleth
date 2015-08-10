@@ -49,15 +49,20 @@ class ShibbolethModel extends \Piwik\Plugins\UsersManager\Model
              if ($this->getSitesAccessFromUser($login) != 0) {
                  $localSiteIds = array();
                  foreach ($this->getSitesAccessFromUser($login) as $siteAccess) {
-                     if (!in_array($siteAccess['site'], $siteIds)) {
+                     if (!in_array($siteAccess['site'], $websites[0]['ids']) || !in_array($siteAccess['site'], $websites[1]['ids'])) {
                          $this->deleteUserAccess($login, $siteAccess['site']);
                      } else {
                          array_push($localSiteIds, $siteAccess['site']);
                      }
                  }
-                 foreach ($siteIds as $si) {
+                 foreach ($websites[0]['ids'] as $si) {
                      if (!in_array($si, $localSiteIds)) {
-                         $this->addUserAccess($login, $access_level, array($si));
+                         $this->addUserAccess($login, $websites[0]['access'], $si);
+                     }
+                 }
+                 foreach ($websites[1]['ids'] as $si) {
+                     if (!in_array($si, $localSiteIds)) {
+                         $this->addUserAccess($login, $websites[1]['access'], $si);
                      }
                  }
              }

@@ -156,7 +156,10 @@ class Auth
             }
         }
 
-        return array(array('access' => 'view', 'ids' => array(0)));
+        return array(
+                  array('access' => 'view', 'ids' => array(0)),
+                  array('access' => 'admin', 'ids' => array(0)),
+                  );
     }
 
      /**
