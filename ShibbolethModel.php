@@ -1,13 +1,15 @@
 <?php
-
-
 /**
- * Shibboleth model rewrites the user model with the given data from ldap
- * or Shibboleth.
+ * Piwik - Open source web analytics.
  *
- * It can be assumed that the data in mysql database without any problem
- * accissible is, as it is the fallback port.
- */
+ * @link http://piwik.org
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
+ *
+ * @category Piwik_Plugins
+ *
+ * @package LoginShibboleth
+ **/
 
 namespace Piwik\Plugins\LoginShibboleth;
 

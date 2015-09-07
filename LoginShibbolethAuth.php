@@ -8,7 +8,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  * @category Piwik_Plugins
- */
+ *
+ * @package LoginShibboleth
+ **/
 
 namespace Piwik\Plugins\LoginShibboleth;
 
@@ -23,9 +25,12 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
     protected $login = null;
     protected $password = null;
     protected $token_auth = null;
-
-    const SHIBB_LOG_FILE = '/tmp/logs/shibboleth.log';
-
+    public function __construct(){
+      $config = parse_ini_file('config.ini.php');
+      foreach ($config['shib'] as $key => $value) {
+          $this->$key = $value;
+      }
+    }
     /**
      * Authentication module's name, e.g., "Login".
      *
@@ -51,8 +56,8 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
      */
     public function authenticate()
     {
-        if (isset($_SERVER['REMOTE_USER'])) {
-            $this->login = $_SERVER['REMOTE_USER'];
+        if (isset($_SERVER[$this->uid])) {
+            $this->login = $_SERVER[$this->uid];
             $this->password = '';
             $model = new UserModel();
             $user = $model->getUser($this->login);

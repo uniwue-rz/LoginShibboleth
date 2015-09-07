@@ -1,14 +1,14 @@
 # Login Shibboleth
-Login Shibboleth replaces the default Piwik Login plug-in and offers the user a way to incorporate her/his existing Shibboleth with Piwik.
+Login Shibboleth replaces the default Piwik Login plug-in and offers the user a way to incorporate existing Shibboleth with Piwik.
 
 # Pre-Requirement
-To use this plug-in you should have the following pre-requirements set.
+To use this plug-in you should have the following pre-requirements set:
 - Your Shibboleth system is up and running and is connected to apache.
-- You can access some data from $\_SERVER so, you can read user data from data.
+- You can access some data from $\_SERVER so, you can read user data from $\_SERVER.
 - If you want to combine Shibboleth with LDAP, you should have php5-ldap or your distribution version of php-ldap installed.
-- You are familiar with PHP coding, so you can change the custom parameters.
-- You follow the same user model as Piwik. If you change the user model to contain some extra information you should also change this plug-in handling the way users are created.
-- This plug-in support the following user information retrieval:
+- You are familiar with PHP coding, so you can change the custom parameters and function to suite your system.
+- You follow the same user Model as Piwik. If you change the user Model to contain some extra informations, you should also change this plug-in's handling on the way users are created.
+- This plug-in supports the following user informations retrieval:
   - username (login)
   - email
   - alias (name or fullname)
@@ -16,7 +16,7 @@ To use this plug-in you should have the following pre-requirements set.
   - websites (access_level and websites id)
 
 # Configuration
-For the configuration following setting should be set in config/config.ini.php
+For the configuration following settings should be set in config/config.ini.php
 
 ## Datasource:
 
@@ -29,7 +29,7 @@ datasource["websites"] = "shib, ldap"
 datasource["superuser"] = "shib"
 ```
 
-The datasource helps you to change the way this plug-in access the information need to generate or add users to Piwik. Normally Shibboleth (shib) should suffice. The software will look at the options in the order it is written so if you want Shibboleth to prevail add it first. If your first choice for an option in LDAP ad (ldap ) first. The MySQL database will automatically come to help of none of the option gives a result, which is most of the time improbable. if your User Model is different you can set other options here. If you use other resource means you can also define it here and the use the AuthLib class as parent class and extend it to your own Model.
+The datasource helps you to change the way this plug-in accesses the information needed to generate or add users to Piwik. Normally Shibboleth (shib) should suffice. The software will look at the options in config.ini.php as it is ordered. If you want Shibboleth to prevail, add it first. If your first choice for an option is LDAP add (ldap) first. The MySQL database will automatically comes to help if none of the options give a valid result, which is most of the time unlikely. if your User Model is different, you can set other options here. If you use other resources than this tree, you can also define it here and the use the AuthLib class as parent class and extend it to your own Model.
 
 ## Shib:
 
@@ -82,12 +82,8 @@ To exclude the public part of piwik, mainly the tracker and piwik.php from the S
         require valid-user
         satisfy any
 </LocationMatch>
-<LocationMatch "/(piwik.js|piwik.php|opt_out.php)">
-        satisfy all
-        order allow,deny
-        allow from all
-</LocationMatch>
 ```
+
 ###Apache 2.4
 ```
 <LocationMatch "^/(?!piwik.js|piwik.php|opt_out.php)">
@@ -95,11 +91,6 @@ To exclude the public part of piwik, mainly the tracker and piwik.php from the S
         ShibrequestSetting requireSession 1
         Require valid-user
         satisfy all
-</LocationMatch>
-<LocationMatch "/(piwik.js|piwik.php|opt_out.php)">
-        satisfy all
-        order allow,deny
-        allow from all
 </LocationMatch>
 ```
 
