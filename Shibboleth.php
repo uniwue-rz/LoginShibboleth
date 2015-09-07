@@ -16,12 +16,11 @@ namespace Piwik\Plugins\LoginShibboleth;
 
 class Shibboleth extends AuthLib
 {
+    private $config;
     public function __construct()
     {
         $config = parse_ini_file('config.ini.php');
-        foreach ($config['shib'] as $key => $value) {
-            $this->$key = $value;
-        }
+        $this->config = $config['shib'];
     }
 
     /**
@@ -31,7 +30,7 @@ class Shibboleth extends AuthLib
      */
     public function getLogin()
     {
-        return $_SERVER[$this->login];
+        return $_SERVER[$this->config['login']];
     }
 
     /**
@@ -41,7 +40,7 @@ class Shibboleth extends AuthLib
      */
     public function getEmail()
     {
-        return $_SERVER[$this->email];
+        return $_SERVER[$this->config['email']];
     }
 
     /**
@@ -51,8 +50,8 @@ class Shibboleth extends AuthLib
      */
     public function getSuperuserString()
     {
-        $groups = explode(',', $_SERVER[$this->superuser]);
-        if (in_array($this->superuser_param, $groups)) {
+        $groups = explode(';', $_SERVER[$this->config['superuser']]);
+        if (in_array($this->config['superuser_param'], $groups)) {
             return true;
         } else {
             return false;
@@ -66,6 +65,7 @@ class Shibboleth extends AuthLib
      */
     public function getSuperuserArray()
     {
+      return false;
     }
 
     /**
@@ -77,6 +77,7 @@ class Shibboleth extends AuthLib
      */
     public function getSuperuserCustom()
     {
+      return false;
     }
 
     /**
@@ -87,7 +88,7 @@ class Shibboleth extends AuthLib
      */
     public function getSuperuser()
     {
-        switch ($this->superuser_type) {
+        switch ($this->config['superuser_type']) {
         case 'string':
           return $this->getSuperuserString();
           break;
@@ -114,6 +115,6 @@ class Shibboleth extends AuthLib
      */
     public function getAlias()
     {
-        return $_SERVER[$this->alias];
+        return $_SERVER[$this->config['alias']];
     }
 }

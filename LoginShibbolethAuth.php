@@ -25,11 +25,10 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
     protected $login = null;
     protected $password = null;
     protected $token_auth = null;
+    private $config;
     public function __construct(){
       $config = parse_ini_file('config.ini.php');
-      foreach ($config['shib'] as $key => $value) {
-          $this->$key = $value;
-      }
+      $this->config = $config["shib"];
     }
     /**
      * Authentication module's name, e.g., "Login".
@@ -56,8 +55,8 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
      */
     public function authenticate()
     {
-        if (isset($_SERVER[$this->uid])) {
-            $this->login = $_SERVER[$this->uid];
+        if (isset($_SERVER[$this->config["login"]])) {
+            $this->login = $_SERVER[$this->config["login"]];
             $this->password = '';
             $model = new UserModel();
             $user = $model->getUser($this->login);

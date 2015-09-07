@@ -29,9 +29,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
     public function __construct(){
       $config = parse_ini_file('config.ini.php');
-      foreach ($config['controller'] as $key => $value) {
-          $this->$key = $value;
-      }
+      $this->config = $config['controller'];
     }
     /**
      * @param $length
@@ -61,7 +59,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
     public function logout()
     {
-        header($this->logout_link);
+        header($this->config['logout_link']);
     }
     /**
      * @param $password
