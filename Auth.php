@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * Piwik - Open source web analytics.
+ *
+ * @link http://piwik.org
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
+ *
+ * @category Piwik_Plugins
+ *
+ * @package LoginShibboleth
+ **/
+
 namespace Piwik\Plugins\LoginShibboleth;
 
 class Auth
@@ -156,7 +168,10 @@ class Auth
             }
         }
 
-        return array(array('access' => 'view', 'ids' => array(0)));
+        return array(
+                  array('access' => 'view', 'ids' => array(0)),
+                  array('access' => 'admin', 'ids' => array(0)),
+                  );
     }
 
      /**

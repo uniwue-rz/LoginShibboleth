@@ -1,13 +1,15 @@
 <?php
-
-
 /**
- * Shibboleth model rewrites the user model with the given data from ldap
- * or Shibboleth.
+ * Piwik - Open source web analytics.
  *
- * It can be assumed that the data in mysql database without any problem
- * accissible is, as it is the fallback port.
- */
+ * @link http://piwik.org
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
+ *
+ * @category Piwik_Plugins
+ *
+ * @package LoginShibboleth
+ **/
 
 namespace Piwik\Plugins\LoginShibboleth;
 
@@ -49,15 +51,20 @@ class ShibbolethModel extends \Piwik\Plugins\UsersManager\Model
              if ($this->getSitesAccessFromUser($login) != 0) {
                  $localSiteIds = array();
                  foreach ($this->getSitesAccessFromUser($login) as $siteAccess) {
-                     if (!in_array($siteAccess['site'], $siteIds)) {
+                     if (!in_array($siteAccess['site'], $websites[0]['ids']) || !in_array($siteAccess['site'], $websites[1]['ids'])) {
                          $this->deleteUserAccess($login, $siteAccess['site']);
                      } else {
                          array_push($localSiteIds, $siteAccess['site']);
                      }
                  }
-                 foreach ($siteIds as $si) {
+                 foreach ($websites[0]['ids'] as $si) {
                      if (!in_array($si, $localSiteIds)) {
-                         $this->addUserAccess($login, $access_level, array($si));
+                         $this->addUserAccess($login, $websites[0]['access'], $si);
+                     }
+                 }
+                 foreach ($websites[1]['ids'] as $si) {
+                     if (!in_array($si, $localSiteIds)) {
+                         $this->addUserAccess($login, $websites[1]['access'], $si);
                      }
                  }
              }

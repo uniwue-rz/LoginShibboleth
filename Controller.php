@@ -8,7 +8,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  * @category Piwik_Plugins
- */
+ *
+ * @package LoginShibboleth
+ **/
 
 namespace Piwik\Plugins\LoginShibboleth;
 
@@ -22,6 +24,13 @@ require_once PIWIK_INCLUDE_PATH.'/core/Config.php';
  */
 class Controller extends \Piwik\Plugins\Login\Controller
 {
+
+    private $config;
+
+    public function __construct(){
+      $config = parse_ini_file('config.ini.php');
+      $this->config = $config['controller'];
+    }
     /**
      * @param $length
      *
@@ -50,7 +59,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
     public function logout()
     {
-        header('Location: http://www.rz.uni-wuerzburg.de/dienste/rzserver/zvd/wuelogin/');
+        header($this->config['logout_link']);
     }
     /**
      * @param $password
