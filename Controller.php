@@ -16,6 +16,7 @@ namespace Piwik\Plugins\LoginShibboleth;
 
 use Piwik\Config;
 use Piwik\Piwik;
+use Piwik\Url;
 
 require_once PIWIK_INCLUDE_PATH.'/core/Config.php';
 
@@ -59,7 +60,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
     public function logout()
     {
-        header($this->config['logout_link']);
+	Url::redirectToUrl($this->config['logout_link']);
     }
     /**
      * @param $password
