@@ -8,29 +8,53 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  * @category Piwik_Plugins
- *
- * @package LoginShibboleth
  **/
 
 namespace Piwik\Plugins\LoginShibboleth;
 
-use Piwik\Config;
 use Piwik\Piwik;
+use Piwik\View;
+use Piwik\Notification;
+use Piwik\Option;
+use Piwik\Plugin\ControllerAdmin;
+use Piwik\Plugin\Manager as PluginManager;
 
-require_once PIWIK_INCLUDE_PATH.'/core/Config.php';
+//require_once PIWIK_INCLUDE_PATH.'/core/Config.php';
 
 /**
  * Login controller.
  */
 class Controller extends \Piwik\Plugins\Login\Controller
 {
-
     private $config;
 
-    public function __construct(){
-      $config = parse_ini_file('config.ini.php');
-      $this->config = $config['controller'];
+    public function __construct()
+    {
+        $config = parse_ini_file('config.ini.php');
+        $this->config = $config['controller'];
     }
+
+    public function admin()
+    {
+        Piwik::checkUserHasSuperUserAccess();
+        $view = new View('@LoginShibboleth/index');
+        ControllerAdmin::setBasicVariablesAdminView($view);
+        if (!function_exists('ldap_connect')) {
+            $notification = new Notification(Piwik::translate('LoginLdap_LdapFunctionsMissing'));
+            $notification->context = Notification::CONTEXT_ERROR;
+            $notification->type = Notification::TYPE_TRANSIENT;
+            $notification->flags = 0;
+            Notification\Manager::notify('LoginLdap_LdapFunctionsMissing', $notification);
+        }
+        $view->servers = array();
+        $this->setBasicVariablesView($view);
+        $view->shibbolethConfig = Config::getPluginOptionValuesWithDefaults();
+        $view->isLoginControllerActivated = PluginManager::getInstance()->isPluginActivated('Login');
+        $view->updatedFromPre30 = Option::get('LoginLdap_updatedFromPre3_0');
+
+        return $view->render();
+    }
+
     /**
      * @param $length
      *
@@ -59,7 +83,9 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
     public function logout()
     {
-        header($this->config['logout_link']);
+        //$ldap = new LdapAdapter();
+        //$shib = new ShibbolethAdapter();
+        //var_dump($ldap->getUserProperty('poa32kc'));
     }
     /**
      * @param $password

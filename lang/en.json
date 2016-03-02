@@ -1,0 +1,18 @@
+{
+	"LoginShibboleth":
+	{
+		"PluginDescription": "Login plugin which Shibboleth Authentication. Provide an a way to login with shibboleth/ldap to Piwik.",
+		"LoginPluginEnabledWarning": "Piwik default Login plug in is active.",
+		"Settings": "LoginShibboleth Settings",
+		"ActivateLdap": "Activate LDAP",
+		"ActivateLdapDesc": "Activates using LDAP as extra Information Plugin",
+		"ShibbolethUserLogin": "Shibboleth User Login",
+		"ShibbolethUserLoginDesc": "Shibboleth uid or login string in server header ($_SERVER)",
+		"ShibbolethUserAlias": "Shibboleth User Alias",
+		"ShibbolethUserAliasDesc": "Shibboleth alias string in server header. ($_SERVER)",
+		"ShibbolethUserEmail": "Shibboleth User Email",
+		"ShibbolethUserEmailDesc": "Shibboleth email string in server header. ($_SERVER)",
+		"ShibbolethViewGroup": "Shibboleth View Group Key",
+		"ShibbolethViewGroupDesc": "To restrict access to Piwik back-end interface, this option can be used.There are two capabilities built into this option.First: The general view access of the User can beset with this group(USER-PIWIK-VIEW), it gives another layer of security for user access management.Setting this option to a existing shibboleth group will result in users only within the group and super user to login. It will work if the restrict view access is on. Second: Using a reg - ex pattern which contains parentheses like USER-PIWIK-VIEW-(.*) With this Piwik will handle the result of the regex - matching as domain and tries to give the user access to the domain.This two functions can not be combined!"
+	}
+}

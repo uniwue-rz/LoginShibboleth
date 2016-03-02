@@ -1,0 +1,66 @@
+{% extends 'admin.twig' %} {% block content %} {% if isLoginControllerActivated|default(false) %}
+<div piwik-notification context="warning" noclear="true">
+  <strong>{{ 'General_Warning'|translate }}</strong>: {{ 'LoginShibboleth_LoginPluginEnabledWarning'|translate("Login", "LoginShibboleth") }}
+</div>
+{% endif %}
+<div ng-controller="LoginShibbolethAdminController as adminController">
+  <h2>{{ 'LoginShibboleth_Settings'|translate }}</h2>
+  <p>Normally setting the Shibboleth setting would be enough for the login to work. There is also an exrtra limited LDAP function which can be used as meta data provider for the data from Shibboleth $_SERVER.</p>
+  <table id='shibbolethSettingsTable' class="adminTable" piwik-ajax-form submit-api-method="'LoginShibboleth.saveShibbolethConfig'" send-json-payload="true">
+    <tr>
+      <td>
+        <label for="shibboleth_user_login">{{'LoginShibboleth_ShibbolethUserLogin'|translate}}</label>
+        <br/>
+        <span class='form-description'>{{'LoginShibboleth_ShibbolethUserLoginDesc'|translate}}</span>
+      </td>
+      <td>
+        <input type="text" {% if shibbolethConfig.shibboleth_user_login!='' %} value="{{ shibbolethConfig.shibboleth_user_login }}" {%endif%} id="shibboleth_user_login" name="shibboleth_user_login" />
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="shibboleth_user_alias">{{'LoginShibboleth_ShibbolethUserAlias'|translate}}</label>
+        <br/>
+        <span class='form-description'>{{'LoginShibboleth_ShibbolethUserAliasDesc'|translate}}</span>
+      </td>
+      <td>
+        <input type="text" {% if shibbolethConfig.shibboleth_user_login!='' %} value="{{ shibbolethConfig.shibboleth_user_alias }}" {%endif%} id="shibboleth_user_alias" name="shibboleth_user_alias" />
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="shibboleth_user_email">{{'LoginShibboleth_ShibbolethUserEmail'|translate}}</label>
+        <br/>
+        <span class='form-description'>{{'LoginShibboleth_ShibbolethUserEmailDesc'|translate}}</span>
+      </td>
+      <td>
+        <input type="text" {% if shibbolethConfig.shibboleth_user_login!='' %} value="{{ shibbolethConfig.shibboleth_user_email }}" {%endif%} id="shibboleth_user_email" name="shibboleth_user_email" />
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="shibboleth_view_group">{{'LoginShibboleth_ShibbolethViewGroup'|translate}}</label>
+        <br/>
+        <span class='form-description'>{{'LoginShibboleth_ShibbolethViewGroupDesc'|translate}}</span>
+      </td>
+      <td>
+        <input type="text" {% if shibbolethConfig.shibboleth_user_login!='' %} value="{{ shibbolethConfig.shibboleth_view_group }}" {%endif%} id="shibboleth_view_group" name="shibboleth_view_group" />
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="ldap_active">{{ 'LoginShibboleth_ActivateLdap'|translate }}</label>
+        <br/>
+        <span class='form-description'>{{ 'LoginShibboleth_ActivateLdapDesc'|translate }}</span>
+      </td>
+      <td>
+        <input type="checkbox" {% if shibbolethConfig.ldap_active %} checked="checked" {% endif %} id="ldap_active" name="ldap_active" />
+      </td>
+    </tr>
+  </table>
+</div>
+{% endblock %}

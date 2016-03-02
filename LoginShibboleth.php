@@ -8,8 +8,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  * @category Piwik_Plugins
- *
- * @package LoginShibboleth
  **/
 
 namespace Piwik\Plugins\LoginShibboleth;
@@ -43,6 +41,14 @@ class LoginShibboleth extends \Piwik\Plugin
     public function getJsFiles(&$jsFiles)
     {
         $jsFiles[] = 'plugins/Login/javascripts/login.js';
+        $jsFiles[] = 'plugins/LoginShibboleth/angularjs/admin/admin.controller.js';
+    }
+
+    public function getStylesheetFiles(&$stylesheetFiles)
+    {
+        $stylesheetFiles[] = 'plugins/Login/stylesheets/login.less';
+        $stylesheetFiles[] = 'plugins/Login/stylesheets/variables.less';
+        $stylesheetFiles[] = 'plugins/LoginShibboleth/angularjs/admin/admin.controller.less';
     }
 
     /**
