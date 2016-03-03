@@ -73,12 +73,11 @@ class LoginShibbolethUser extends Model
 
     public function getUser()
     {
-        $this->settings = new Settings();
         $this->userInfo = array('username' => '','email' => '','alias' => '');
         $this->userProperty = array('view' => array(),'admin' => array(),'superuser' => false);
-        $this->primaryAdapter = $this->settings->primaryAdapter->getValue();
-        $this->ldapActive = $this->settings->ldapActive->getValue();
-        $this->activeLdapSource = $this->settings->ldapActiveData->getValue();
+        $this->primaryAdapter = Config::getPrimaryAdapter();
+        $this->primaryAdapter = Config::isLdapActive();
+        $this->primaryAdapter = Config::getLdapActiveData();
         $this->handleAuth();
     }
 

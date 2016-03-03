@@ -18,7 +18,7 @@ class Config
      * Default configuration for this plugin.
      */
     public static $defaultConfig = array(
-      'primary_adapter' => '',
+      'primary_adapter' => 'shibboleth',
       'ldap_user_name' => '',
       'ldap_password' => '',
       'ldap_dn' => '',
@@ -32,7 +32,6 @@ class Config
       'ldap_superuser_filter' => '',
       'ldap_superuser_attr' => '',
       'ldap_superuser_value' => '',
-      'ldap_user_login' => '',
       'ldap_user_alias' => '',
       'ldap_user_email' => '',
       'ldap_active_data' => '',

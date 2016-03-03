@@ -56,8 +56,8 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
     public function authenticate()
     {
         if (isset($_SERVER[$this->config["login"]])) {
-            //$user = new LoginShibbolethUser();
-            //var_dump($user->getUser(''));
+            $user = new LoginShibbolethUser();
+            var_dump($user->getUser(''));
             $this->login = $_SERVER[$this->config["login"]];
             $this->password = '';
             $model = new UserModel();
