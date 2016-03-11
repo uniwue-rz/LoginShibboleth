@@ -40,18 +40,16 @@ class Controller extends \Piwik\Plugins\Login\Controller
         $view = new View('@LoginShibboleth/index');
         ControllerAdmin::setBasicVariablesAdminView($view);
         if (!function_exists('ldap_connect')) {
-            $notification = new Notification(Piwik::translate('LoginLdap_LdapFunctionsMissing'));
+            $notification = new Notification(Piwik::translate('ShibbolethLogin_LdapFunctionsMissing'));
             $notification->context = Notification::CONTEXT_ERROR;
             $notification->type = Notification::TYPE_TRANSIENT;
             $notification->flags = 0;
-            Notification\Manager::notify('LoginLdap_LdapFunctionsMissing', $notification);
+            Notification\Manager::notify('ShibbolethLogin_LdapFunctionsMissing', $notification);
         }
         $view->servers = array();
         $this->setBasicVariablesView($view);
         $view->shibbolethConfig = Config::getPluginOptionValuesWithDefaults();
         $view->isLoginControllerActivated = PluginManager::getInstance()->isPluginActivated('Login');
-        $view->updatedFromPre30 = Option::get('LoginLdap_updatedFromPre3_0');
-
         return $view->render();
     }
 
@@ -83,9 +81,10 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
     public function logout()
     {
-        //$ldap = new LdapAdapter();
-        //$shib = new ShibbolethAdapter();
-        //var_dump($ldap->getUserProperty('poa32kc'));
+        $ldap = new LdapAdapter();
+        $shib = new ShibbolethAdapter();
+        $user = new LoginShibbolethUser();
+        //var_dump($user->getUser('s225274'));
     }
     /**
      * @param $password

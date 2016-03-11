@@ -61,6 +61,16 @@ class Config
     }
 
     /**
+     * Returns the DN of the given LDAP configuration.
+     *
+     * @return string
+     */
+    public static function getLdapDN()
+    {
+        return self::getConfigOption('ldap_dn');
+    }
+
+    /**
      * Returns the configuration options from the form.
      *
      * @param $config mix option to be set.
@@ -174,7 +184,7 @@ class Config
      */
     public static function getLdapViewAttrs()
     {
-        return self::getConfigOption('ldap_view_filter');
+        return self::getConfigOption('ldap_view_attr');
     }
 
     /**
@@ -363,7 +373,7 @@ class Config
      *
      * @return string
      */
-    public static function getShibbolethSeprator()
+    public static function getShibbolethSeparator()
     {
         return self::getConfigOption('shibboleth_separator');
     }

@@ -88,17 +88,16 @@ class ShibbolethAdapter extends Adapter
     private $hasAdmin;
     public function __construct()
     {
-        $this->settings = new Settings();
-        $this->loginKey = $this->settings->shibbolethLogin->getValue();
-        $this->aliasKey = $this->settings->shibbolethAlias->getValue();
-        $this->emailKey = $this->settings->shibbolethEmail->getValue();
-        $this->groupKey = $this->settings->shibbolethGroup->getValue();
-        $this->viewGroup = $this->settings->shibbolethViewGroup->getvalue();
-        $this->adminGroup = $this->settings->shibbolethAdminGroup->getValue();
-        $this->superUserGroup = $this->settings->shibbolethSuperUserGroup->getValue();
-        $this->separator = $this->settings->shibbolethSeparator->getValue();
-        $this->hasAdminActive = $this->settings->shibbolethRestictAdmin->getValue();
-        $this->hasViewActive = $this->settings->shibbolethRestictView->getValue();
+        $this->loginKey = Config::getShibbolethUserLogin();
+        $this->aliasKey = Config::getShibbolethUserAlias();
+        $this->emailKey = Config::getShibbolethUserEmail();
+        $this->groupKey = Config::getShibbolethGroup();
+        $this->viewGroup = Config::getShibbolethViewGroup();
+        $this->adminGroup = Config::getShibbolethAdminGroup();
+        $this->superUserGroup = Config::getShibbolethSuperUserGroup();
+        $this->separator = Config::getShibbolethSeparator();
+        $this->hasAdminActive = Config::isShibbolethAdminRestricted();
+        $this->hasViewActive = Config::isShibbolethViewRestricted();
     }
     /**
      * Returns the SuperUser status of the User.
@@ -130,11 +129,11 @@ class ShibbolethAdapter extends Adapter
     {
         $this->hasView = false;
         $userGroupsArray = explode($this->separator, $this->getServerVar($this->groupKey));
-        $patternToRegex = preg_match("/\(\.\*\)/", $userGroupsArray, $result);
+        $patternToRegex = preg_match("/\(\.\*\)/", $this->getServerVar($this->groupKey), $result);
         if (sizeof($result) > 0) {
             $patternView = '/'.$this->viewGroup.'/';
             foreach ($userGroupsArray as $g) {
-                preg_match($pattern, $g, $matchResults);
+                preg_match($patternView, $g, $matchResults);
                 if (sizeof($matchResults) > 1) {
                     return $matchResults[1];
                 } else {
@@ -163,8 +162,8 @@ class ShibbolethAdapter extends Adapter
     public function getUserAdminUrls($username = '')
     {
         $this->hasAdmin = false;
-        $userGroupArray = explode($this->seprator, $this->getServerVar($this->groupKey));
-        $patternToRegex = preg_match("/\(\.\*\)/", $userGroupsArray, $result);
+        $userGroupArray = explode($this->separator, $this->getServerVar($this->groupKey));
+        $patternToRegex = preg_match("/\(\.\*\)/", $this->getServerVar($this->groupKey), $result);
         if (sizeof($result) > 0) {
             $patternView = '/'.$this->adminGroup.'/';
             foreach ($userGroupsArray as $g) {

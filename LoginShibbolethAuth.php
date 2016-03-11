@@ -8,27 +8,29 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  * @category Piwik_Plugins
- *
- * @package LoginShibboleth
  **/
 
 namespace Piwik\Plugins\LoginShibboleth;
 
 use Piwik\AuthResult;
-use Piwik\Plugins\LoginShibboleth\ShibbolethModel as UserModel;
+use Piwik\Plugins\LoginShibboleth\LoginShibbolethUser as UserModel;
+use Piwik\Container\StaticContainer;
 
 /**
- *
+ *LoginShibbolethAuth is the auth.
  */
 class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
 {
-    protected $login = null;
-    protected $password = null;
-    protected $token_auth = null;
+    protected $logger;
+    protected $login;
+    protected $password;
+    protected $token_auth;
     private $config;
-    public function __construct(){
-      $config = parse_ini_file('config.ini.php');
-      $this->config = $config["shib"];
+    public function __construct()
+    {
+        if (!isset($logger)) {
+            $this->logger = StaticContainer::get('Psr\Log\LoggerInterface');
+        }
     }
     /**
      * Authentication module's name, e.g., "Login".
@@ -41,24 +43,14 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
     }
 
     /**
-     * @return string
-     */
-    public static function getLogPath()
-    {
-        return PIWIK_INCLUDE_PATH.self::SHIBB_LOG_FILE;
-    }
-
-    /**
      * Authenticates user.
      *
      * @return AuthResult
      */
     public function authenticate()
     {
-        if (isset($_SERVER[$this->config["login"]])) {
-            $user = new LoginShibbolethUser();
-            var_dump($user->getUser(''));
-            $this->login = $_SERVER[$this->config["login"]];
+        if (isset($_SERVER[Config::getShibbolethUserLogin()])) {
+            $this->login = $_SERVER[Config::getShibbolethUserLogin()];
             $this->password = '';
             $model = new UserModel();
             $user = $model->getUser($this->login);
@@ -76,8 +68,8 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
             }
         } elseif (!empty($this->login)) {
             if ($this->login != 'anonymous') {
-                $login = $this->login;
                 $model = new UserModel();
+                $login = $this->login;
                 $user = $model->getUser($login);
                 $userToken = null;
                 if (!empty($user['token_auth'])) {
@@ -88,7 +80,8 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
                         || $userToken === $this->token_auth)
                 ) {
                     $this->setTokenAuth($userToken);
-                    $code = !empty($user['superuser_access']) ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
+                    $code = !empty($user['superuser_access']) ?
+                              AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
 
                     return new AuthResult($code, $login, $userToken);
                 }

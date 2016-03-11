@@ -65,6 +65,7 @@
 		"LdapAdmin": "Admin from LDAP",
 		"LdapSuperUser": "SuperUser from LDAP",
 		"Shibboleth": "Shibboleth Service",
-		"LDAP": "LDAP Service"
+		"LDAP": "LDAP Service",
+		"LdapFunctionsMissing": "Ldap function can not be found. intall php-ldap"
 	}
 }

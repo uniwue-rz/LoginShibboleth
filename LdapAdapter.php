@@ -62,14 +62,20 @@ class LdapAdapter
 
     public function __construct()
     {
-        $this->settings = new Settings();
-        $this->username = $this->settings->ldapUserName->getValue();
-        $this->password = $this->settings->ldapPassword->getValue();
-        $this->dn = $this->settings->ldapDn->getValue();
-        $this->host = $this->settings->ldapHost->getValue();
-        $this->port = $this->settings->ldapPort->getValue();
-        $this->active = $this->settings->ldapActive->getValue();
-        $this->activeData = $this->settings->ldapActiveData->getValue();
+        $this->username = Config::getLdapUserName();
+        $this->password = Config::getLdapPassword();
+        $this->dn = Config::getLdapDN();
+        $this->host = Config::getLdapHost();
+        $this->port = Config::getLdapPort();
+        $this->active = Config::isLdapActive();
+        $this->activeData = Config::getLdapActiveData();
+        $this->ldapViewFilter = Config::getLdapViewFilter();
+        $this->ldapViewAttrs = Config::getLdapViewAttrs();
+        $this->ldapAdminFilter = Config::getLdapAdminFilter();
+        $this->ldapAdminAttrs = Config::getLdapAdminAttrs();
+        $this->ldapSuperuserFilter = Config::getLdapSuperUserFilter();
+        $this->ldapSuperuserAttrs = Config::getLdapSuperUserAttrs();
+        $this->ldapSuperuserValues = Config::getLdapSuperUserValue();
     }
 
     /**
@@ -145,8 +151,8 @@ class LdapAdapter
         $urls = array();
         $filterString = $userType.'Filter';
         $attrString = $userType.'Attrs';
-        $filter = sprintf(str_replace('?', '%1$s', $this->settings->$filterString->getValue()), $username);
-        $attrs = array_map('trim', explode(',', $this->settings->$attrString->getValue()));
+        $filter = sprintf(str_replace('?', '%1$s', $this->$filterString), $username);
+        $attrs = array_map('trim', explode(',', $this->$attrString));
         $ldapResult = $this->searchLdap($filter, $attrs);
         $attrs_low = array_map('strtolower', $attrs);
         if ($ldapResult['count'] > 0) {
@@ -244,9 +250,9 @@ class LdapAdapter
             $filterString = $superUserId.'Filter';
             $attrString = $superUserId.'Attrs';
             $valueString = $superUserId.'Values';
-            $filter = $this->convertFilter($this->settings->$filterString->getValue(), $username, '?');
-            $attrs = $this->convertAttrs(',', $this->settings->$attrString->getValue());
-            $values = $this->convertAttrs(';', $this->settings->$valueString->getValue());
+            $filter = $this->convertFilter($this->$filterString, $username, '?');
+            $attrs = $this->convertAttrs(',', $this->$attrString);
+            $values = $this->convertAttrs(';', $this->$valueString);
             $ldapResult = $this->searchLdap($filter, $attrs);
             $attrs_low = array_map('strtolower', $attrs);
             if ($ldapResult['count'] > 0) {
@@ -281,6 +287,24 @@ class LdapAdapter
         } else {
             throw \Exception('Can not bind to the LDAP Server');
         }
+
+        return $result;
+    }
+
+    /**
+     * Returns the User information, normally not needed from ldap.
+     *
+     * @param $username string login Id of the User.
+     * In Shibboleth The Username will be set automatically.
+     * Shibboleth can also add the new layer of "hasView" or "hasAdmin"
+     * This will only used when the View or Admin groups of Shibboleth are set
+     * to restrict access. See Plugin Settings in Piwik Backend.
+     *
+     * @return array("username"=>"", "email"=>, "alias"=>"", "hasView"=>boolean, "hasAdmin"=>boolean)
+     */
+    public function getUserInfo($username = '')
+    {
+        $result = array('username' => $username, 'email' => '', 'alias' => '');
 
         return $result;
     }
