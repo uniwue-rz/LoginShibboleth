@@ -21,11 +21,31 @@ use Piwik\Container\StaticContainer;
  */
 class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
 {
+    /**
+     * Placeholder for the logging interface.
+     *
+     * @var
+     */
     protected $logger;
+    /**
+     * Placeholder for the login (UserName).
+     *
+     * @var
+     */
     protected $login;
+    /**
+     * Placeholder for the password.
+     *
+     * @var
+     */
     protected $password;
+    /**
+     * Placeholder for token auth.
+     *
+     * @var
+     */
     protected $token_auth;
-    private $config;
+
     public function __construct()
     {
         if (!isset($logger)) {

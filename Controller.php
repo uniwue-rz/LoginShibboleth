@@ -14,8 +14,8 @@ namespace Piwik\Plugins\LoginShibboleth;
 
 use Piwik\Piwik;
 use Piwik\View;
+use Piwik\Url;
 use Piwik\Notification;
-use Piwik\Option;
 use Piwik\Plugin\ControllerAdmin;
 use Piwik\Plugin\Manager as PluginManager;
 
@@ -50,6 +50,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
         $this->setBasicVariablesView($view);
         $view->shibbolethConfig = Config::getPluginOptionValuesWithDefaults();
         $view->isLoginControllerActivated = PluginManager::getInstance()->isPluginActivated('Login');
+
         return $view->render();
     }
 
@@ -81,10 +82,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
     public function logout()
     {
-        $ldap = new LdapAdapter();
-        $shib = new ShibbolethAdapter();
-        $user = new LoginShibbolethUser();
-        //var_dump($user->getUser('s225274'));
+        Url::redirectToUrl('https://www.rz.uni-wuerzburg.de/en/services/rzserver/zvd/wuelogin/');
     }
     /**
      * @param $password
