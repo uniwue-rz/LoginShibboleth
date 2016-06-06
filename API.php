@@ -25,7 +25,7 @@ class API extends \Piwik\Plugin\API
     {
     }
     /**
-     * Saves LoginLdap config.
+     * Saves the login LDAP settings in the config file automatically.
      *
      * @param string $data JSON encoded config array.
      *
@@ -44,6 +44,11 @@ class API extends \Piwik\Plugin\API
         return array('result' => 'success', 'message' => Piwik::translate('General_YourChangesHaveBeenSaved'));
     }
 
+    /**
+     * Check is the method sending the data is post.
+     *
+     * @throws \Exception
+     */
     private function checkHttpMethodIsPost()
     {
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {

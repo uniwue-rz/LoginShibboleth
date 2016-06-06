@@ -19,6 +19,7 @@ class Config
      */
     public static $defaultConfig = array(
       'primary_adapter' => 'shibboleth',
+      'logout_url' => '',
       'ldap_user_name' => '',
       'ldap_password' => '',
       'ldap_dn' => '',
@@ -39,19 +40,25 @@ class Config
       'shibboleth_user_login' => '',
       'shibboleth_user_alias' => '',
       'shibboleth_user_email' => '',
-      'shibboleth_view_group' => '',
-      'shibboleth_admin_group' => '',
-      'shibboleth_superuser_group' => '',
-      'shibboleth_group' => '',
-      'shibboleth_restrict_view' => '',
-      'shibboleth_restrict_admin' => '',
       'shibboleth_separator' => ';',
+      'shibboleth_group' => '',
+      'shibboleth_view_groups' => '',
+      'shibboleth_groups_manual' => '',
+      'shibboleth_groups_manual_active' => '',
+      'shibboleth_admin_groups' => '',
+      'shibboleth_superuser_groups' => '',
+      'shibboleth_view_groups_option' => '',
+      'shibboleth_view_groups_ldap_dn' => '',
+      'shibboleth_view_groups_ldap_attr' => '',
+      'shibboleth_admin_groups_option' => '',
+      'shibboleth_admin_groups_ldap_dn' => '',
+      'shibboleth_admin_groups_ldap_attr' => '',
     );
     /**
      * Returns an INI option value that is stored in the `[ShibbolethLogin]` config section.
      *
      *
-     * @param $optionName string name of the given option
+     * @param string $optionName name of the given option
      *
      * @return mixed
      */
@@ -61,20 +68,10 @@ class Config
     }
 
     /**
-     * Returns the DN of the given LDAP configuration.
-     *
-     * @return string
-     */
-    public static function getLdapDN()
-    {
-        return self::getConfigOption('ldap_dn');
-    }
-
-    /**
      * Returns the configuration options from the form.
      *
-     * @param $config mix option to be set.
-     * @param $optionName string the name of option.
+     * @param mix    $config     Option to be set.
+     * @param string $optionName The name of option.
      */
     public static function getConfigOptionFrom($config, $optionName)
     {
@@ -88,13 +85,23 @@ class Config
     /**
      * Returns the default value of the given option.
      *
-     * @param $optionName string
+     * @param string $optionName
      *
      * @return mix
      */
     public static function getDefaultConfigOptionValue($optionName)
     {
         return @self::$defaultConfig[$optionName];
+    }
+
+    /**
+     * Returns the DN of the given LDAP configuration.
+     *
+     * @return string
+     */
+    public static function getLdapDN()
+    {
+        return self::getConfigOption('ldap_dn');
     }
 
     /**
@@ -105,6 +112,16 @@ class Config
     public static function getPrimaryAdapter()
     {
         return self::getConfigOption('primary_adapter');
+    }
+
+    /**
+     * Returns the logout url.
+     *
+     * @return string
+     */
+    public static function getLogoutUrl()
+    {
+        return self::getConfigOption('logout_url');
     }
 
     /**
@@ -313,9 +330,9 @@ class Config
      *
      * @return string
      */
-    public static function getShibbolethViewGroup()
+    public static function getShibbolethViewGroups()
     {
-        return self::getConfigOption('shibboleth_view_group');
+        return self::getConfigOption('shibboleth_view_groups');
     }
 
     /**
@@ -323,9 +340,9 @@ class Config
      *
      * @return string
      */
-    public static function getShibbolethAdminGroup()
+    public static function getShibbolethAdminGroups()
     {
-        return self::getConfigOption('shibboleth_admin_group');
+        return self::getConfigOption('shibboleth_admin_groups');
     }
 
     /**
@@ -333,9 +350,9 @@ class Config
      *
      * @return string
      */
-    public static function getShibbolethSuperUserGroup()
+    public static function getShibbolethSuperUserGroups()
     {
-        return self::getConfigOption('shibboleth_superuser_group');
+        return self::getConfigOption('shibboleth_superuser_groups');
     }
 
     /**
@@ -349,33 +366,93 @@ class Config
     }
 
     /**
-     * If the admin user should be restricted.
-     *
-     * @return bool
-     */
-    public static function isShibbolethAdminRestricted()
-    {
-        return self::getConfigOption('shibboleth_restrict_admin');
-    }
-
-    /**
-     * If the view user should be restricted.
-     *
-     * @return bool
-     */
-    public static function isShibbolethViewRestricted()
-    {
-        return self::getConfigOption('shibboleth_restrict_view');
-    }
-
-    /**
-     * Returns the seprator for the Shibboleth results.
+     * Returns the separator for the Shibboleth results.
      *
      * @return string
      */
     public static function getShibbolethSeparator()
     {
         return self::getConfigOption('shibboleth_separator');
+    }
+
+    /**
+     * Returns the Shibboleth View Group option.
+     *
+     * @return string
+     */
+    public static function getShibbolethViewGroupOption()
+    {
+        return self::getConfigOption('shibboleth_view_groups_option');
+    }
+
+    /**
+     * Returns the Ldap DN for the group search for the Shibboleth View Group.
+     *
+     * @return string
+     */
+    public static function getShibbolethViewGroupLdapDN()
+    {
+        return self::getConfigOption('shibboleth_view_groups_ldap_dn');
+    }
+
+    /**
+     * Returns the LDAP attribute for the groups search of domain from View Group.
+     *
+     * @return string
+     */
+    public static function getShibbolethViewGroupLdapAttr()
+    {
+        return self::getConfigOption('shibboleth_view_groups_ldap_attr');
+    }
+
+    /**
+     * Returns the LDAP attribute for the group searh for Shibboleth Admin Group.
+     *
+     * @return string
+     */
+    public static function getShibbolethAdminGroupLdapDN()
+    {
+        return self::getConfigOption('shibboleth_admin_groups_ldap_dn');
+    }
+
+    /**
+     * Returns the LDAP attribute for the groups search of domain from Admin Group.
+     *
+     * @return string
+     */
+    public static function getShibbolethAdminGroupLdapAttr()
+    {
+        return self::getConfigOption('shibboleth_admin_groups_ldap_attr');
+    }
+
+    /**
+     * Returns the Shibboleth Admin Group option.
+     *
+     * @return string
+     */
+    public static function getShibbolethAdminGroupOption()
+    {
+        return self::getConfigOption('shibboleth_admin_groups_option');
+    }
+
+    /**
+     * Returns the Shibboleth manual user groups.
+     *
+     * @return string
+     */
+    public static function getShibbolethManualGroups()
+    {
+        return self::getConfigOption('shibboleth_groups_manual');
+    }
+
+    /**
+     * Returns the Shibboleth manual user groups flag.
+     *
+     * @return bool
+     */
+    public static function getShibbolethManualGroupsActive()
+    {
+        return self::getConfigOption('shibboleth_groups_manual_active');
     }
 
     /**

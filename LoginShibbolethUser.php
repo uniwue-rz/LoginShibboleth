@@ -91,8 +91,6 @@ class LoginShibbolethUser extends Model
         $this->primaryAdapter = Config::getPrimaryAdapter();
         $this->ldapActive = Config::isLdapActive();
         $this->ldapActiveData = Config::getLdapActiveData();
-        $this->isViewRestricted = Config::isShibbolethViewRestricted();
-        $this->isAdminRestricted = Config::isShibbolethAdminRestricted();
         $this->isAdded = false;
         $this->handleAuth($username);
         $login = $this->userInfo['username'];

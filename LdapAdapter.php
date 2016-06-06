@@ -116,16 +116,16 @@ class LdapAdapter
             }
         }
 
-        throw new \Exception('Can not bind with the Ldap Server');
+        throw new \Exception('Can not bind with the LDAP Server');
     }
 
     /**
      * Search LDAP Abstract.
      *
-     * @param string $filter
-     * @param array attributes
+     * @param string $filter     Filter for the LDAP query
+     * @param array  $attributes Needed attributes for the LDAP query
      *
-     * @return ldap result object
+     * @return multi-dimensional array
      */
     public function searchLdap($filter, $attrs)
     {
@@ -139,10 +139,10 @@ class LdapAdapter
     }
 
     /**
-     * Returns the url for a given user on hand the userType.
+     * Returns the URL for a given user on hand the userType.
      *
-     * @param string $username
-     * @param string $userType (view, admin, superUser)
+     * @param string $username Username which the user typed in the login form.
+     * @param string $userType Type of the user Access (View, Admin, SuperUser)
      *
      * @return array ("domain"=>"www....", "path"=>"/...")
      */
@@ -174,7 +174,7 @@ class LdapAdapter
     }
 
     /**
-     * Returns the username's view URLs according to the Setting.
+     * Returns the username's view URL according to the Setting.
      *
      * @param string username
      *

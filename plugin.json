@@ -14,7 +14,7 @@
     "license": "MIT",
     "homepage": "https:\/\/github.com\/pouyana\/LoginShibboleth",
     "require": {
-        "piwik": ">=2.15.0",
+        "piwik": ">=2.2.0",
         "php": ">=5.3.0"
     },
     "authors": [

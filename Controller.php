@@ -19,21 +19,16 @@ use Piwik\Notification;
 use Piwik\Plugin\ControllerAdmin;
 use Piwik\Plugin\Manager as PluginManager;
 
-//require_once PIWIK_INCLUDE_PATH.'/core/Config.php';
-
 /**
  * Login controller.
  */
 class Controller extends \Piwik\Plugins\Login\Controller
 {
-    private $config;
-
-    public function __construct()
-    {
-        $config = parse_ini_file('config.ini.php');
-        $this->config = $config['controller'];
-    }
-
+    /**
+     * The Admin page for the Login Shibboleth Plugin.
+     *
+     * @return mix
+     */
     public function admin()
     {
         Piwik::checkUserHasSuperUserAccess();
@@ -55,13 +50,13 @@ class Controller extends \Piwik\Plugins\Login\Controller
     }
 
     /**
-     * @param $length
+     * @param int $length Length of the password to be created.
      *
      * @return string
      */
     private function generatePassword($length)
     {
-        $chars = '234567890abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $chars = '1234567890abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $i = 0;
         $password = '';
         while ($i <= $length) {
@@ -80,17 +75,20 @@ class Controller extends \Piwik\Plugins\Login\Controller
         return $this->login();
     }
 
+    /**
+     * Logout function for the application. As Shibboleth does not have a Logout.
+     * This will be linked to a logout description page.
+     */
     public function logout()
     {
-        Url::redirectToUrl('https://www.rz.uni-wuerzburg.de/en/services/rzserver/zvd/wuelogin/');
+        Url::redirectToUrl(Config::getLogoutUrl());
     }
     /**
-     * @param $password
+     * @param string $password
      *
      * @throws \Exception
      */
     protected function checkPasswordHash($password)
     {
-        // do not check password (Login uses hashed password, LoginLdap uses real passwords)
     }
 }

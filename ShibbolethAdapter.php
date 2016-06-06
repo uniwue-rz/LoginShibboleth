@@ -92,12 +92,10 @@ class ShibbolethAdapter extends Adapter
         $this->aliasKey = Config::getShibbolethUserAlias();
         $this->emailKey = Config::getShibbolethUserEmail();
         $this->groupKey = Config::getShibbolethGroup();
-        $this->viewGroup = Config::getShibbolethViewGroup();
-        $this->adminGroup = Config::getShibbolethAdminGroup();
-        $this->superUserGroup = Config::getShibbolethSuperUserGroup();
+        $this->viewGroup = Config::getShibbolethViewGroups();
+        $this->adminGroup = Config::getShibbolethAdminGroups();
+        $this->superUserGroup = Config::getShibbolethSuperUserGroups();
         $this->separator = Config::getShibbolethSeparator();
-        $this->hasAdminActive = Config::isShibbolethAdminRestricted();
-        $this->hasViewActive = Config::isShibbolethViewRestricted();
     }
     /**
      * Returns the SuperUser status of the User.
