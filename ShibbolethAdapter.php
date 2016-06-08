@@ -100,89 +100,141 @@ class ShibbolethAdapter extends Adapter
     /**
      * Returns the SuperUser status of the User.
      *
-     * @param $username string User login Id.
+     * @param string $username Username of the given user from Shibboleth
      *
      * @return boolean.
      */
     public function getUserSuperUserStatus($username = '')
     {
+        $result = false;
         $userGroupsArray = explode($this->separator, $this->getServerVar($this->groupKey));
+        $superGroupsArray = explode($this->separator, $this->superUserGroup);
         foreach ($userGroupsArray as $g) {
-            if ($g == $this->superUserGroup) {
-                return true;
+            if (!$result && in_array($g, $superGroupsArray)) {
+                $result = true;
             }
         }
 
-        return false;
+        return $result;
     }
+
+    /**
+     * Checks if the user has manual access.
+     *
+     * @param string $username Username of the given user from Shibboleth
+     *
+     * @return bool
+     */
+    public function getHasManualAccess($usernamme = '')
+    {
+        $result = false;
+        if (Config::getShibbolethManualGroupsActive()) {
+            if (Config::getShibbolethManualGroups() != '') {
+                $groups = explode(Config::getShibbolethSeparator(), Config::getShibbolethManualGroups());
+                $userGroupsArray = explode(Config::getShibbolethSeparator(), $this->getServerVar($this->groupKey));
+                foreach ($groups as $g) {
+                    if (!$result && in_array($g, $userGroupsArray)) {
+                        $result = true;
+                    }
+                }
+            } else {
+                throw new \Exception('Activating manual groups, you should also add the groups to the config.');
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Generic get Urls.
+     *
+     * @param string $username   Username of the given user from Shibboleth
+     * @param string $accessType Type of the access user want (View or Admin)
+     *
+     * @return array
+     */
+    public function getUrlsGeneric($username = '', $accessType = 'View')
+    {
+        if ($username == '') {
+            $username == $this->getServerVar($this->loginKey);
+        }
+        if ($accessType == 'View') {
+            $serverGroups = Config::getShibbolethViewGroups();
+            $ldapActive = 'shibboleth_view_groups_ldap_active';
+            $option = Config::getShibbolethViewGroupOption();
+            $dn = Config::getShibbolethViewGroupLdapDN();
+            $attr = explode($this->separator, Config::getShibbolethViewGroupLdapAttr());
+        }
+        if ($accessType == 'Admin') {
+            $serverGroups = Config::getShibbolethAdminGroups();
+            $ldapActive = 'shibboleth_admin_groups_ldap_active';
+            $option = Config::getShibbolethAdminGroupOption();
+            $dn = Config::getShibbolethAdminGroupLdapDN();
+            $attr = explode($this->separator, Config::getShibbolethAdminGroupLdapAttr());
+        }
+        if (!in_array($accessType, array('Admin', 'View'))) {
+            throw new \Exception("At this moment only 'Admin' and 'View' access types are available");
+        }
+        $urls = array();
+        $userGroupsArray = explode($this->separator, $this->getServerVar($this->groupKey));
+        $serverGroupsArray = explode($this->separator, $serverGroups);
+        foreach ($serverGroupsArray as $g) {
+            foreach ($userGroupsArray as $ug) {
+                $a = preg_match("/$g/", $ug, $result);
+                if (sizeof($result) > 0) {
+                    if ($option == $ldapActive) {
+                        if ($dn != '' && $attr != '') {
+                            $la = new LdapAdapter();
+                            $cnArray = explode(',', $ug);
+                            $filter = '('.$cnArray[0].')';
+                            $ldapResult = $la->searchLdap($filter, $attr, $dn);
+                            if ($ldapResult['count'] > 0) {
+                                unset($ldapResult['count']);
+                                foreach ($ldapResult as $r) {
+                                    if (array_key_exists($attr[0], $r)) {
+                                        $tmpUrl = array('domain' => '', 'path' => '');
+                                        $tmpUrl['domain'] = $r[$attr[0]][0];
+                                        array_push($urls, $tmpUrl);
+                                    }
+                                }
+                            }
+                        } else {
+                            throw new \Exception('The Attribute or DN for LDAP group search should be set.');
+                        }
+                    } else {
+                        $tmpUrl = array('domain' => '', 'path' => '');
+                        $tmpUrl['domain'] = $result[1];
+                        array_push($urls, $tmpUrl);
+                    }
+                }
+            }
+        }
+
+        return $urls;
+    }
+
     /**
      * Returns the Urls in which the User has view access and sets the has
      * view access.
      *
-     * @param $username string login id of the user.
+     * @param string $username Username of the given user from Shibboleth
      *
      * @return array with user urls.
      */
     public function getUserViewUrls($username = '')
     {
-        $this->hasView = false;
-        $userGroupsArray = explode($this->separator, $this->getServerVar($this->groupKey));
-        $patternToRegex = preg_match("/\(\.\*\)/", $this->getServerVar($this->groupKey), $result);
-        if (sizeof($result) > 0) {
-            $patternView = '/'.$this->viewGroup.'/';
-            foreach ($userGroupsArray as $g) {
-                preg_match($patternView, $g, $matchResults);
-                if (sizeof($matchResults) > 1) {
-                    return $matchResults[1];
-                } else {
-                    return array();
-                }
-            }
-        } else {
-            if ($this->hasViewActive) {
-                foreach ($userGroupsArray as $g) {
-                    if ($g == $this->viewGroup && !$this->hasView) {
-                        $this->hasView = true;
-                    }
-                }
-            }
-
-            return array();
-        }
+        return $this->getUrlsGeneric($username, 'View');
     }
     /**
      * Returns the Urls in which the User has Admin access or sets the hasAdmin.
      *
-     * @param $username string the login id of the user.
+     * @param string $username The login id of the user.
      *
      * @return array
      */
     public function getUserAdminUrls($username = '')
     {
-        $this->hasAdmin = false;
-        $userGroupArray = explode($this->separator, $this->getServerVar($this->groupKey));
-        $patternToRegex = preg_match("/\(\.\*\)/", $this->getServerVar($this->groupKey), $result);
-        if (sizeof($result) > 0) {
-            $patternView = '/'.$this->adminGroup.'/';
-            foreach ($userGroupsArray as $g) {
-                preg_match($pattern, $g, $matchResults);
-                if (sizeof($matchResults) > 1) {
-                    return $matchResults[1];
-                } else {
-                    return array();
-                }
-            }
-        } else {
-            if ($this->hasAdminActive) {
-                foreach ($userGroupsArray as $g) {
-                    if ($g == $this->adminGroup && !$this->hasAdmin) {
-                        $this->hasAdmin = true;
-                    }
-                }
-            }
-
-            return array();
-        }
+        return $this->getUrlsGeneric($username, 'Admin');
     }
     /**
      * Returns the User information, normally not needed from ldap.
@@ -198,18 +250,9 @@ class ShibbolethAdapter extends Adapter
     public function getUserInfo($username = '')
     {
         $result = array('username' => '', 'email' => '', 'alias' => '');
-        $username = $this->getServerVar($this->loginKey);
-        $alias = $this->getServerVar($this->aliasKey);
-        $email = $this->getServerVar($this->emailKey);
-        $result['username'] = $username;
-        $result['alias'] = $alias;
-        $result['email'] = $email;
-        if ($this->hasViewActive) {
-            $result['hasView'] = $this->hasView;
-        }
-        if ($this->hasAdminActive) {
-            $result['hasAdmin'] = $this->hasAdmin;
-        }
+        $result['username'] = $this->getServerVar($this->loginKey);
+        $result['alias'] = $this->getServerVar($this->aliasKey);
+        $result['email'] = $this->getServerVar($this->emailKey);
 
         return $result;
     }
@@ -217,25 +260,25 @@ class ShibbolethAdapter extends Adapter
     /**
      * Returns the $_SERVER set variable.
      *
-     * @param $key string The variable key.
+     * @param string $key The $_SERVER variable key, set by Shibboleth
      *
-     * @return mix (false if nothing was found.)
+     * @return string
      */
     public function getServerVar($key)
     {
         if (array_key_exists($key, $_SERVER)) {
             return $_SERVER[$key];
         } else {
-            return false;
+            return '';
         }
     }
 
     /**
      * Search for the users properties in the LDAP according to the settings.
      *
-     * @param string $username (LDAP username of the user)
+     * @param string $username Username of the given user from Shibboleth.
      *
-     * @return array("view"=>array(),"admin"=>array(),"superuser"=>false);
+     * @return array("view"=>array(),"admin"=>array(),"superuser"=>false, "manual"=>false);
      */
     public function getUserProperty($username = '')
     {
@@ -243,6 +286,7 @@ class ShibbolethAdapter extends Adapter
         $result['view'] = $this->getUserViewUrls($username);
         $result['admin'] = $this->getUserAdminUrls($username);
         $result['superuser'] = $this->getUserSuperUserStatus($username);
+        $result['manual'] = $this->getHasManualAccess();
 
         return $result;
     }

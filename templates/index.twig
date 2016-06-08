@@ -8,19 +8,7 @@
     <br/>
     <h2>{{'LoginShibboleth_GeneralSettings'|translate}}</h2>
     <table id='shibbolethSettingsTable' class="adminTable" piwik-ajax-form submit-api-method="'LoginShibboleth.saveShibbolethConfig'" send-json-payload="true">
-        <tr>
-            <td>
-                <label for="primary_adapter">{{'LoginShibboleth_PrimaryAdapter'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_PrimaryAdapterDesc'|translate}}</span>
-            </td>
-            <td>
-                <select id="primary_adapter" name="primary_adapter">
-                    <option value="shibboleth" {% if shibbolethConfig.primary_adapter=='shibboleth' %} selected="selected" {%endif%}>{{'LoginShibboleth_Shibboleth'|translate}}</option>
-                    <option value="ldap" {% if shibbolethConfig.primary_adapter=='ldap' %} selected="selected" {%endif%}>{{'LoginShibboleth_Ldap'|translate}}</option>
-                </select>
-            </td>
-        </tr>
+
         <tr>
             <td>
                 <label for="logout_url">{{'LoginShibboleth_LogOutUrl'|translate}}</label>
@@ -283,6 +271,11 @@
         </tr>
         <tr>
             <td>
+                <h3>{{'LoginShibboleth_LdapBasic'|translate}}</h3>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <label for="ldap_active">{{ 'LoginShibboleth_ActivateLdap'|translate }}</label>
                 <br/>
                 <span class='form-description'>{{ 'LoginShibboleth_ActivateLdapDesc'|translate }}</span>
@@ -323,22 +316,47 @@
         </tr>
         <tr>
             <td>
-                <label for="ldap_dn">{{'LoginShibboleth_LdapDN'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_LdapDNDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.ldap_dn!='' %} value="{{ shibbolethConfig.ldap_dn }}" {%endif%} id="ldap_dn" name="ldap_dn" />
-            </td>
-        </tr>
-        <tr>
-            <td>
                 <label for="ldap_port">{{'LoginShibboleth_LdapPort'|translate}}</label>
                 <br/>
                 <span class='form-description'>{{'LoginShibboleth_LdapPortDesc'|translate}}</span>
             </td>
             <td>
                 <input type="text" {% if shibbolethConfig.ldap_port!='' %} value="{{ shibbolethConfig.ldap_port }}" {%endif%} id="ldap_port" name="ldap_port" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="ldap_user_data_active">{{ 'LoginShibboleth_LdapUserDataActive'|translate }}</label>
+                <br/>
+                <span class='form-description'>{{ 'LoginShibboleth_LdapUserDataActiveDesc'|translate }}</span>
+            </td>
+            <td>
+                <input type="checkbox" {% if shibbolethConfig.ldap_user_data_active %} checked="checked" {% endif %} id="ldap_user_data_active" name="ldap_user_data_active" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h3>{{'LoginShibboleth_LdapUserData'|translate}}</h3>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="ldap_dn_user">{{'LoginShibboleth_LdapDNForUserSearch'|translate}}</label>
+                <br/>
+                <span class='form-description'>{{'LoginShibboleth_LdapDNForUserSearchDesc'|translate}}</span>
+            </td>
+            <td>
+                <input type="text" {% if shibbolethConfig.ldap_dn_user!='' %} value="{{ shibbolethConfig.ldap_dn_user }}" {%endif%} id="ldap_dn_user" name="ldap_dn_user" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="ldap_user_username">{{'LoginShibboleth_LdapUserUserName'|translate}}</label>
+                <br/>
+                <span class='form-description'>{{'LoginShibboleth_LdapUserUserNameDesc'|translate}}</span>
+            </td>
+            <td>
+                <input type="text" {% if shibbolethConfig.ldap_user_username!='' %} value="{{ shibbolethConfig.ldap_user_username }}" {%endif%} id="ldap_user_username" name="ldap_user_username" />
             </td>
         </tr>
         <tr>
@@ -359,6 +377,21 @@
             </td>
             <td>
                 <input type="text" {% if shibbolethConfig.ldap_user_email!='' %} value="{{ shibbolethConfig.ldap_user_email }}" {%endif%} id="ldap_user_email" name="ldap_user_email" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h3>{{'LoginShibboleth_LdapAccessData'|translate}}</h3>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="ldap_dn_access">{{'LoginShibboleth_LdapDNForAccessSearch'|translate}}</label>
+                <br/>
+                <span class='form-description'>{{'LoginShibboleth_LdapDNForAccessSearchDesc'|translate}}</span>
+            </td>
+            <td>
+                <input type="text" {% if shibbolethConfig.ldap_dn_access!='' %} value="{{ shibbolethConfig.ldap_dn_access }}" {%endif%} id="ldap_dn_access" name="ldap_dn_access" />
             </td>
         </tr>
         <tr>

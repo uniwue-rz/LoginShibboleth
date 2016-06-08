@@ -1,13 +1,5 @@
 <?php
 
-/**
- * Piwik - free/libre analytics platform.
- *
- * @link http://piwik.org
- *
- * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
- */
-
 namespace Piwik\Plugins\LoginShibboleth;
 
 use Piwik\Config as PiwikConfig;
@@ -22,7 +14,8 @@ class Config
       'logout_url' => '',
       'ldap_user_name' => '',
       'ldap_password' => '',
-      'ldap_dn' => '',
+      'ldap_dn_access' => '',
+      'ldap_dn_user' => '',
       'ldap_host' => '',
       'ldap_port' => '',
       'ldap_active' => false,
@@ -36,6 +29,8 @@ class Config
       'ldap_user_alias' => '',
       'ldap_user_email' => '',
       'ldap_active_data' => '',
+      'ldap_user_data_active' => '',
+      'ldap_user_username' => '',
       'delete_old_user' => '',
       'shibboleth_user_login' => '',
       'shibboleth_user_alias' => '',
@@ -95,13 +90,23 @@ class Config
     }
 
     /**
-     * Returns the DN of the given LDAP configuration.
+     * Returns the DN for access searches in LDAP.
      *
      * @return string
      */
-    public static function getLdapDN()
+    public static function getLdapDNForAccessSearch()
     {
-        return self::getConfigOption('ldap_dn');
+        return self::getConfigOption('ldap_dn_access');
+    }
+
+    /**
+     * Returns the DN for user searches in LDAP.
+     *
+     * @return string
+     */
+    public static function getLdapDNForUserSearch()
+    {
+        return self::getConfigOption('ldap_dn_user');
     }
 
     /**
@@ -265,6 +270,16 @@ class Config
     }
 
     /**
+     * Returns the Flag for active user data retrievals LDAP.
+     *
+     * @return bool
+     */
+    public static function getLdapUserDataActive()
+    {
+        return self::getConfigOption('ldap_user_data_active');
+    }
+
+    /**
      * Returns the LDAP key for the user alias.
      *
      * @return string
@@ -393,6 +408,14 @@ class Config
     public static function getShibbolethViewGroupLdapDN()
     {
         return self::getConfigOption('shibboleth_view_groups_ldap_dn');
+    }
+
+    /**
+     * Returns the LDAP User username key.
+     */
+    public static function getLdapUserUsername()
+    {
+        return self::getConfigOption('ldap_user_username');
     }
 
     /**

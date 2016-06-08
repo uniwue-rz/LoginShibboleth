@@ -1,18 +1,18 @@
 <?php
 
 /**
- * Piwik - Open source web analytics.
- *
- * @link http://piwik.org
- *
- * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
- *
- * @category Piwik_Plugins
-
- **/
+ * Login Shibboleth Plugin.
+ */
 
 namespace Piwik\Plugins\LoginShibboleth;
 
+/**
+ * LDAP adapter function. This handles all the LDAP connection of the plugin to LDAP server.
+ * Settings are read from the Piwik config file.
+ *
+ * @author Pouyan Azari <pouyan.azari@uni-wuerzburg.de>
+ * @license MIT
+ */
 class LdapAdapter
 {
     /**
@@ -64,18 +64,10 @@ class LdapAdapter
     {
         $this->username = Config::getLdapUserName();
         $this->password = Config::getLdapPassword();
-        $this->dn = Config::getLdapDN();
         $this->host = Config::getLdapHost();
         $this->port = Config::getLdapPort();
         $this->active = Config::isLdapActive();
         $this->activeData = Config::getLdapActiveData();
-        $this->ldapViewFilter = Config::getLdapViewFilter();
-        $this->ldapViewAttrs = Config::getLdapViewAttrs();
-        $this->ldapAdminFilter = Config::getLdapAdminFilter();
-        $this->ldapAdminAttrs = Config::getLdapAdminAttrs();
-        $this->ldapSuperuserFilter = Config::getLdapSuperUserFilter();
-        $this->ldapSuperuserAttrs = Config::getLdapSuperUserAttrs();
-        $this->ldapSuperuserValues = Config::getLdapSuperUserValue();
     }
 
     /**
@@ -98,7 +90,7 @@ class LdapAdapter
     }
 
     /**
-     * Checks if the ldap can bind.
+     * Checks if the LDAP can bind.
      *
      * @return bool
      *
@@ -127,10 +119,17 @@ class LdapAdapter
      *
      * @return multi-dimensional array
      */
-    public function searchLdap($filter, $attrs)
+    public function searchLdap($filter, $attrs, $dn)
     {
         $result = array('count' => 0);
-        $searchComm = ldap_search($this->conn, $this->dn, $filter, $attrs);
+        if ($this->checkBind()) {
+        } else {
+            throw new \Exception('Problem connecting to LDAP');
+        }
+        if ($dn == '') {
+            throw new \Exception('DN is not set');
+        }
+        $searchComm = ldap_search($this->conn, $dn, $filter, $attrs);
         if ($searchComm) {
             $result = ldap_get_entries($this->conn, $searchComm);
         }
@@ -139,31 +138,180 @@ class LdapAdapter
     }
 
     /**
+     * Generic function for the LDAP filter and attributes.
+     *
+     * @param string $username  The username from Shibboleth
+     * @param string $filString The filter placeholder string
+     * @param string $attString The attributes placeholder string
+     * @param string $sep       The Separator string
+     * @param bool   $lActive   The Flag for LDAP:
+     * @param array  $lData     The Array containing active LDAP component (View, SuperUser, Admin)
+     * @param string $types     The Type of the filterAttr (View or Admin)
+     *
+     * @return array("filter"=>string, "attrs"=>array(domainPlaceholder, pathPlaceholder))
+     */
+    public function getGenericFilterAttr(
+        $username,
+        $type = '',
+        $filString = false,
+        $attString = false,
+        $sep = false,
+        $lActive = false,
+        $lData = array()
+    ) {
+        $filter = '';
+        $attrs = array();
+        $result = array('filter' => $filter, 'attrs' => $attrs);
+        if ($lActive) {
+            if (in_array('ldapView', $lData)) {
+                if ($filString != '') {
+                    preg_match('/\\?/', $filString, $matched);
+                    if (sizeof($matched) > 0) {
+                        $filter = sprintf(str_replace('?', '%1$s', $filString), $username);
+                        $result['filter'] = $filter;
+                    } else {
+                        throw new \Exception("There is not ? used in LDAP $type filter to be replaced by usernamme");
+                    }
+                } else {
+                    throw new \Exception("If you activate the LDAP $type data".
+                        ', you should set the filter');
+                }
+                if ($attString != '') {
+                    if ($sep != '') {
+                        $attrs = array_map(
+                            'trim',
+                            explode($sep, $attString)
+                        );
+                        $attrs = array_map('strtolower', $attrs);
+                        $result['attrs'] = $attrs;
+                    } else {
+                        throw new \Exception('You should set the separator. It is set in Shibboleth Setting');
+                    }
+                } else {
+                    throw new \Exception('If you activate the LDAP '.$type.' data'.
+                      ', you should set the attributes');
+                }
+            } else {
+                throw new \Exception('LDAP '.$type.' data is not active, set it in select list.');
+            }
+        } else {
+            throw new \Exception('LDAP is not active so it can not be used.');
+        }
+
+        return $result;
+    }
+
+    /**
+     * Returns the View LDAP filter and attributes.
+     *
+     * @param string $username  The username from Shibboleth
+     * @param string $filString The filter placeholder string
+     * @param string $attString The attributes placeholder string
+     * @param string $sep       The Separator string
+     * @param bool   $lActive   The Flag for LDAP
+     * @param array  $lData     The Array containing active LDAP component (View, SuperUser, Admin)
+     *
+     * @return array("filter"=>string, "attrs"=>array(domainPlaceholder, pathPlaceholder))
+     */
+    public function getViewFilterAttr(
+        $username,
+        $filString = false,
+        $attString = false,
+        $sep = false,
+        $lActive = false,
+        $lData = array()
+    ) {
+        if (!$filString) {
+            $filString = Config::getLdapViewFilter();
+        }
+        if (!$attString) {
+            $attString = Config::getLdapViewAttrs();
+        }
+        if (!$sep) {
+            $sep = Config::getShibbolethSeparator();
+        }
+        if (!$lActive) {
+            $lActive = (bool) Config::isLdapActive();
+        }
+        if (sizeof($lData) == 0) {
+            $lData = Config::getLdapActiveData();
+        }
+
+        return $this->getGenericFilterAttr($username, 'View', $filString, $attString, $sep, $lActive, $lData);
+    }
+
+    /**
+     * Returns the Admin filters and attributes for LDAP.
+     *
+     * @param string $username Username used, coming from Shibboleth
+     */
+    public function getAdminFilterAttr(
+        $username,
+        $filString = false,
+        $attString = false,
+        $sep = false,
+        $lActive = false,
+        $lData = array()
+    ) {
+        if (!$filString) {
+            $filString = Config::getLdapAdminFilter();
+        }
+        if (!$attString) {
+            $attString = Config::getLdapAdminAttrs();
+        }
+        if (!$sep) {
+            $sep = Config::getShibbolethSeparator();
+        }
+        if (!$lActive) {
+            $lActive = Config::isLdapActive();
+        }
+        if (sizeof($lData) == 0) {
+            $lData = Config::getLdapActiveData();
+        }
+
+        return $this->getGenericFilterAttr($username, 'Admin', $filString, $attString, $sep, $lActive, $lData);
+    }
+
+    /**
      * Returns the URL for a given user on hand the userType.
      *
-     * @param string $username Username which the user typed in the login form.
-     * @param string $userType Type of the user Access (View, Admin, SuperUser)
+     * @param string $username        Username which the user typed in the login form.
+     * @param string $accessType      Type of the user Access (View, Admin)
+     * @param array  $availableAccess Array including the available access types.
      *
      * @return array ("domain"=>"www....", "path"=>"/...")
      */
-    public function getManagedUrls($username, $userType)
+    public function getManagedUrls($username, $accessType, $availableAccess = array('View', 'Admin'))
     {
         $urls = array();
-        $filterString = $userType.'Filter';
-        $attrString = $userType.'Attrs';
-        $filter = sprintf(str_replace('?', '%1$s', $this->$filterString), $username);
-        $attrs = array_map('trim', explode(',', $this->$attrString));
-        $ldapResult = $this->searchLdap($filter, $attrs);
-        $attrs_low = array_map('strtolower', $attrs);
+        if (in_array($accessType, $availableAccess)) {
+            if ($accessType == 'View') {
+                $filterAttrs = $this->getViewFilterAttr($username);
+            }
+            if ($accessType == 'Admin') {
+                $filterAttrs = $this->getAdminFilterAttr($username);
+            }
+        } else {
+            throw new \Exception('"View" or "Admin" LDAP access types are at this moment available, '.
+                                 "your access type is $accessType");
+        }
+        $ldapResult = $this->searchLdap(
+            $filterAttrs['filter'],
+            $filterAttrs['attrs'],
+            Config::getLdapDNForAccessSearch()
+        );
         if ($ldapResult['count'] > 0) {
             unset($ldapResult['count']);
             foreach ($ldapResult as $l) {
-                if (sizeof($attrs_low) > 1) {
-                    $domain = $l[$attrs_low[0]][0];
-                    $path = $l[$attrs_low[1]][0];
+                if (sizeof($filterAttrs['attrs']) > 1) {
+                    $domain = $l[$filterAttrs['attrs'][0]][0];
+                    $path = $l[$filterAttrs['attrs'][1]][0];
+                    if ($path == '/') {
+                        $path = '';
+                    }
                     $tmp_url = array('domain' => $domain, 'path' => $path);
                 } else {
-                    $domain = $l[$attrs_low[0]][0];
+                    $domain = $l[$filterAttrs['attrs'][0]][0];
                     $tmp_url = array('domain' => $domain, 'path' => '');
                 }
                 array_push($urls, $tmp_url);
@@ -176,32 +324,30 @@ class LdapAdapter
     /**
      * Returns the username's view URL according to the Setting.
      *
-     * @param string username
+     * @param string $username The username from Shibboleth
      *
      * @return array ("domain"=>"www....", "path"=>"/...")
      */
     public function getUserViewUrls($username)
     {
-        $viewId = 'ldapView';
-        if (in_array($viewId, $this->activeData)) {
-            return $this->getManagedUrls($username, $viewId);
+        if (in_array('ldapView', $this->activeData)) {
+            return $this->getManagedUrls($username, 'View');
         }
 
         return array();
     }
 
     /**
-     * Returns the usernames admin URLs according to the setting.
+     * Returns the username's Admin URL according to the setting.
      *
-     * @param string $username
+     * @param string $username The username from the Shibboleth.
      *
      * @return array ("domain"=>"www....", "path"=>"/...")
      */
     public function getUserAdminUrls($username)
     {
-        $adminId = 'ldapAdmin';
-        if (in_array($adminId, $this->activeData)) {
-            return $this->getManagedUrls($username, $adminId);
+        if (in_array('ldapAdmin', $this->activeData)) {
+            return $this->getManagedUrls($username, 'Admin');
         }
 
         return array();
@@ -247,19 +393,26 @@ class LdapAdapter
         $superUserId = 'ldapSuperUser';
         $result = false;
         if (in_array($superUserId, $this->activeData)) {
-            $filterString = $superUserId.'Filter';
-            $attrString = $superUserId.'Attrs';
-            $valueString = $superUserId.'Values';
-            $filter = $this->convertFilter($this->$filterString, $username, '?');
-            $attrs = $this->convertAttrs(',', $this->$attrString);
-            $values = $this->convertAttrs(';', $this->$valueString);
-            $ldapResult = $this->searchLdap($filter, $attrs);
-            $attrs_low = array_map('strtolower', $attrs);
+            $filterAttrs = $this->getGenericFilterAttr(
+                $username,
+                'SuperUser',
+                Config::getLdapSuperUserFilter(),
+                Config::getLdapSuperUserAttrs(),
+                Config::getShibbolethSeparator(),
+                Config::isLdapActive(),
+                Config::getLdapActiveData()
+            );
+            $ldapResult = $this->searchLdap(
+                $filterAttrs['filter'],
+                $filterAttrs['attrs'],
+                Config::getLdapDNForUserSearch()
+            );
+            $ldapSuperUserGroups = explode(Config::getShibbolethSeparator(), Config::getLdapSuperUserValue());
             if ($ldapResult['count'] > 0) {
                 unset($ldapResult['count']);
                 foreach ($ldapResult as $l) {
-                    foreach ($l[$attrs_low[0]] as $r) {
-                        if ($r == $values[0] && $result == false) {
+                    foreach ($ldapSuperUserGroups as $lsup) {
+                        if (in_array($lsup, $l[$filterAttrs['attrs'][0]]) && !$result) {
                             $result = true;
                         }
                     }
@@ -279,10 +432,10 @@ class LdapAdapter
      */
     public function getUserProperty($username)
     {
-        $result = array('view' => array(),'admin' => array(),'superuser' => false);
+        $result = array('view' => array(),'admin' => array(),'superuser' => false, 'manual'=>false);
         if ($this->checkBind()) {
-            $result['view'] = $this->getUserViewUrls($username);
-            $result['admin'] = $this->getUserAdminUrls($username);
+            $result['view'] = $this->getManagedUrls($username, "View");
+            $result['admin'] = $this->getManagedUrls($username, "Admin");
             $result['superuser'] = $this->getUserSuperUserStatus($username);
         } else {
             throw \Exception('Can not bind to the LDAP Server');
@@ -292,19 +445,107 @@ class LdapAdapter
     }
 
     /**
-     * Returns the User information, normally not needed from ldap.
+     * Returns user mail from LDAP.
      *
-     * @param $username string login Id of the User.
-     * In Shibboleth The Username will be set automatically.
-     * Shibboleth can also add the new layer of "hasView" or "hasAdmin"
-     * This will only used when the View or Admin groups of Shibboleth are set
-     * to restrict access. See Plugin Settings in Piwik Backend.
+     * @param string $username Username of the given user from Shibboleth.
      *
-     * @return array("username"=>"", "email"=>, "alias"=>"", "hasView"=>boolean, "hasAdmin"=>boolean)
+     * @return string
+     */
+    public function getMail($username = '')
+    {
+        if (Config::getLdapUserDataActive()) {
+            if (Config::getLdapDNForUserSearch() == '') {
+                throw new \Exception('DN for Ldap User search should be set.');
+            }
+            if (Config::getLdapUserEmail() != '') {
+                if (Config::getLdapUserUsername() != '') {
+                    $filter = '('.Config::getLdapUserUsername().'='.$username.')';
+                    $attr = array(Config::getLdapUserEmail());
+                    $ldapResult = $this->searchLdap($filter, $attr, Config::getLdapDNForUserSearch());
+                    if ($ldapResult['count'] > 0) {
+                        return $ldapResult[0][$attr[0]][0];
+                    }
+                } else {
+                    throw new \Exception('Please set LDAP User username key');
+                }
+            } else {
+                throw new \Exception('Please set LDAP User mail key');
+            }
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * Returns the url of the given group on hand the setting.
+     *
+     * @param string $group The group name.
+     *
+     * @return string
+     */
+    public function getGroupUrl($group = false)
+    {
+        if ($group) {
+        }
+    }
+
+    /**
+     * Returns user alias from LDAP.
+     *
+     * @param string $username Username of the given user from Shibboleth.
+     *
+     * @return string
+     */
+    public function getAlias($username = '')
+    {
+        if (Config::getLdapUserDataActive()) {
+            if (Config::getLdapDNForUserSearch() == '') {
+                throw new \Exception('DN for Ldap User search should be set.');
+            }
+            if (Config::getLdapUserAlias() != '') {
+                if (Config::getLdapUserUsername() != '') {
+                    $filter = '('.Config::getLdapUserUsername().'='.$username.')';
+                    $attrs = explode(Config::getShibbolethSeparator(), Config::getLdapUserAlias());
+                    $attrs = array_map('strtolower', $attrs);
+                    $ldapResult = $this->searchLdap($filter, $attrs, Config::getLdapDNForUserSearch());
+                    if (sizeof($attrs) > 1) {
+                        if ($ldapResult['count'] > 0) {
+                            return $ldapResult[0][$attrs[0]][0].' '.$ldapResult[0][$attrs[1]][0];
+                        } else {
+                            return '';
+                        }
+                    } else {
+                        if ($ldapResult['count'] > 0) {
+                            return $ldapResult[0][$attr[0]][0];
+                        } else {
+                            return '';
+                        }
+                    }
+                } else {
+                    throw new \Exception('Please set LDAP User username key');
+                }
+            } else {
+                throw new \Exception('Please set LDAP User mail key');
+            }
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * Returns the User information.
+     *
+     * @param string $username Username of the user from Shibboleth
+     *
+     * @return array("username"=>"", "email"=>, "alias"=>"")
      */
     public function getUserInfo($username = '')
     {
         $result = array('username' => $username, 'email' => '', 'alias' => '');
+        if (Config::getLdapUserDataActive()) {
+            $result['email'] = $this->getMail($username);
+            $result['alias'] = $this->getAlias($username);
+        }
 
         return $result;
     }

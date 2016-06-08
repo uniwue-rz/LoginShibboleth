@@ -1,24 +1,13 @@
 <?php
 
-/**
- * Piwik - Open source web analytics.
- *
- * @link http://piwik.org
- *
- * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
- *
- * @category Piwik_Plugins
- **/
-
 namespace Piwik\Plugins\LoginShibboleth;
 
 use Piwik\AuthResult;
 use Piwik\Plugins\LoginShibboleth\LoginShibbolethUser as UserModel;
 use Piwik\Container\StaticContainer;
+use Piwik\Piwik;
+use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 
-/**
- *LoginShibbolethAuth is the auth.
- */
 class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
 {
     /**
@@ -74,9 +63,9 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
             $this->password = '';
             $model = new UserModel();
             $user = $model->getUser($this->login);
+            $tokenAuth = UsersManagerAPI::getInstance()->getTokenAuth($this->login, md5($user['password']));
             $code = $user['superuser_access'] ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
-
-            return new AuthResult($code, $this->login, $this->token_auth);
+            return new AuthResult($code, $this->login, $tokenAuth);
         }
         if (is_null($this->login)) {
             $model = new UserModel();
@@ -109,6 +98,23 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
         }
 
         return new AuthResult(AuthResult::FAILURE, $this->login, $this->token_auth);
+    }
+
+    /**
+     * Returns the secret used to calculate a user's token auth.
+     *
+     * @return string
+     *
+     * @throws Exception if the token auth cannot be calculated at the current time.
+     */
+    public function getTokenAuthSecret()
+    {
+        $user = $this->login;
+        if (empty($user)) {
+            throw new Exception("Cannot find user '{$this->login}'");
+        }
+
+        return $user['password'];
     }
 
     /**
