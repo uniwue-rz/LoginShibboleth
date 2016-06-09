@@ -23,6 +23,7 @@ shibboleth_superuser_groups = "cn=piwiksuper,ou=unit,o=org"
 shibboleth_group = "groupMembership"
 ```
 **Caution 1**: The SuperUser should be the member of `cn=piwiksuper,ou=unit,o=org`.   
+
 **Caution 2**: This plug-in deactivates every other plug-in installed for the Login purpose. As a result after activation, you can only login through Shibboleth.
 
 With these settings, it is safe to activate the plug-in and then try to set the other configuration for the view and admin users with the help of configuration panel which will be available to the SuperUser in Settings Menu.
