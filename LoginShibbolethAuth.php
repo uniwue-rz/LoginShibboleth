@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Part of Piwik Login Shibboleth Plug-in.
+ */
+
 namespace Piwik\Plugins\LoginShibboleth;
 
 use Piwik\AuthResult;
@@ -8,6 +12,18 @@ use Piwik\Container\StaticContainer;
 use Piwik\Piwik;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 
+/**
+ * LoginShibbolethAuth does the authentication.
+ *
+ * This is the overridden Auth class of native Login Plug-in in Piwik. It handles all
+ * the login request and API queries to the plug-in. The class only changes the normal login and everything else
+ * is the same so the API functions still could work. Any authentication related settings should be done here.
+ *
+ * @author Pouyan Azari <pouyan.azari@uni-wuerzburg.de>
+ * @license MIT
+ * @copyright 2014-2016 University of Wuerzburg
+ * @copyright 2014-2016 Pouyan Azari
+ */
 class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
 {
     /**
@@ -35,6 +51,9 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
      */
     protected $token_auth;
 
+    /**
+     * Initiator.
+     */
     public function __construct()
     {
         if (!isset($logger)) {
@@ -63,9 +82,9 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
             $this->password = '';
             $model = new UserModel();
             $user = $model->getUser($this->login);
-            $tokenAuth = UsersManagerAPI::getInstance()->getTokenAuth($this->login, md5($user['password']));
             $code = $user['superuser_access'] ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
-            return new AuthResult($code, $this->login, $tokenAuth);
+
+            return new AuthResult($code, $this->login, $this->token_auth);
         }
         if (is_null($this->login)) {
             $model = new UserModel();

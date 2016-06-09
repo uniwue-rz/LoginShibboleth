@@ -1,15 +1,22 @@
 <?php
 
 /**
- * Piwik - free/libre analytics platform.
- *
- * @link http://piwik.org
- *
- * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
+ * Part of the Piwik Login Shibboleth Plug-in.
  */
 
 namespace Piwik\Plugins\LoginShibboleth;
 
+/**
+ * Adapter is the abstract class for data retrievals.
+ *
+ * Any data reterival class should extend this class, which makes them have at least the function listed here.
+ * If there is plan to extend all adapters changes should be added here.
+ *
+ * @author Pouyan Azari <pouyan.azari@uni-wuerzburg.de>
+ * @license MIT
+ * @copyright 2014-2016 University of Wuerzburg
+ * @copyright 2014-2016 Pouyan Azari
+ */
 abstract class Adapter
 {
     /**

@@ -1,25 +1,36 @@
 <?php
 
+
 /**
- * @group LoginShibboleth
- * @group LdapAdapaterTest
- * @group Plugins
+ * Part of Piwik Shibboleth Login Plug-in. (Test).
  */
 
 namespace Piwik\Plugins\LoginShibboleth\tests;
 
 use Piwik\Plugins\LoginShibboleth\LdapAdapter;
 
-function searchLdap($attr, $filter)
-{
-    return LdapAdapaterTest::searchLdap($attr, $filter);
-}
-
 /**
- * Test class for the LdapAdpater.
+ * Test cases for LdapAdapter class.
+ *
+ * Here the test cases for LdapAdpater class can be written. Make sure that the the plug-in is
+ * configured appropriately. This is also a good place to test changes to plug-in LDAP functionalities
+ * before going to production.
+ * The test can be run using Piwik test through the console.
+ *
+ * @author Pouyan Azari <pouyan.azari@uni-wuerzburg.de>
+ * @license MIT
+ * @copyright 2014-2016 University of Wuerzburg
+ * @copyright 2014-2016 Pouyan Azari
  */
 class LdapAdapaterTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * Placeholder for Piwik\Plugins\LoginShibboleth\LdapAdapter.
+     *
+     * @var
+     */
+    private $la;
+
     /**
      * Setup the adapter first.
      */
@@ -27,11 +38,6 @@ class LdapAdapaterTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
         $this->la = new LdapAdapter();
-    }
-
-    public function searchLdap($filter, $attrs)
-    {
-        return array('count' => 1);
     }
 
     /**
@@ -75,7 +81,7 @@ class LdapAdapaterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($testFilter['attrs'], array('domain', 'path'));
     }
 
-    /*
+    /**
     * Test the get getManagedUrls with the mocked LDAP.
     */
     public function testGetManagedUrls()

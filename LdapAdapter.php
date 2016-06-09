@@ -7,59 +7,67 @@
 namespace Piwik\Plugins\LoginShibboleth;
 
 /**
- * LDAP adapter function. This handles all the LDAP connection of the plugin to LDAP server.
- * Settings are read from the Piwik config file.
+ * LdapAdapter is the LDAP data retrieval adapter.
+ *
+ * It handles all the LDAP connections of the plug-in to LDAP server.
+ * Settings are read from the Piwik config file. More LDAP functionalities can be added here if needed.
+ * before going productive, test the functionalities with test suites available.
  *
  * @author Pouyan Azari <pouyan.azari@uni-wuerzburg.de>
  * @license MIT
+ * @copyright 2014-2016 University of Wuerzburg
+ * @copyright 2014-2016 Pouyan Azari
  */
 class LdapAdapter
 {
     /**
-     * Placeholder for Ldap username.
+     * Placeholder for LDAP username.
      *
      * @var
      */
     private $username;
     /**
-     * Placeholder for Ldap password.
+     * Placeholder for LDAP password.
      *
      * @var
      */
     private $password;
     /**
-     * Placeholder for Ldap Distinguished Name.
+     * Placeholder for LDAP Distinguished Name.
      *
      * @var
      */
     private $dn;
     /**
-     * Placeholder for Ldap Host.
+     * Placeholder for LDAP Host.
      *
      * @var
      */
     private $host;
     /**
-     * Placeholder for ldap Port.
+     * Placeholder for LDAP Port.
      *
      * @var
      */
     private $port;
 
     /**
-     * Placeholder for Ldap Active.
+     * Placeholder for LDAP Active.
      *
      * @var
      */
     private $active;
 
     /**
-     * Placeholder for Ldap Active Data sources.
+     * Placeholder for LDAP Active Data sources.
      *
      * @var
      */
     private $activeData;
 
+    /**
+     * Initializer.
+     */
     public function __construct()
     {
         $this->username = Config::getLdapUserName();
@@ -116,8 +124,9 @@ class LdapAdapter
      *
      * @param string $filter     Filter for the LDAP query
      * @param array  $attributes Needed attributes for the LDAP query
+     * @param string $dn         Distinguished Names to search in
      *
-     * @return multi-dimensional array
+     * @return array
      */
     public function searchLdap($filter, $attrs, $dn)
     {
@@ -141,14 +150,14 @@ class LdapAdapter
      * Generic function for the LDAP filter and attributes.
      *
      * @param string $username  The username from Shibboleth
+     * @param string $type      The Type of the filterAttr (View or Admin)
      * @param string $filString The filter placeholder string
      * @param string $attString The attributes placeholder string
      * @param string $sep       The Separator string
      * @param bool   $lActive   The Flag for LDAP:
      * @param array  $lData     The Array containing active LDAP component (View, SuperUser, Admin)
-     * @param string $types     The Type of the filterAttr (View or Admin)
      *
-     * @return array("filter"=>string, "attrs"=>array(domainPlaceholder, pathPlaceholder))
+     * @return array ex. `array("filter"=>string, "attrs"=>array(domainPlaceholder, pathPlaceholder))`
      */
     public function getGenericFilterAttr(
         $username,
@@ -211,7 +220,7 @@ class LdapAdapter
      * @param bool   $lActive   The Flag for LDAP
      * @param array  $lData     The Array containing active LDAP component (View, SuperUser, Admin)
      *
-     * @return array("filter"=>string, "attrs"=>array(domainPlaceholder, pathPlaceholder))
+     * @return array ex. `array("filter"=>string, "attrs"=>array(domainPlaceholder, pathPlaceholder))`
      */
     public function getViewFilterAttr(
         $username,
@@ -243,7 +252,14 @@ class LdapAdapter
     /**
      * Returns the Admin filters and attributes for LDAP.
      *
-     * @param string $username Username used, coming from Shibboleth
+     * @param string $username  The username from Shibboleth
+     * @param string $filString The filter placeholder string
+     * @param string $attString The attributes placeholder string
+     * @param string $sep       The Separator string
+     * @param bool   $lActive   The Flag for LDAP
+     * @param array  $lData     The Array containing active LDAP component (View, SuperUser, Admin)
+     *
+     * @return array ex. `array("filter"=>string, "attrs"=>array(domainPlaceholder, pathPlaceholder))`
      */
     public function getAdminFilterAttr(
         $username,
@@ -279,7 +295,7 @@ class LdapAdapter
      * @param string $accessType      Type of the user Access (View, Admin)
      * @param array  $availableAccess Array including the available access types.
      *
-     * @return array ("domain"=>"www....", "path"=>"/...")
+     * @return array ex. `array("domain"=>"www....", "path"=>"/...")`
      */
     public function getManagedUrls($username, $accessType, $availableAccess = array('View', 'Admin'))
     {
@@ -326,7 +342,7 @@ class LdapAdapter
      *
      * @param string $username The username from Shibboleth
      *
-     * @return array ("domain"=>"www....", "path"=>"/...")
+     * @return array ex. `array("domain"=>"www....", "path"=>"/...")`
      */
     public function getUserViewUrls($username)
     {
@@ -342,7 +358,7 @@ class LdapAdapter
      *
      * @param string $username The username from the Shibboleth.
      *
-     * @return array ("domain"=>"www....", "path"=>"/...")
+     * @return array ex. `array("domain"=>"www....", "path"=>"/...")`
      */
     public function getUserAdminUrls($username)
     {
@@ -356,26 +372,26 @@ class LdapAdapter
     /**
      * Converts filter to LDAP usable values.
      *
-     * @param string $filter
-     * @param string $username
-     * @param string $placeholder
+     * @param string $filter      The filter template string from the Config
+     * @param string $username    The username of the given user from Shibboleth
+     * @param string $placeholder The placeholder to be replaced.
      *
      * @return string
      **/
-    public function convertFilter($filter, $username, $delimeter)
+    public function convertFilter($filter, $username, $placeholder)
     {
-        return sprintf(str_replace($delimeter, '%1$s', $filter), $username);
+        return sprintf(str_replace($placeholder, '%1$s', $filter), $username);
     }
 
     /**
-     * Converts Attrs to LDAP usable values.
+     * Converts Attributes of the Config to LDAP usable values.
      *
-     * @param string $delimeter
-     * @param string $attrs
+     * @param string $delimiter The delimiter to be changed
+     * @param string $attrs     The attributes from Config
      *
      * @return array
      */
-    public function convertAttrs($delimeter, $attrs)
+    public function convertAttrs($delimiter, $attrs)
     {
         return array_map('trim', explode($delimeter, $attrs));
     }
@@ -428,14 +444,14 @@ class LdapAdapter
      *
      * @param string $username (LDAP username of the user)
      *
-     * @return array("view"=>array(),"admin"=>array(),"superuser"=>false);
+     * @return array ex `array("view"=>array(),"admin"=>array(),"superuser"=>false)``
      */
     public function getUserProperty($username)
     {
-        $result = array('view' => array(),'admin' => array(),'superuser' => false, 'manual'=>false);
+        $result = array('view' => array(),'admin' => array(),'superuser' => false, 'manual' => false);
         if ($this->checkBind()) {
-            $result['view'] = $this->getManagedUrls($username, "View");
-            $result['admin'] = $this->getManagedUrls($username, "Admin");
+            $result['view'] = $this->getManagedUrls($username, 'View');
+            $result['admin'] = $this->getManagedUrls($username, 'Admin');
             $result['superuser'] = $this->getUserSuperUserStatus($username);
         } else {
             throw \Exception('Can not bind to the LDAP Server');
@@ -537,7 +553,7 @@ class LdapAdapter
      *
      * @param string $username Username of the user from Shibboleth
      *
-     * @return array("username"=>"", "email"=>, "alias"=>"")
+     * @return array ex. `array("username"=>"", "email"=>, "alias"=>"")`
      */
     public function getUserInfo($username = '')
     {

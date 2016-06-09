@@ -1,14 +1,8 @@
 <?php
 
 /**
- * Piwik - Open source web analytics.
- *
- * @link http://piwik.org
- *
- * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
- *
- * @category Piwik_Plugins
- **/
+ * Part of the Piwik Login Shibboleth Plug-in.
+ */
 
 namespace Piwik\Plugins\LoginShibboleth;
 
@@ -19,8 +13,11 @@ use Piwik\Notification;
 use Piwik\Plugin\ControllerAdmin;
 use Piwik\Plugin\Manager as PluginManager;
 
-/**
- * Login controller.
+/*
+ * @author Pouyan Azari <pouyan.azari@uni-wuerzburg.de>
+ * @license MIT
+ * @copyright 2014-2016 University of Wuerzburg
+ * @copyright 2014-2016 Pouyan Azari
  */
 class Controller extends \Piwik\Plugins\Login\Controller
 {
@@ -69,6 +66,8 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
     /**
      * Default function.
+     *
+     *@return index
      */
     public function index()
     {
@@ -82,13 +81,5 @@ class Controller extends \Piwik\Plugins\Login\Controller
     public function logout()
     {
         Url::redirectToUrl(Config::getLogoutUrl());
-    }
-    /**
-     * @param string $password
-     *
-     * @throws \Exception
-     */
-    protected function checkPasswordHash($password)
-    {
     }
 }

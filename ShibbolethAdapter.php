@@ -1,26 +1,25 @@
 <?php
 
 /**
- * Piwik - Open source web analytics.
- *
- * @link http://piwik.org
- *
- * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
- *
- * @category Piwik_Plugins
-
- **/
+ * Part of the Piwik Shibboleth Login Plug-in.
+ */
 
 namespace Piwik\Plugins\LoginShibboleth;
 
+/**
+ * ShibbolethAdapter is the Shibboleth data retrieval adapter.
+ *
+ * LoginShibboleth has two ways of retrieval of user data and access. The first is the ShibbolethAdapter which directly
+ * interpret the data from Shibboleth and return the user information. The other one is LdapAdapter.
+ * Any changes to the way shibboleth acts can be reflected here.
+ *
+ * @author Pouyan Azari <pouyan.azari@uni-wuerzburg.de>
+ * @license MIT
+ * @copyright 2014-2016 University of Wuerzburg
+ * @copyright 2014-2016 Pouyan Azari
+ */
 class ShibbolethAdapter extends Adapter
 {
-    /**
-     * Placeholder for plugin settings.
-     *
-     *@var
-     */
-    private $settings;
     /**
      * Placeholder for the login key variable in $_SERVER.
      *
@@ -74,18 +73,8 @@ class ShibbolethAdapter extends Adapter
     private $separator;
 
     /**
-     * Placeholder for the hasView.
-     *
-     * @var
+     * ShibbolethAdapter Initializer.
      */
-    private $hasView;
-
-    /**
-     * Placeholder for the hasAdmin.
-     *
-     * @var
-     */
-    private $hasAdmin;
     public function __construct()
     {
         $this->loginKey = Config::getShibbolethUserLogin();
@@ -245,7 +234,7 @@ class ShibbolethAdapter extends Adapter
      * This will only used when the View or Admin groups of Shibboleth are set
      * to restrict access. See Plugin Settings in Piwik Backend.
      *
-     * @return array("username"=>"", "email"=>, "alias"=>"", "hasView"=>boolean, "hasAdmin"=>boolean)
+     * @return [] UserInfo `array("username"=>"", "email"=>, "alias"=>"", "hasView"=>boolean, "hasAdmin"=>boolean)`
      */
     public function getUserInfo($username = '')
     {
@@ -278,7 +267,7 @@ class ShibbolethAdapter extends Adapter
      *
      * @param string $username Username of the given user from Shibboleth.
      *
-     * @return array("view"=>array(),"admin"=>array(),"superuser"=>false, "manual"=>false);
+     * @return [] UserProperty `array("view"=>array(),"admin"=>array(),"superuser"=>false, "manual"=>false)`;
      */
     public function getUserProperty($username = '')
     {

@@ -1,9 +1,25 @@
 <?php
 
+/**
+ * Part of the Piwik Login Shibboleth Plug-in.
+ */
+
 namespace Piwik\Plugins\LoginShibboleth;
 
 use Piwik\Config as PiwikConfig;
 
+/**
+ * The Config instance of the plug-in.
+ *
+ * It manages the whole configuration aspects of the plug-in.
+ * Any changes to configuration parameters should be changed here. The same values will also be used in the templates
+ * so always check that the parameters here match the template.
+ *
+ * @author Pouyan Azari <pouyan.azari@uni-wuerzburg.de>
+ * @license MIT
+ * @copyright 2014-2016 University of Wuerzburg
+ * @copyright 2014-2016 Pouyan Azari
+ */
 class Config
 {
     /**

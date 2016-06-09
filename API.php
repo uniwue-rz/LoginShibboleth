@@ -1,11 +1,7 @@
 <?php
 
 /**
- * Piwik - free/libre analytics platform.
- *
- * @link http://piwik.org
- *
- * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
+ * Part of Piwik Login Shibboleth Plug-in.
  */
 
 namespace Piwik\Plugins\LoginShibboleth;
@@ -15,6 +11,16 @@ use Piwik\Piwik;
 use Exception;
 
 /**
+ * API functionalities for settings.
+ *
+ * API is used by the Setting to write or read settings from the configuration file.
+ * If this plug-in should have any other API related functions, they should be added here.
+ * The API is only available to the user with SuperUser access.
+ *
+ * @author Pouyan Azari <pouyan.azari@uni-wuerzburg.de>
+ * @license MIT
+ * @copyright 2014-2016 University of Wuerzburg
+ * @copyright 2014-2016 Pouyan Azari
  */
 class API extends \Piwik\Plugin\API
 {
@@ -25,7 +31,7 @@ class API extends \Piwik\Plugin\API
     {
     }
     /**
-     * Saves the login LDAP settings in the config file automatically.
+     * Saves the Login Shibboleth settings in the config file automatically.
      *
      * @param string $data JSON encoded config array.
      *

@@ -1,55 +1,30 @@
 <?php
 
+/**
+ * Part of the LoginShibboleth Plugin.
+ */
+
 namespace Piwik\Plugins\LoginShibboleth;
 
 use Piwik\Plugins\UsersManager\Model as Model;
 use Piwik\Date;
 use Piwik\Db;
 
+/**
+ * LoginShibbolethUser is the user Model class for Shibboleth.
+ *
+ * This class inherit most of the functions from the Model class of Piwik
+ * UsersManager. Any changes to default functions of Model should be added
+ * here. The overridden functions of Model are getUser and __construct.
+ *
+ *
+ * @author Pouyan Azari <pouyan.azari@uni-wuerzburg.de>
+ * @license MIT
+ * @copyright 2014-2016 University of Wuerzburg
+ * @copyright 2014-2016 Pouyan Azari
+ */
 class LoginShibbolethUser extends Model
 {
-    /**
-     * Placeholder for the settings.
-     *
-     * @var
-     */
-    private $settings;
-
-    /**
-     * Placeholder for User Login Id.
-     *
-     * @var
-     */
-    private $username;
-
-    /**
-     * Placeholder for User's Email.
-     *
-     * @var
-     */
-    private $email;
-
-    /**
-     * Placeholder for the User's alias.
-     *
-     * @var
-     */
-    private $alias;
-
-    /**
-     * Placeholder for User's token.
-     *
-     * @var
-     */
-    private $token;
-
-    /**
-     * Placeholder for User's password.
-     *
-     * @var
-     */
-    private $password;
-
     /**
      * Placeholder for UserInfo array.
      *
@@ -81,7 +56,7 @@ class LoginShibbolethUser extends Model
      *
      * @param string $username The username of the user to get LDAP information for.
      *
-     * @return string[] Associative array containing LDAP field data, eg, `array('dn' => '...')`
+     * @return string[] Associative array eg, `array('login' => '...')`
      */
     public function getUser($username)
     {
@@ -119,12 +94,12 @@ class LoginShibbolethUser extends Model
      * Adds the user with the given rights.
      * It also updates the user if it exists.
      *
-     * @param $login string username of the give user
-     * @param $viewSiteIds array list of the website the user has view access
-     * @param $adminSiteIds array list of the website the user has admin access
-     * @param $isSuperUser boolean if the user is SuperUser.
+     * @param string $login        Username of the give user
+     * @param array  $viewSiteIds  List of the website the user has view access
+     * @param array  $adminSiteIds List of the website the user has admin access
+     * @param bool   $isSuperUser  If the user is SuperUser.
      */
-    public function addOrUpdateUserGeneric($login, $viewSiteIds, $adminSiteIds, $isSuperUser)
+    private function addOrUpdateUserGeneric($login, $viewSiteIds, $adminSiteIds, $isSuperUser)
     {
         $this->userInfo['token'] = $this->getToken();
         if (!$this->userExists($login)) {
@@ -255,28 +230,36 @@ class LoginShibbolethUser extends Model
      */
     public function getPassword()
     {
+        if (array_key_exists('password', $this->userInfo)) {
+            return $this->userInfo['password'];
+        }
+
         return $this->getRandomString(8);
     }
 
     /**
      * Get the token.
      *
-     * @return 32char string
+     * @return string
      */
     public function getToken()
     {
+        if (array_key_exists('token', $this->userInfo)) {
+            return $this->userInfo['token'];
+        }
+
         return $this->getRandomString(31);
     }
 
     /**
-     * Get the SiteId from the given site url using mysql
+     * Get the SiteId from the given site URL using MySQL
      * driver.
      *
      * @param string $domain
      *
-     * @return int $id
+     * @return int
      */
-    public function getSiteId($domain)
+    private function getSiteId($domain)
     {
         $parsedDomain = parse_url($domain);
         $domain = 'http://'.$parsedDomain['path'];
@@ -291,11 +274,11 @@ class LoginShibbolethUser extends Model
     /**
      * Get the siteIds of a given domains.
      *
-     * @param array $section of domains and pathes
+     * @param array $sections Domains and Path list.
      *
-     * @return array()
+     * @return array
      */
-    public function convertDomainPathToId($sections)
+    private function convertDomainPathToId($sections)
     {
         $result = array();
         foreach ($sections as $s) {
