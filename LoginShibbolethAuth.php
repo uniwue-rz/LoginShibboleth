@@ -1,34 +1,64 @@
 <?php
 
 /**
- * Piwik - Open source web analytics.
- *
- * @link http://piwik.org
- *
- * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
- *
- * @category Piwik_Plugins
- *
- * @package LoginShibboleth
- **/
+ * Part of Piwik Login Shibboleth Plug-in.
+ */
 
 namespace Piwik\Plugins\LoginShibboleth;
 
 use Piwik\AuthResult;
-use Piwik\Plugins\LoginShibboleth\ShibbolethModel as UserModel;
+use Piwik\Plugins\LoginShibboleth\LoginShibbolethUser as UserModel;
+use Piwik\Container\StaticContainer;
+use Piwik\Piwik;
+use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 
 /**
+ * LoginShibbolethAuth does the authentication.
  *
+ * This is the overridden Auth class of native Login Plug-in in Piwik. It handles all
+ * the login request and API queries to the plug-in. The class only changes the normal login and everything else
+ * is the same so the API functions still could work. Any authentication related settings should be done here.
+ *
+ * @author Pouyan Azari <pouyan.azari@uni-wuerzburg.de>
+ * @license MIT
+ * @copyright 2014-2016 University of Wuerzburg
+ * @copyright 2014-2016 Pouyan Azari
  */
 class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
 {
-    protected $login = null;
-    protected $password = null;
-    protected $token_auth = null;
-    private $config;
-    public function __construct(){
-      $config = parse_ini_file('config.ini.php');
-      $this->config = $config["shib"];
+    /**
+     * Placeholder for the logging interface.
+     *
+     * @var
+     */
+    protected $logger;
+    /**
+     * Placeholder for the login (UserName).
+     *
+     * @var
+     */
+    protected $login;
+    /**
+     * Placeholder for the password.
+     *
+     * @var
+     */
+    protected $password;
+    /**
+     * Placeholder for token auth.
+     *
+     * @var
+     */
+    protected $token_auth;
+
+    /**
+     * Initiator.
+     */
+    public function __construct()
+    {
+        if (!isset($logger)) {
+            $this->logger = StaticContainer::get('Psr\Log\LoggerInterface');
+        }
     }
     /**
      * Authentication module's name, e.g., "Login".
@@ -41,22 +71,14 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
     }
 
     /**
-     * @return string
-     */
-    public static function getLogPath()
-    {
-        return PIWIK_INCLUDE_PATH.self::SHIBB_LOG_FILE;
-    }
-
-    /**
      * Authenticates user.
      *
      * @return AuthResult
      */
     public function authenticate()
     {
-        if (isset($_SERVER[$this->config["login"]])) {
-            $this->login = $_SERVER[$this->config["login"]];
+        if (isset($_SERVER[Config::getShibbolethUserLogin()])) {
+            $this->login = $_SERVER[Config::getShibbolethUserLogin()];
             $this->password = '';
             $model = new UserModel();
             $user = $model->getUser($this->login);
@@ -74,8 +96,8 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
             }
         } elseif (!empty($this->login)) {
             if ($this->login != 'anonymous') {
-                $login = $this->login;
                 $model = new UserModel();
+                $login = $this->login;
                 $user = $model->getUser($login);
                 $userToken = null;
                 if (!empty($user['token_auth'])) {
@@ -86,7 +108,8 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
                         || $userToken === $this->token_auth)
                 ) {
                     $this->setTokenAuth($userToken);
-                    $code = !empty($user['superuser_access']) ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
+                    $code = !empty($user['superuser_access']) ?
+                              AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
 
                     return new AuthResult($code, $login, $userToken);
                 }
@@ -94,6 +117,23 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
         }
 
         return new AuthResult(AuthResult::FAILURE, $this->login, $this->token_auth);
+    }
+
+    /**
+     * Returns the secret used to calculate a user's token auth.
+     *
+     * @return string
+     *
+     * @throws Exception if the token auth cannot be calculated at the current time.
+     */
+    public function getTokenAuthSecret()
+    {
+        $user = $this->login;
+        if (empty($user)) {
+            throw new Exception("Cannot find user '{$this->login}'");
+        }
+
+        return $user['password'];
     }
 
     /**
