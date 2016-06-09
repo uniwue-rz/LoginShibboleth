@@ -9,7 +9,7 @@ namespace Piwik\Plugins\LoginShibboleth;
 /**
  * Adapter is the abstract class for data retrievals.
  *
- * Any data reterival class should extend this class, which makes them have at least the function listed here.
+ * Any data retrieval class should extend this class, which makes them have at least the function listed here.
  * If there is plan to extend all adapters changes should be added here.
  *
  * @author Pouyan Azari <pouyan.azari@uni-wuerzburg.de>
