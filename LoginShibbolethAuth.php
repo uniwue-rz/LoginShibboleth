@@ -10,7 +10,6 @@ use Piwik\AuthResult;
 use Piwik\Plugins\LoginShibboleth\LoginShibbolethUser as UserModel;
 use Piwik\Container\StaticContainer;
 use Piwik\Piwik;
-use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 
 /**
  * LoginShibbolethAuth does the authentication.
