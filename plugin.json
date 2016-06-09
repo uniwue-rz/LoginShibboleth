@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
     "name": "ShibbolethLogin",
     "version": "1.1.6",
     "description": "Shibboleth Login Plugin for Piwik",
@@ -18,29 +17,10 @@
         "piwik": ">=2.2.0",
         "php": ">=5.3.0"
     },
-    "authors": [
-        {
-            "name": "Pouyan Azari",
-            "email": "Pouyan.azari@uni-wuerzburg.de",
-            "homepage": "http:\/\/www.rz.uni-wuerzburg.de\/wir\/mitarbeiter\/web_services\/azari_pouyan\/"
-        }
-    ]
-=======
-  "name": "ShibbolethLogin",
-  "version": "1.1.4",
-  "description": "Shibboleth Login Plugin for Piwik",
-  "theme": false,
-  "keywords": ["shibboleth", "login", "authentication", "active", "directory", "singlelogon"],
-  "license": "MIT",
-  "homepage": "https://github.com/pouyana/LoginShibboleth",
-  "require": {
-    "piwik": ">=2.2.0",
-    "php": ">=5.3.0"
-  },
-  "authors": [{
-    "name": "Pouyan Azari",
-    "email": "Pouyan.azari@uni-wuerzburg.de",
-    "homepage": "http://www.rz.uni-wuerzburg.de/wir/mitarbeiter/web_services/azari_pouyan/"
-  }]
->>>>>>> login/master
+    "authors": [{
+        "name": "Pouyan Azari",
+        "email": "Pouyan.azari@uni-wuerzburg.de",
+        "homepage": "http:\/\/www.rz.uni-wuerzburg.de\/wir\/mitarbeiter\/web_services\/azari_pouyan\/"
+    }]
+
 }
