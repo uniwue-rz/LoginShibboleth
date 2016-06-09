@@ -155,14 +155,24 @@ class LoginShibbolethUser extends Model
             $viewDiff = array_diff($viewSiteIds, $viewSiteIdsLocal);
             if (sizeof($viewDiff) > 0) {
                 $this->deleteUserAccess($login);
-                $this->addUserAccess($login, 'view', $viewDiff);
+                if ($this->userProperty['manual']) {
+                    $toAdd = array_unique(array_merge($viewSiteIds, $viewSiteIdsLocal), SORT_REGULAR);
+                } else {
+                    $toAdd = $viewDiff;
+                }
+                $this->addUserAccess($login, 'view', $toAdd);
             }
         }
         if (sizeof($adminSiteIds) > 0) {
             $adminDiff = array_diff($adminSiteIds, $adminSiteIdsLocal);
             if (sizeof($adminDiff) > 0) {
                 $this->deleteUserAccess($login);
-                $this->addUserAccess($login, 'admin', $adminDiff);
+                if ($this->userProperty['manual']) {
+                    $toAdd = array_unique(array_merge($adminSiteIds, $adminSiteIdsLocal), SORT_REGULAR);
+                } else {
+                    $toAdd = $adminSiteIds;
+                }
+                $this->addUserAccess($login, 'admin', $toAdd);
             }
         }
         if ($isSuperUser) {
@@ -170,7 +180,9 @@ class LoginShibbolethUser extends Model
         }
 
         if (Config::isDeleteOldUserActive()) {
-            if (sizeof($this->getSitesAccessFromUser($login)) == 0) {
+            if ((sizeof($this->getSitesAccessFromUser($login)) == 0 ||
+                (sizeof($viewSiteIds) == 0 &&
+                sizeof($adminSiteIds) == 0)) && !$this->userProperty['manual']) {
                 $this->deleteUserOnly($login);
             }
         }
@@ -190,10 +202,8 @@ class LoginShibbolethUser extends Model
             $la = new LdapAdapter();
             $ldapUserInfo = $la->getUserInfo($shibbolethUserInfo['username']);
             $ldapUserProperty = $la->getUserProperty($shibbolethUserInfo['username']);
-            $viewUrl = array_merge($shibbolethUserProperty['view'], $ldapUserProperty['view']);
-            $adminUrl = array_merge($shibbolethUserProperty['admin'], $ldapUserProperty['admin']);
-            $this->userProperty['view'] = $viewUrl;
-            $this->userProperty['admin'] = $adminUrl;
+            $this->userProperty['view'] = array_merge($shibbolethUserProperty['view'], $ldapUserProperty['view']);
+            $this->userProperty['admin'] = array_merge($shibbolethUserProperty['admin'], $ldapUserProperty['admin']);
             if ($shibbolethUserProperty['superuser'] || $ldapUserProperty['superuser']) {
                 $this->userProperty['superuser'] = true;
             }
@@ -213,6 +223,7 @@ class LoginShibbolethUser extends Model
             }
         } else {
             $this->userProperty = $shibbolethUserProperty;
+            $this->userInfo = $shibbolethUserInfo;
         }
     }
 
@@ -278,11 +289,11 @@ class LoginShibbolethUser extends Model
     }
 
     /**
-     * Get the siteId of a given domain.
+     * Get the siteIds of a given domains.
      *
      * @param array $section of domains and pathes
      *
-     * @return int
+     * @return array()
      */
     public function convertDomainPathToId($sections)
     {
