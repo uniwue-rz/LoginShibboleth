@@ -1,7 +1,6 @@
 # LoginShibboleth
-
 LoginShibboleth is the Shibboleth/LDAP login plug-in for Piwik.
-
+[![Code Climate](https://codeclimate.com/github/uniwue-rz/LoginShibboleth/badges/gpa.svg)](https://codeclimate.com/github/uniwue-rz/LoginShibboleth)
 # Installation
 
 The plug-in can be directly downloaded from the Piwik Marketplace. For the last developer version (unstable), just clone this repository.     
