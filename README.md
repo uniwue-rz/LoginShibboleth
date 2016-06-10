@@ -36,7 +36,7 @@ For Detailed Installation scenarios please check the Wiki.
 - Add caching capability
 - Finishing the Wiki
 - Have LDAP adapter as a separate plug-in
-- Make the plugin work out of the box
+- Make the plug-in work out of the box
 
 # Contribute
 If you find any bug or error in this product please fill it in github. Merge request in github will also be accepted, if suitable. For API documentation go here. Language updates can also be added. Take the `lang/en.json` as template.
