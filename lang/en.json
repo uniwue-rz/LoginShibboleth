@@ -1,6 +1,6 @@
 {
     "LoginShibboleth": {
-        "ActivateLdap": "Activate LDAP",
+        "ActivateLdap": "Activate LDAP Adapater",
         "ActivateLdapDesc": "Activates using LDAP as meta plug-in",
         "AdminGroups": "Admin Groups",
         "DeleteOldUser": "Delete Switch",
