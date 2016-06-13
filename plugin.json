@@ -1,6 +1,6 @@
 {
     "name": "ShibbolethLogin",
-    "version": "1.1.6",
+    "version": "1.1.7",
     "description": "Shibboleth Login Plugin for Piwik",
     "theme": false,
     "keywords": [
@@ -12,7 +12,7 @@
         "singlelogon"
     ],
     "license": "MIT",
-    "homepage": "https:\/\/github.com\/pouyana\/LoginShibboleth",
+    "homepage": "https:\/\/github.com\/uniwue-rz\/LoginShibboleth",
     "require": {
         "piwik": ">=2.2.0",
         "php": ">=5.3.0"
