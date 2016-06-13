@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8"/>
+    <title>API Documentation</title>
+    <meta name="author" content=""/>
+    <meta name="description" content=""/>
+
+    <link href="../css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/prism.css" rel="stylesheet" media="all"/>
+    <link href="../css/template.css" rel="stylesheet" media="all"/>
+    
+    <!--[if lt IE 9]>
+    <script src="../js/html5.js"></script>
+    <![endif]-->
+    <script src="../js/jquery-1.11.0.min.js"></script>
+    <script src="../js/ui/1.10.4/jquery-ui.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/jquery.smooth-scroll.js"></script>
+    <script src="../js/prism.min.js"></script>
+    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
+    <script type="text/javascript">
+    function loadExternalCodeSnippets() {
+        Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function (pre) {
+            var src = pre.getAttribute('data-src');
+            var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
+            var language = 'php';
+
+            var code = document.createElement('code');
+            code.className = 'language-' + language;
+
+            pre.textContent = '';
+
+            code.textContent = 'Loading…';
+
+            pre.appendChild(code);
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('GET', src, true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+
+                    if (xhr.status < 400 && xhr.responseText) {
+                        code.textContent = xhr.responseText;
+
+                        Prism.highlightElement(code);
+                    }
+                    else if (xhr.status >= 400) {
+                        code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                    }
+                    else {
+                        code.textContent = '✖ Error: File does not exist or is empty';
+                    }
+                }
+            };
+
+            xhr.send(null);
+        });
+    }
+
+    $(document).ready(function(){
+        loadExternalCodeSnippets();
+    });
+    $('#source-view').on('shown', function () {
+        loadExternalCodeSnippets();
+    })
+</script>
+
+    <link rel="shortcut icon" href="../images/favicon.ico"/>
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="../images/apple-touch-icon-114x114.png"/>
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <i class="icon-ellipsis-vertical"></i>
+            </a>
+            <a class="brand" href="../index.html">API Documentation</a>
+
+            <div class="nav-collapse">
+                <ul class="nav pull-right">
+                                        <li class="dropdown">
+                        <a href="../index.html" class="dropdown-toggle" data-toggle="dropdown">
+                            API Documentation <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                                                        <li><a href="../namespaces/Piwik.html">\Piwik</a></li>
+                                                    </ul>
+                    </li>
+                                        <li class="dropdown" id="charts-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Charts <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../graphs/class.html">
+                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown" id="reports-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Reports <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../reports/errors.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">2</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/markers.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">0</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/deprecated.html">
+                                                                                                            <i class="icon-list-alt"></i>&#160;Deprecated <span class="label label-info pull-right">0</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--<div class="go_to_top">-->
+    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
+    <!--</div>-->
+</div>
+
+<div id="___" class="container-fluid">
+        <section class="row-fluid">
+        <div class="span2 sidebar">
+                                <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-51021028"></a>
+                                <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
+            </div>
+            <div id="namespace-51021028" class="accordion-body collapse in">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1929343344"></a>
+                                <a href="../namespaces/Piwik.html" style="margin-left: 30px; padding-left: 0">Piwik</a>
+            </div>
+            <div id="namespace-1929343344" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1971890894"></a>
+                                <a href="../namespaces/Piwik.Plugins.html" style="margin-left: 30px; padding-left: 0">Plugins</a>
+            </div>
+            <div id="namespace-1971890894" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-364447836"></a>
+                                <a href="../namespaces/Piwik.Plugins.LoginShibboleth.html" style="margin-left: 30px; padding-left: 0">LoginShibboleth</a>
+            </div>
+            <div id="namespace-364447836" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-208315602"></a>
+                                <a href="../namespaces/Piwik.Plugins.LoginShibboleth.tests.html" style="margin-left: 30px; padding-left: 0">tests</a>
+            </div>
+            <div id="namespace-208315602" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/Piwik.Plugins.LoginShibboleth.tests.LdapAdapaterTest.html">LdapAdapaterTest</a></li>
+                                                    <li class="class"><a href="../classes/Piwik.Plugins.LoginShibboleth.tests.ShibbolethAdapterTest.html">ShibbolethAdapterTest</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/Piwik.Plugins.LoginShibboleth.Adapter.html">Adapter</a></li>
+                                                    <li class="class"><a href="../classes/Piwik.Plugins.LoginShibboleth.API.html">API</a></li>
+                                                    <li class="class"><a href="../classes/Piwik.Plugins.LoginShibboleth.Config.html">Config</a></li>
+                                                    <li class="class"><a href="../classes/Piwik.Plugins.LoginShibboleth.Controller.html">Controller</a></li>
+                                                    <li class="class"><a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html">LdapAdapter</a></li>
+                                                    <li class="class"><a href="../classes/Piwik.Plugins.LoginShibboleth.LoginShibboleth.html">LoginShibboleth</a></li>
+                                                    <li class="class"><a href="../classes/Piwik.Plugins.LoginShibboleth.LoginShibbolethAuth.html">LoginShibbolethAuth</a></li>
+                                                    <li class="class"><a href="../classes/Piwik.Plugins.LoginShibboleth.LoginShibbolethUser.html">LoginShibbolethUser</a></li>
+                                                    <li class="class"><a href="../classes/Piwik.Plugins.LoginShibboleth.Menu.html">Menu</a></li>
+                                                    <li class="class"><a href="../classes/Piwik.Plugins.LoginShibboleth.ShibbolethAdapter.html">ShibbolethAdapter</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+    </section>
+    <section class="row-fluid">
+        <div class="span10 offset2">
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <nav>
+                                                <a href="../namespaces/Piwik.Plugins.LoginShibboleth.html">\Piwik\Plugins\LoginShibboleth</a> <i class="icon-level-up"></i>
+                                            </nav>
+                    <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
+
+                    <h1><small>\Piwik\Plugins\LoginShibboleth</small>LdapAdapter</h1>
+                    <p><em>LdapAdapter is the LDAP data retrieval adapter.</em></p>
+                    <p>It handles all the LDAP connections of the plug-in to LDAP server.
+Settings are read from the Piwik config file. More LDAP functionalities can be added here if needed.
+before going productive, test the functionalities with test suites available.</p>
+                    
+                                        
+                    <section id="summary">
+                        <h2>Summary</h2>
+                        <section class="row-fluid heading">
+                            <section class="span4">
+                                <a href="#methods">Methods</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#properties">Properties</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#constants">Constants</a>
+                            </section>
+                        </section>
+                        <section class="row-fluid public">
+                            <section class="span4">
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#method___construct" class="">__construct()</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#method_checkConnection" class="">checkConnection()</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#method_checkBind" class="">checkBind()</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#method_searchLdap" class="">searchLdap()</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#method_getGenericFilterAttr" class="">getGenericFilterAttr()</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#method_getViewFilterAttr" class="">getViewFilterAttr()</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#method_getAdminFilterAttr" class="">getAdminFilterAttr()</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#method_getManagedUrls" class="">getManagedUrls()</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#method_getUserViewUrls" class="">getUserViewUrls()</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#method_getUserAdminUrls" class="">getUserAdminUrls()</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#method_convertFilter" class="">convertFilter()</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#method_convertAttrs" class="">convertAttrs()</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#method_getUserSuperUserStatus" class="">getUserSuperUserStatus()</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#method_getUserProperty" class="">getUserProperty()</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#method_getMail" class="">getMail()</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#method_getGroupUrl" class="">getGroupUrl()</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#method_getAlias" class="">getAlias()</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#method_getUserInfo" class="">getUserInfo()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No public properties found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No constants found</em>
+                                                            </section>
+                        </section>
+                        <section class="row-fluid protected">
+                            <section class="span4">
+                                                                    <em>No protected methods found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No protected properties found</em>
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                        <section class="row-fluid private">
+                            <section class="span4">
+                                                                    <em>No private methods found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#property_username" class="">$username</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#property_password" class="">$password</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#property_dn" class="">$dn</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#property_host" class="">$host</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#property_port" class="">$port</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#property_active" class="">$active</a><br />
+                                                                    <a href="../classes/Piwik.Plugins.LoginShibboleth.LdapAdapter.html#property_activeData" class="">$activeData</a><br />
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                    </section>
+                </div>
+                <aside class="span4 detailsbar">
+                                        
+                    
+                    <dl>
+                        <dt>File</dt>
+                            <dd><a href="../files/LdapAdapter.html"><div class="path-wrapper">LdapAdapter.php</div></a></dd>
+                                                <dt>Package</dt>
+                            <dd><div class="namespace-wrapper">Default</div></dd>
+                                                <dt>Class hierarchy</dt>
+                            <dd class="hierarchy">
+                                                                                                                                                                    <div class="namespace-wrapper">\Piwik\Plugins\LoginShibboleth\LdapAdapter</div>
+                            </dd>
+
+                        
+                        
+                        
+                        
+                                                                        </dl>
+                    <h2>Tags</h2>
+                    <table class="table table-condensed">
+                                            <tr>
+                            <th>
+                                author
+                            </th>
+                            <td>
+                                                                    <p>Pouyan Azari <a href="mailto:pouyan.azari@uni-wuerzburg.de">pouyan.azari@uni-wuerzburg.de</a></p>
+                                                            </td>
+                        </tr>
+                                            <tr>
+                            <th>
+                                license
+                            </th>
+                            <td>
+                                                                    <p>MIT</p>
+                                                            </td>
+                        </tr>
+                                            <tr>
+                            <th>
+                                copyright
+                            </th>
+                            <td>
+                                                                    <p>2014-2016 University of Wuerzburg</p>
+                                                                    <p>2014-2016 Pouyan Azari</p>
+                                                            </td>
+                        </tr>
+                                        </table>
+                </aside>
+            </div>
+
+                        
+                                    <a id="properties" name="properties"></a>
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <h2>Properties</h2>
+                </div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_username" name="property_username" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$username</h3>
+                <pre class="signature">$username : </pre>
+                <p><em>Placeholder for LDAP username.</em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_password" name="property_password" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$password</h3>
+                <pre class="signature">$password : </pre>
+                <p><em>Placeholder for LDAP password.</em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_dn" name="property_dn" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$dn</h3>
+                <pre class="signature">$dn : </pre>
+                <p><em>Placeholder for LDAP Distinguished Name.</em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_host" name="property_host" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$host</h3>
+                <pre class="signature">$host : </pre>
+                <p><em>Placeholder for LDAP Host.</em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_port" name="property_port" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$port</h3>
+                <pre class="signature">$port : </pre>
+                <p><em>Placeholder for LDAP Port.</em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_active" name="property_active" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$active</h3>
+                <pre class="signature">$active : </pre>
+                <p><em>Placeholder for LDAP Active.</em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_activeData" name="property_activeData" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$activeData</h3>
+                <pre class="signature">$activeData : </pre>
+                <p><em>Placeholder for LDAP Active Data sources.</em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                            
+                                    <a id="methods" name="methods"></a>
+            <div class="row-fluid">
+                <div class="span8 content class"><h2>Methods</h2></div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method___construct" name="method___construct" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">__construct()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">__construct() </pre>
+                <p><em>Initializer.</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_checkConnection" name="method_checkConnection" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">checkConnection()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">checkConnection() : boolean</pre>
+                <p><em>Checks the connection at the Settings.</em></p>
+                
+
+                
+                                    <h4>Throws</h4>
+                    <dl>
+                                                    <dt>\Exception</dt>
+                            <dd></dd>
+                                                                    </dl>
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_checkBind" name="method_checkBind" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">checkBind()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">checkBind() : boolean</pre>
+                <p><em>Checks if the LDAP can bind.</em></p>
+                
+
+                
+                                    <h4>Throws</h4>
+                    <dl>
+                                                    <dt>\Exception</dt>
+                            <dd></dd>
+                                                                    </dl>
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_searchLdap" name="method_searchLdap" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">searchLdap()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">searchLdap(string  <span class="argument">$filter</span>,   <span class="argument">$attrs</span>, string  <span class="argument">$dn</span>) : array</pre>
+                <p><em>Search LDAP Abstract.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$filter </td>
+                                <td><p>Filter for the LDAP query</p></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$attrs </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$dn </td>
+                                <td><p>Distinguished Names to search in</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    array
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getGenericFilterAttr" name="method_getGenericFilterAttr" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getGenericFilterAttr()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getGenericFilterAttr(string  <span class="argument">$username</span>, string  <span class="argument">$type = &#039;&#039;</span>, string  <span class="argument">$filString = false</span>, string  <span class="argument">$attString = false</span>, string  <span class="argument">$sep = false</span>, boolean  <span class="argument">$lActive = false</span>, array  <span class="argument">$lData = array()</span>) : array</pre>
+                <p><em>Generic function for the LDAP filter and attributes.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$username </td>
+                                <td><p>The username from Shibboleth</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$type </td>
+                                <td><p>The Type of the filterAttr (View or Admin)</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$filString </td>
+                                <td><p>The filter placeholder string</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$attString </td>
+                                <td><p>The attributes placeholder string</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$sep </td>
+                                <td><p>The Separator string</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>boolean</td>
+                                <td>$lActive </td>
+                                <td><p>The Flag for LDAP:</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>array</td>
+                                <td>$lData </td>
+                                <td><p>The Array containing active LDAP component (View, SuperUser, Admin)</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    array
+                                            &mdash; <p>ex. <code>array("filter"=&gt;string, "attrs"=&gt;array(domainPlaceholder, pathPlaceholder))</code></p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getViewFilterAttr" name="method_getViewFilterAttr" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getViewFilterAttr()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getViewFilterAttr(string  <span class="argument">$username</span>, string  <span class="argument">$filString = false</span>, string  <span class="argument">$attString = false</span>, string  <span class="argument">$sep = false</span>, boolean  <span class="argument">$lActive = false</span>, array  <span class="argument">$lData = array()</span>) : array</pre>
+                <p><em>Returns the View LDAP filter and attributes.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$username </td>
+                                <td><p>The username from Shibboleth</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$filString </td>
+                                <td><p>The filter placeholder string</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$attString </td>
+                                <td><p>The attributes placeholder string</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$sep </td>
+                                <td><p>The Separator string</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>boolean</td>
+                                <td>$lActive </td>
+                                <td><p>The Flag for LDAP</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>array</td>
+                                <td>$lData </td>
+                                <td><p>The Array containing active LDAP component (View, SuperUser, Admin)</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    array
+                                            &mdash; <p>ex. <code>array("filter"=&gt;string, "attrs"=&gt;array(domainPlaceholder, pathPlaceholder))</code></p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getAdminFilterAttr" name="method_getAdminFilterAttr" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getAdminFilterAttr()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getAdminFilterAttr(string  <span class="argument">$username</span>, string  <span class="argument">$filString = false</span>, string  <span class="argument">$attString = false</span>, string  <span class="argument">$sep = false</span>, boolean  <span class="argument">$lActive = false</span>, array  <span class="argument">$lData = array()</span>) : array</pre>
+                <p><em>Returns the Admin filters and attributes for LDAP.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$username </td>
+                                <td><p>The username from Shibboleth</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$filString </td>
+                                <td><p>The filter placeholder string</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$attString </td>
+                                <td><p>The attributes placeholder string</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$sep </td>
+                                <td><p>The Separator string</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>boolean</td>
+                                <td>$lActive </td>
+                                <td><p>The Flag for LDAP</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>array</td>
+                                <td>$lData </td>
+                                <td><p>The Array containing active LDAP component (View, SuperUser, Admin)</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    array
+                                            &mdash; <p>ex. <code>array("filter"=&gt;string, "attrs"=&gt;array(domainPlaceholder, pathPlaceholder))</code></p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getManagedUrls" name="method_getManagedUrls" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getManagedUrls()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getManagedUrls(string  <span class="argument">$username</span>, string  <span class="argument">$accessType</span>, array  <span class="argument">$availableAccess = array(&#039;View&#039;, &#039;Admin&#039;)</span>) : array</pre>
+                <p><em>Returns the URL for a given user on hand the userType.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$username </td>
+                                <td><p>Username which the user typed in the login form.</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$accessType </td>
+                                <td><p>Type of the user Access (View, Admin)</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>array</td>
+                                <td>$availableAccess </td>
+                                <td><p>Array including the available access types.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    array
+                                            &mdash; <p>ex. <code>array("domain"=&gt;"www....", "path"=&gt;"/...")</code></p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getUserViewUrls" name="method_getUserViewUrls" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getUserViewUrls()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getUserViewUrls(string  <span class="argument">$username</span>) : array</pre>
+                <p><em>Returns the username&#039;s view URL according to the Setting.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$username </td>
+                                <td><p>The username from Shibboleth</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    array
+                                            &mdash; <p>ex. <code>array("domain"=&gt;"www....", "path"=&gt;"/...")</code></p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getUserAdminUrls" name="method_getUserAdminUrls" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getUserAdminUrls()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getUserAdminUrls(string  <span class="argument">$username</span>) : array</pre>
+                <p><em>Returns the username&#039;s Admin URL according to the setting.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$username </td>
+                                <td><p>The username from the Shibboleth.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    array
+                                            &mdash; <p>ex. <code>array("domain"=&gt;"www....", "path"=&gt;"/...")</code></p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_convertFilter" name="method_convertFilter" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">convertFilter()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">convertFilter(string  <span class="argument">$filter</span>, string  <span class="argument">$username</span>, string  <span class="argument">$placeholder</span>) : string</pre>
+                <p><em>Converts filter to LDAP usable values.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$filter </td>
+                                <td><p>The filter template string from the Config</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$username </td>
+                                <td><p>The username of the given user from Shibboleth</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$placeholder </td>
+                                <td><p>The placeholder to be replaced.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_convertAttrs" name="method_convertAttrs" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">convertAttrs()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">convertAttrs(string  <span class="argument">$delimiter</span>, string  <span class="argument">$attrs</span>) : array</pre>
+                <p><em>Converts Attributes of the Config to LDAP usable values.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$delimiter </td>
+                                <td><p>The delimiter to be changed</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$attrs </td>
+                                <td><p>The attributes from Config</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    array
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getUserSuperUserStatus" name="method_getUserSuperUserStatus" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getUserSuperUserStatus()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getUserSuperUserStatus(string  <span class="argument">$username</span>) : boolean</pre>
+                <p><em>Returns the superUser status of the user. If it is set that the user
+SuperUser status should be checked also by LDAP.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$username </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getUserProperty" name="method_getUserProperty" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getUserProperty()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getUserProperty(string  <span class="argument">$username</span>) : array</pre>
+                <p><em>Search for the users properties in the LDAP according to the settings.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$username </td>
+                                <td><p>(LDAP username of the user)</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    array
+                                            &mdash; <p>ex `array(&quot;view&quot;=&gt;array(),&quot;admin&quot;=&gt;array(),&quot;superuser&quot;=&gt;false)``</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getMail" name="method_getMail" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getMail()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getMail(string  <span class="argument">$username = &#039;&#039;</span>) : string</pre>
+                <p><em>Returns user mail from LDAP.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$username </td>
+                                <td><p>Username of the given user from Shibboleth.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getGroupUrl" name="method_getGroupUrl" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getGroupUrl()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getGroupUrl(string  <span class="argument">$group = false</span>) : string</pre>
+                <p><em>Returns the url of the given group on hand the setting.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$group </td>
+                                <td><p>The group name.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getAlias" name="method_getAlias" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getAlias()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getAlias(string  <span class="argument">$username = &#039;&#039;</span>) : string</pre>
+                <p><em>Returns user alias from LDAP.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$username </td>
+                                <td><p>Username of the given user from Shibboleth.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getUserInfo" name="method_getUserInfo" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getUserInfo()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getUserInfo(string  <span class="argument">$username = &#039;&#039;</span>) : array</pre>
+                <p><em>Returns the User information.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$username </td>
+                                <td><p>Username of the user from Shibboleth</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    array
+                                            &mdash; <p>ex. <code>array("username"=&gt;"", "email"=&gt;, "alias"=&gt;"")</code></p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                                    </div>
+    </section>
+
+    <div id="source-view" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="source-view-label" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="source-view-label">LdapAdapter.php</h3>
+        </div>
+        <div class="modal-body">
+            <pre data-src="../files/LdapAdapter.php.txt" class="language-php line-numbers"></pre>
+        </div>
+    </div>
+
+    <footer class="row-fluid">
+        <section class="span10 offset2">
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <section class="row-fluid footer-sections">
+                        <section class="span4">
+                                                        <h1><i class="icon-code"></i></h1>
+                            <div>
+                                <ul>
+                                                                            <li><a href="../namespaces/Piwik.html">\Piwik</a></li>
+                                                                    </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-bar-chart"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../graphs/class.html">Class Hierarchy Diagram</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-pushpin"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../reports/errors.html">Errors</a></li>
+                                    <li><a href="../reports/markers.html">Markers</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                    </section>
+                </section>
+            </section>
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <hr />
+                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
+                    on June 13th, 2016 at 10:36.
+                </section>
+            </section>
+        </section>
+    </footer>
+</div>
+
+</body>
+</html>
