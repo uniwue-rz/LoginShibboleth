@@ -31,7 +31,7 @@ class Menu extends \Piwik\Plugin\Menu
     public function configureAdminMenu(MenuAdmin $menu)
     {
         if (Piwik::hasUserSuperUserAccess()) {
-            if (Version::VERSION > 3) {
+            if (Version::VERSION >= 3) {
                 $menu->addSystemItem('Login Shibboleth', $this->urlForAction('admin'), $order = 30);
             } else {
                 $menu->addSettingsItem('Login Shibboleth', $this->urlForAction('admin'), $order = 30);
