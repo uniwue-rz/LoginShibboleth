@@ -8,6 +8,7 @@ namespace Piwik\Plugins\LoginShibboleth;
 
 use Piwik\Menu\MenuAdmin;
 use Piwik\Piwik;
+use Piwik\Version;
 
 /**
  * The Menu configuration of the Plug-in.
@@ -30,7 +31,11 @@ class Menu extends \Piwik\Plugin\Menu
     public function configureAdminMenu(MenuAdmin $menu)
     {
         if (Piwik::hasUserSuperUserAccess()) {
-            $menu->addSettingsItem('Login Shibboleth', $this->urlForAction('admin'), $order = 30);
+            if (Version::VERSION > 3) {
+                $menu->addSystemItem('Login Shibboleth', $this->urlForAction('admin'), $order = 30);
+            } else {
+                $menu->addSettingsItem('Login Shibboleth', $this->urlForAction('admin'), $order = 30);
+            }
         }
     }
 }
