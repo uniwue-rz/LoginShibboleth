@@ -8,6 +8,8 @@ namespace Piwik\Plugins\LoginShibboleth;
 
 use Piwik\AuthResult;
 use Piwik\Plugins\LoginShibboleth\LoginShibbolethUser as UserModel;
+use Piwik\Plugins\Login\SessionInitializer;
+use Piwik\Plugins\UsersManager\Model as PiwikUserModel;
 use Piwik\Container\StaticContainer;
 use Piwik\Piwik;
 
@@ -51,6 +53,13 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
     protected $token_auth;
 
     /**
+     * Placeholder for the Hash Password.
+     *
+     * @var
+     */
+    protected $hashedPassword;
+
+    /**
      * Initiator.
      */
     public function __construct()
@@ -84,64 +93,63 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
             $code = $user['superuser_access'] ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
 
             return new AuthResult($code, $this->login, $this->token_auth);
-        }
-        if (is_null($this->login)) {
-            $model = new UserModel();
-            $user = $model->getUserByTokenAuth($this->token_auth);
-            if (!empty($user['login'])) {
-                $code = $user['superuser_access'] ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
-
-                return new AuthResult($code, $user['login'], $this->token_auth);
-            }
+        } elseif (!empty($this->hashedPassword)) {
+            return $this->authenticateWithPassword($this->login, $this->getTokenAuthSecret());
+        } elseif (is_null($this->login)) {
+            return $this->authenticateWithToken($this->token_auth);
         } elseif (!empty($this->login)) {
-            if ($this->login != 'anonymous') {
-                $model = new UserModel();
-                $login = $this->login;
-                $user = $model->getUser($login);
-                $userToken = null;
-                if (!empty($user['token_auth'])) {
-                    $userToken = $user['token_auth'];
-                }
-                if (!empty($userToken)
-                    && (($this->getHashTokenAuth($login, $userToken) === $this->token_auth)
-                        || $userToken === $this->token_auth)
-                ) {
-                    $this->setTokenAuth($userToken);
-                    $code = !empty($user['superuser_access']) ?
-                              AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
-
-                    return new AuthResult($code, $login, $userToken);
-                }
-            }
+            return $this->authenticateWithTokenOrHashToken($this->token_auth, $this->login);
         }
 
         return new AuthResult(AuthResult::FAILURE, $this->login, $this->token_auth);
     }
 
-    /**
-     * Returns the secret used to calculate a user's token auth.
-     *
-     * @return string
-     *
-     * @throws Exception if the token auth cannot be calculated at the current time.
-     */
-    public function getTokenAuthSecret()
+    private function authenticateWithPassword($login, $passwordHash)
     {
-        $user = $this->login;
-        if (empty($user)) {
-            throw new Exception("Cannot find user '{$this->login}'");
+        $piwikUserModel = new PiwikUserModel();
+        $user = $piwikUserModel->getUser($login);
+        if (!empty($user['login']) && $user['password'] === $passwordHash) {
+            return $this->authenticationSuccess($user);
         }
 
-        return $user['password'];
+        return new AuthResult(AuthResult::FAILURE, $login, null);
     }
 
-    /**
-     * Accessor to set password.
-     *
-     * @param string $password password
-     */
-    public function setPassword($password)
+    private function authenticateWithToken($token)
     {
-        $this->password = $password;
+        $piwikUserModel = new PiwikUserModel();
+        $user = $piwikUserModel->getUser($login);
+
+        if (!empty($user['login'])) {
+            return $this->authenticationSuccess($user);
+        }
+
+        return new AuthResult(AuthResult::FAILURE, null, $token);
+    }
+
+    private function authenticateWithTokenOrHashToken($token, $login)
+    {
+        $piwikUserModel = new PiwikUserModel();
+        $user = $piwikUserModel->getUser($login);
+
+        if (!empty($user['token_auth'])
+            // authenticate either with the token or the "hash token"
+            && ((SessionInitializer::getHashTokenAuth($login, $user['token_auth']) === $token)
+                || $user['token_auth'] === $token)
+        ) {
+            return $this->authenticationSuccess($user);
+        }
+
+        return new AuthResult(AuthResult::FAILURE, $login, $token);
+    }
+
+    private function authenticationSuccess(array $user)
+    {
+        $this->setTokenAuth($user['token_auth']);
+
+        $isSuperUser = (int) $user['superuser_access'];
+        $code = $isSuperUser ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
+
+        return new AuthResult($code, $user['login'], $user['token_auth']);
     }
 }
