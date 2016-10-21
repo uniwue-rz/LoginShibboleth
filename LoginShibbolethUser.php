@@ -64,7 +64,7 @@ class LoginShibbolethUser extends Model
         $viewSiteIds = array();
         $exceptions = array();
         $this->isAdded = false;
-        $this->mergeData($username = '');
+        $this->mergeData($username);
 
         $login = $this->userInfo['username'];
 

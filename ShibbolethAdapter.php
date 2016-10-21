@@ -147,53 +147,64 @@ class ShibbolethAdapter extends Adapter
         if ($username == '') {
             $username == $this->getServerVar($this->loginKey);
         }
+        $serverGroups = '';
         if ($accessType == 'View') {
-            $serverGroups = Config::getShibbolethViewGroups();
-            $ldapActive = 'shibboleth_view_groups_ldap_active';
-            $option = Config::getShibbolethViewGroupOption();
-            $dn = Config::getShibbolethViewGroupLdapDN();
-            $attr = explode($this->separator, Config::getShibbolethViewGroupLdapAttr());
+            if (Config::getShibbolethViewGroups() !== '') {
+                $serverGroups = Config::getShibbolethViewGroups();
+                $ldapActive = 'shibboleth_view_groups_ldap_active';
+                $option = Config::getShibbolethViewGroupOption();
+                $dn = Config::getShibbolethViewGroupLdapDN();
+                $attr = explode($this->separator, Config::getShibbolethViewGroupLdapAttr());
+            }
         }
         if ($accessType == 'Admin') {
-            $serverGroups = Config::getShibbolethAdminGroups();
-            $ldapActive = 'shibboleth_admin_groups_ldap_active';
-            $option = Config::getShibbolethAdminGroupOption();
-            $dn = Config::getShibbolethAdminGroupLdapDN();
-            $attr = explode($this->separator, Config::getShibbolethAdminGroupLdapAttr());
+            if (Config::getShibbolethAdminGroups() !== '') {
+                $serverGroups = Config::getShibbolethAdminGroups();
+                $ldapActive = 'shibboleth_admin_groups_ldap_active';
+                $option = Config::getShibbolethAdminGroupOption();
+                $dn = Config::getShibbolethAdminGroupLdapDN();
+                $attr = explode($this->separator, Config::getShibbolethAdminGroupLdapAttr());
+            }
         }
         if (!in_array($accessType, array('Admin', 'View'))) {
             throw new \Exception("At this moment only 'Admin' and 'View' access types are available");
         }
         $urls = array();
-        $userGroupsArray = explode($this->separator, $this->getServerVar($this->groupKey));
-        $serverGroupsArray = explode($this->separator, $serverGroups);
-        foreach ($serverGroupsArray as $g) {
-            foreach ($userGroupsArray as $ug) {
-                $a = preg_match("/$g/", $ug, $result);
-                if (sizeof($result) > 0) {
-                    if ($option == $ldapActive) {
-                        if ($dn != '' && $attr != '') {
-                            $la = new LdapAdapter();
-                            $cnArray = explode(',', $ug);
-                            $filter = '('.$cnArray[0].')';
-                            $ldapResult = $la->searchLdap($filter, $attr, $dn);
-                            if ($ldapResult['count'] > 0) {
-                                unset($ldapResult['count']);
-                                foreach ($ldapResult as $r) {
-                                    if (array_key_exists($attr[0], $r)) {
-                                        $tmpUrl = array('domain' => '', 'path' => '');
-                                        $tmpUrl['domain'] = $r[$attr[0]][0];
-                                        array_push($urls, $tmpUrl);
+        if ($serverGroups !== '') {
+            $userGroupsArray = explode($this->separator, $this->getServerVar($this->groupKey));
+            $serverGroupsArray = explode($this->separator, $serverGroups);
+            foreach ($serverGroupsArray as $g) {
+                foreach ($userGroupsArray as $ug) {
+                    $a = preg_match("/$g/", $ug, $result);
+                    if (sizeof($result) > 0) {
+                        if ($option == $ldapActive) {
+                            if (Config::isLdapActive()) {
+                                if ($dn != '' && $attr != '') {
+                                    $la = new LdapAdapter();
+                                    $cnArray = explode(',', $ug);
+                                    $filter = '('.$cnArray[0].')';
+                                    $ldapResult = $la->searchLdap($filter, $attr, $dn);
+                                    if ($ldapResult['count'] > 0) {
+                                        unset($ldapResult['count']);
+                                        foreach ($ldapResult as $r) {
+                                            if (array_key_exists($attr[0], $r)) {
+                                                $tmpUrl = array('domain' => '', 'path' => '');
+                                                $tmpUrl['domain'] = $r[$attr[0]][0];
+                                                array_push($urls, $tmpUrl);
+                                            }
+                                        }
                                     }
+                                } else {
+                                    throw new \Exception('The Attribute or DN for LDAP group search should be set.');
                                 }
+                            } else {
+                                throw new \Exception('You set to get Information from LDAP, but LDAP is not active.');
                             }
                         } else {
-                            throw new \Exception('The Attribute or DN for LDAP group search should be set.');
+                            $tmpUrl = array('domain' => '', 'path' => '');
+                            $tmpUrl['domain'] = $result[1];
+                            array_push($urls, $tmpUrl);
                         }
-                    } else {
-                        $tmpUrl = array('domain' => '', 'path' => '');
-                        $tmpUrl['domain'] = $result[1];
-                        array_push($urls, $tmpUrl);
                     }
                 }
             }
