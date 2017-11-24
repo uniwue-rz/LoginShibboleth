@@ -17,10 +17,6 @@ use Exception;
  * If this plug-in should have any other API related functions, they should be added here.
  * The API is only available to the user with SuperUser access.
  *
- * @author Pouyan Azari <pouyan.azari@uni-wuerzburg.de>
- * @license MIT
- * @copyright 2014-2016 University of Wuerzburg
- * @copyright 2014-2016 Pouyan Azari
  */
 class API extends \Piwik\Plugin\API
 {
@@ -44,9 +40,7 @@ class API extends \Piwik\Plugin\API
     {
         $this->checkHttpMethodIsPost();
         Piwik::checkUserHasSuperUserAccess();
-        $data = json_decode(Common::unsanitizeInputValue($data), true);
         Config::savePluginOptions($data);
-
         return array('result' => 'success', 'message' => Piwik::translate('General_YourChangesHaveBeenSaved'));
     }
 

@@ -7,6 +7,7 @@
 namespace Piwik\Plugins\LoginShibboleth;
 
 use Piwik\Config as PiwikConfig;
+use Piwik\Container\StaticContainer;
 
 /**
  * The Config instance of the plug-in.
@@ -526,6 +527,7 @@ class Config
      */
     public static function savePluginOptions($config)
     {
+        $logger = StaticContainer::getContainer()->get('Psr\Log\LoggerInterface');
         $loginShibboleth = PiwikConfig::getInstance()->LoginShibboleth;
         foreach (self::$defaultConfig as $name => $value) {
             if (isset($config[$name])) {
@@ -534,5 +536,6 @@ class Config
         }
         PiwikConfig::getInstance()->LoginShibboleth = $loginShibboleth;
         PiwikConfig::getInstance()->forceSave();
+        $logger->info("LoginShibboleth Plugin Settings Changed");
     }
 }

@@ -6,485 +6,255 @@
 <div ng-controller="LoginShibbolethAdminController as adminController">
     <h1>{{'LoginShibboleth_Settings'|translate}}</h1> {{'LoginShibboleth_Description'|translate}}
     <br/>
+    <div piwik-form >
     <h2>{{'LoginShibboleth_GeneralSettings'|translate}}</h2>
-    <table id='shibbolethSettingsTable' class="adminTable" piwik-ajax-form submit-api-method="'LoginShibboleth.saveShibbolethConfig'" send-json-payload="true">
-
-        <tr>
-            <td>
-                <label for="logout_url">{{'LoginShibboleth_LogOutUrl'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_LogOutUrlDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.logout_url!='' %} value="{{ shibbolethConfig.logout_url }}" {%endif%} id="logout_url" name="logout_url" />
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <label for="delete_old_user">{{ 'LoginShibboleth_DeleteOldUser'|translate }}</label>
-                <br/>
-                <span class='form-description'>{{ 'LoginShibboleth_DeleteOldUserDesc'|translate }}</span>
-            </td>
-            <td>
-                <input type="checkbox" {% if shibbolethConfig.delete_old_user %} checked="checked" {% endif %} id="delete_old_user" name="delete_old_user" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h2>{{'LoginShibboleth_ShibbolethSettings'|translate}}</h2>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h3>{{'LoginShibboleth_ShibbolethKeys'|translate}}</h3>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="shibboleth_separator">{{'LoginShibboleth_ShibbolethSeparator'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_ShibbolethSeparatorDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.shibboleth_separator!='' %} value="{{ shibbolethConfig.shibboleth_separator }}" {%endif%} id="shibboleth_separator" name="shibboleth_separator" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="shibboleth_user_login">{{'LoginShibboleth_ShibbolethUserLogin'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_ShibbolethUserLoginDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.shibboleth_user_login!='' %} value="{{ shibbolethConfig.shibboleth_user_login }}" {%endif%} id="shibboleth_user_login" name="shibboleth_user_login" />
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <label for="shibboleth_user_alias">{{'LoginShibboleth_ShibbolethUserAlias'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_ShibbolethUserAliasDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.shibboleth_user_login!='' %} value="{{ shibbolethConfig.shibboleth_user_alias }}" {%endif%} id="shibboleth_user_alias" name="shibboleth_user_alias" />
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <label for="shibboleth_user_email">{{'LoginShibboleth_ShibbolethUserEmail'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_ShibbolethUserEmailDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.shibboleth_user_login!='' %} value="{{ shibbolethConfig.shibboleth_user_email }}" {%endif%} id="shibboleth_user_email" name="shibboleth_user_email" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="shibboleth_group">{{'LoginShibboleth_ShibbolethGroup'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_ShibbolethGroupDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.shibboleth_group!='' %} value="{{ shibbolethConfig.shibboleth_group}}" {%endif%} id="shibboleth_group" name="shibboleth_group" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h3>{{'LoginShibboleth_GroupsSettings'|translate}}</h3>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h6>{{'LoginShibboleth_ManualGroups'|translate}}</h6>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="shibboleth_groups_manual_active">{{ 'LoginShibboleth_ShibbolethGroupManualActive'|translate }}</label>
-                <br/>
-                <span class='form-description'>{{ 'LoginShibboleth_ShibbolethGroupManualActiveDesc'|translate }}</span>
-            </td>
-            <td>
-                <input type="checkbox" {% if shibbolethConfig.shibboleth_groups_manual_active %} checked="checked" {% endif %} id="shibboleth_groups_manual_active" name="shibboleth_groups_manual_active" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="shibboleth_groups_manual">{{'LoginShibboleth_ShibbolethGroupManual'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_ShibbolethGroupManualDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.shibboleth_groups_manual!='' %} value="{{ shibbolethConfig.shibboleth_groups_manual }}" {%endif%} id="shibboleth_groups_manual" name="shibboleth_groups_manual" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h6>{{'LoginShibboleth_ViewGroups'|translate}}</h6>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="shibboleth_view_groups">{{'LoginShibboleth_ShibbolethViewGroups'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_ShibbolethViewGroupsDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.shibboleth_view_groups!='' %} value="{{ shibbolethConfig.shibboleth_view_groups }}" {%endif%} id="shibboleth_view_groups" name="shibboleth_view_groups" />
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <label for="shibboleth_view_groups_contains_domain">{{'LoginShibboleth_ShibbolethViewGroupsContainsDomain'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_ShibbolethViewGroupsContainsDomainDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="radio" {% if shibbolethConfig.shibboleth_view_groups_option=="shibboleth_view_groups_domains_active" %} checked="checked" {% endif %} id="shibboleth_view_groups_contains_domain" name="shibboleth_view_groups_option" value="shibboleth_view_groups_domains_active"
-                />
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <label for="shibboleth_view_groups_ldap_active">{{'LoginShibboleth_ShibbolethViewGroupLdapActive'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_ShibbolethViewGroupLdapActiveDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="radio" {% if shibbolethConfig.shibboleth_view_groups_option=="shibboleth_view_groups_ldap_active" %} checked="checked" {% endif %} id="shibboleth_view_groups_ldap_active" name="shibboleth_view_groups_option" value="shibboleth_view_groups_ldap_active"
-                />
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <label for="shibboleth_view_groups_ldap_attr">{{'LoginShibboleth_ShibbolethViewGroupsLdapAttr'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_ShibbolethViewGroupsLdapAttrDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.shibboleth_view_groups_ldap_attr!='' %} value="{{ shibbolethConfig.shibboleth_view_groups_ldap_attr }}" {%endif%} id="shibboleth_view_groups_ldap_attr" name="shibboleth_view_groups_ldap_attr" />
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <label for="shibboleth_view_groups_ldap_dn">{{'LoginShibboleth_ShibbolethViewGroupsLdapDN'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_ShibbolethViewGroupsLdapDNDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.shibboleth_view_groups_ldap_dn!='' %} value="{{ shibbolethConfig.shibboleth_view_groups_ldap_dn }}" {%endif%} id="shibboleth_view_groups_ldap_dn" name="shibboleth_view_groups_ldap_dn" />
-            </td>
-        </tr>
-
-
-
-        <tr>
-            <td>
-                <h6>{{'LoginShibboleth_AdminGroups'|translate}}</h6>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="shibboleth_admin_groups">{{'LoginShibboleth_ShibbolethAdminGroups'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_ShibbolethAdminGroupsDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.shibboleth_admin_groups!='' %} value="{{ shibbolethConfig.shibboleth_admin_groups }}" {%endif%} id="shibboleth_admin_groups" name="shibboleth_admin_groups" />
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <label for="shibboleth_view_admin_contains_domain">{{'LoginShibboleth_ShibbolethAdminGroupsContainsDomain'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_ShibbolethAdminGroupsContainsDomainDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="radio" {% if shibbolethConfig.shibboleth_admin_groups_option=="shibboleth_admin_groups_domains_active" %} checked="checked" {% endif %} id="shibboleth_view_groups_contains_domain" name="shibboleth_admin_groups_option" value="shibboleth_admin_groups_domains_active"
-                />
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <label for="shibboleth_admin_groups_ldap_active">{{'LoginShibboleth_ShibbolethAdminGroupLdapActive'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_ShibbolethAdminGroupLdapActiveDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="radio" {% if shibbolethConfig.shibboleth_admin_groups_option=="shibboleth_admin_groups_ldap_active" %} checked="checked" {% endif %} id="shibboleth_admin_groups_ldap_active" name="shibboleth_admin_groups_option" value="shibboleth_admin_groups_ldap_active"
-                />
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <label for="shibboleth_admin_groups_ldap_attr">{{'LoginShibboleth_ShibbolethAdminGroupsLdapAttr'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_ShibbolethAdminGroupsLdapAttrDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.shibboleth_admin_groups_ldap_attr!='' %} value="{{ shibbolethConfig.shibboleth_admin_groups_ldap_attr }}" {%endif%} id="shibboleth_admin_groups_ldap_attr" name="shibboleth_admin_groups_ldap_attr" />
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <label for="shibboleth_admin_groups_ldap_dn">{{'LoginShibboleth_ShibbolethAdminGroupsLdapDN'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_ShibbolethAdminGroupsLdapDNDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.shibboleth_admin_groups_ldap_dn!='' %} value="{{ shibbolethConfig.shibboleth_admin_groups_ldap_dn }}" {%endif%} id="shibboleth_admin_groups_ldap_dn" name="shibboleth_admin_groups_ldap_dn" />
-            </td>
-        </tr>
-
-
-        <tr>
-            <td>
-                <h6>{{'LoginShibboleth_SuperUserGroups'|translate}}</h6>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="shibboleth_superuser_groups">{{'LoginShibboleth_ShibbolethSuperUserGroups'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_ShibbolethSuperUserGroupsDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.shibboleth_superuser_groups!='' %} value="{{ shibbolethConfig.shibboleth_superuser_groups }}" {%endif%} id="shibboleth_superuser_groups" name="shibboleth_superuser_groups" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h2>{{'LoginShibboleth_LdapSettings'|translate}}</h2>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h3>{{'LoginShibboleth_LdapBasic'|translate}}</h3>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="ldap_active">{{ 'LoginShibboleth_ActivateLdap'|translate }}</label>
-                <br/>
-                <span class='form-description'>{{ 'LoginShibboleth_ActivateLdapDesc'|translate }}</span>
-            </td>
-            <td>
-                <input type="checkbox" {% if shibbolethConfig.ldap_active %} checked="checked" {% endif %} id="ldap_active" name="ldap_active" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="ldap_user_name">{{'LoginShibboleth_LdapUserName'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_LdapUserNameDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.ldap_user_name!='' %} value="{{ shibbolethConfig.ldap_user_name }}" {%endif%} id="ldap_user_name" name="ldap_user_name" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="ldap_password">{{'LoginShibboleth_LdapPassword'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_LdapPasswordDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="password" {% if shibbolethConfig.ldap_password!='' %} value="{{ shibbolethConfig.ldap_password }}" {%endif%} id="ldap_password" name="ldap_password" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="ldap_host">{{'LoginShibboleth_LdapHost'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_LdapHostDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.ldap_host!='' %} value="{{ shibbolethConfig.ldap_host }}" {%endif%} id="ldap_host" name="ldap_host" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="ldap_port">{{'LoginShibboleth_LdapPort'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_LdapPortDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.ldap_port!='' %} value="{{ shibbolethConfig.ldap_port }}" {%endif%} id="ldap_port" name="ldap_port" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="ldap_user_data_active">{{ 'LoginShibboleth_LdapUserDataActive'|translate }}</label>
-                <br/>
-                <span class='form-description'>{{ 'LoginShibboleth_LdapUserDataActiveDesc'|translate }}</span>
-            </td>
-            <td>
-                <input type="checkbox" {% if shibbolethConfig.ldap_user_data_active %} checked="checked" {% endif %} id="ldap_user_data_active" name="ldap_user_data_active" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h3>{{'LoginShibboleth_LdapUserData'|translate}}</h3>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="ldap_dn_user">{{'LoginShibboleth_LdapDNForUserSearch'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_LdapDNForUserSearchDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.ldap_dn_user!='' %} value="{{ shibbolethConfig.ldap_dn_user }}" {%endif%} id="ldap_dn_user" name="ldap_dn_user" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="ldap_user_username">{{'LoginShibboleth_LdapUserUserName'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_LdapUserUserNameDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.ldap_user_username!='' %} value="{{ shibbolethConfig.ldap_user_username }}" {%endif%} id="ldap_user_username" name="ldap_user_username" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="ldap_user_alias">{{'LoginShibboleth_LdapUserAlias'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_LdapUserAliasDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.ldap_user_alias!='' %} value="{{ shibbolethConfig.ldap_user_alias }}" {%endif%} id="ldap_user_alias" name="ldap_user_alias" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="ldap_user_email">{{'LoginShibboleth_LdapUserEmail'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_LdapUserEmailDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.ldap_user_email!='' %} value="{{ shibbolethConfig.ldap_user_email }}" {%endif%} id="ldap_user_email" name="ldap_user_email" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h3>{{'LoginShibboleth_LdapAccessData'|translate}}</h3>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="ldap_dn_access">{{'LoginShibboleth_LdapDNForAccessSearch'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_LdapDNForAccessSearchDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.ldap_dn_access!='' %} value="{{ shibbolethConfig.ldap_dn_access }}" {%endif%} id="ldap_dn_access" name="ldap_dn_access" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="ldap_active_data">{{'LoginShibboleth_LdapActiveData'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_LdapActiveDataDesc'|translate}}</span>
-            </td>
-            <td>
-                <select id="ldap_active_data" name="ldap_active_data" multiple>
-                    <option value='' {% if '' in shibbolethConfig.ldap_active_data %} selected="selected" {%endif%}>{{'LoginShibboleth_Nothing'|translate}}</option>
-                    <option value="ldapView" {% if 'ldapView' in shibbolethConfig.ldap_active_data %} selected="selected" {%endif%}>{{'LoginShibboleth_LdapView'|translate}}</option>
-                    <option value="ldapAdmin" {% if 'ldapAdmin' in shibbolethConfig.ldap_active_data %} selected="selected" {%endif%}>{{'LoginShibboleth_LdapAdmin'|translate}}</option>
-                    <option value="ldapSuperUser" {% if 'ldapSuperUser' in shibbolethConfig.ldap_active_data %} selected="selected" {%endif%}>{{'LoginShibboleth_LdapSuperUser'|translate}}</option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="ldap_view_filter">{{'LoginShibboleth_LdapViewFilter'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_LdapViewFilterDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.ldap_view_filter!='' %} value="{{ shibbolethConfig.ldap_view_filter }}" {%endif%} id="ldap_view_filter" name="ldap_view_filter" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="ldap_view_attr">{{'LoginShibboleth_LdapViewAttr'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_LdapViewAttrDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.ldap_view_attr!='' %} value="{{ shibbolethConfig.ldap_view_attr }}" {%endif%} id="ldap_view_attr" name="ldap_view_attr" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="ldap_admin_filter">{{'LoginShibboleth_LdapAdminFilter'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_LdapAdminFilterDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.ldap_admin_filter!='' %} value="{{ shibbolethConfig.ldap_admin_filter }}" {%endif%} id="ldap_admin_filter" name="ldap_admin_filter" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="ldap_admin_attr">{{'LoginShibboleth_LdapAdminAttr'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_LdapAdminAttrDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.ldap_admin_attr!='' %} value="{{ shibbolethConfig.ldap_admin_attr }}" {%endif%} id="ldap_admin_attr" name="ldap_admin_attr" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="ldap_superuser_filter">{{'LoginShibboleth_LdapSuperUserFilter'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_LdapSuperUserFilterDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.ldap_superuser_filter!='' %} value="{{ shibbolethConfig.ldap_superuser_filter }}" {%endif%} id="ldap_superuser_filter" name="ldap_superuser_filter" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="ldap_superuser_attr">{{'LoginShibboleth_LdapSuperUserAttr'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_LdapSuperUserAttrDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.ldap_superuser_attr!='' %} value="{{ shibbolethConfig.ldap_superuser_attr }}" {%endif%} id="ldap_superuser_attr" name="ldap_superuser_attr" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="ldap_superuser_value">{{'LoginShibboleth_LdapSuperUserValue'|translate}}</label>
-                <br/>
-                <span class='form-description'>{{'LoginShibboleth_LdapSuperUserValueDesc'|translate}}</span>
-            </td>
-            <td>
-                <input type="text" {% if shibbolethConfig.ldap_superuser_value!='' %} value="{{ shibbolethConfig.ldap_superuser_value }}" {%endif%} id="ldap_superuser_value" name="ldap_superuser_value" />
-            </td>
-        </tr>
-        <tr>
-            <td align="left">
-                <input class="submit" type="submit" value="{{ 'General_Save'|translate }}" ng-disabled="ajaxForm.isSubmitting" />
-            </td>
-            <td> </td>
-        </tr>
-    </table>
+        <div piwik-field uicontrol="radio" name="primary_adapter"
+            ng-model="adminController.data.primary_adapter"
+            title="{{'LoginShibboleth_PrimaryAdapter'|translate}}"
+            options='{shibboleth: "{{'LoginShibboleth_Shibboleth'|translate}}", ldap: "{{'LoginShibboleth_Ldap'|translate}}" }'
+            {% if shibbolethConfig.primary_adapter != '' %} value="{{ shibbolethConfig.primary_adapter }}" {%endif%}
+            inline-help="{{'LoginShibboleth_PrimaryAdapterDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="logout_url"
+            ng-model="adminController.data.logout_url"
+            title="{{'LoginShibboleth_LogOutUrl'|translate}}"
+            {% if shibbolethConfig.logout_url != '' %} value="{{ shibbolethConfig.logout_url }}" {%endif%}
+            inline-help="{{'LoginShibboleth_LogOutUrlDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="checkbox" name="delete_old_user"
+            ng-model="adminController.data.delete_old_user"
+            title="{{'LoginShibboleth_DeleteOldUser'|translate}}"
+            {{ shibbolethConfig.delete_old_user == "true" ? 'value=1' : 'value=0' }}
+            inline-help="{{'LoginShibboleth_DeleteOldUserDesc'|translate}}">
+        </div>
+        <h2>{{'LoginShibboleth_ShibbolethSettings'|translate}}</h2>
+        <h3>{{'LoginShibboleth_ShibbolethKeys'|translate}}</h3>
+        <div piwik-field uicontrol="text" name="shibboleth_separator"
+            ng-model="adminController.data.shibboleth_separator"
+            title="{{'LoginShibboleth_ShibbolethSeparator'|translate}}"
+            {% if shibbolethConfig.shibboleth_separator != '' %} value="{{ shibbolethConfig.shibboleth_separator }}"{%endif%}
+            inline-help="{{'LoginShibboleth_ShibbolethSeparatorDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="shibboleth_user_login"
+            ng-model="adminController.data.shibboleth_user_login"
+            title="{{'LoginShibboleth_ShibbolethUserLogin'|translate}}"
+            {% if shibbolethConfig.shibboleth_user_login != '' %} value="{{ shibbolethConfig.shibboleth_user_login }}"{%endif%}
+            inline-help="{{'LoginShibboleth_ShibbolethUserLoginDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="shibboleth_user_alias"
+            ng-model="adminController.data.shibboleth_user_alias"
+            title="{{'LoginShibboleth_ShibbolethUserAlias'|translate}}"
+            {% if shibbolethConfig.shibboleth_user_alias != '' %} value="{{ shibbolethConfig.shibboleth_user_alias }}"{%endif%}
+            inline-help="{{'LoginShibboleth_ShibbolethUserAliasDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="shibboleth_user_email"
+            ng-model="adminController.data.shibboleth_user_email"
+            title="{{'LoginShibboleth_ShibbolethUserEmail'|translate}}"
+            {% if shibbolethConfig.shibboleth_user_email != '' %} value="{{ shibbolethConfig.shibboleth_user_email }}"{%endif%}
+            inline-help="{{'LoginShibboleth_ShibbolethUserEmailDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="shibboleth_group"
+            ng-model="adminController.data.shibboleth_group"
+            title="{{'LoginShibboleth_ShibbolethGroup'|translate}}"
+            {% if shibbolethConfig.shibboleth_group != '' %} value="{{ shibbolethConfig.shibboleth_group }}"{%endif%}
+            inline-help="{{'LoginShibboleth_ShibbolethGroupDesc'|translate}}">
+        </div>
+        <h3>{{'LoginShibboleth_GroupsSettings'|translate}}</h3>
+        <h4>{{'LoginShibboleth_SuperUserGroups'|translate}}</h4>
+        <div piwik-field uicontrol="text" name="shibboleth_superuser_groups"
+            ng-model="adminController.data.shibboleth_superuser_groups"
+            title="{{'LoginShibboleth_ShibbolethSuperUserGroups'|translate}}"
+            {% if shibbolethConfig.shibboleth_superuser_groups !='' %} value="{{ shibbolethConfig.shibboleth_superuser_groups }}" {%endif%}
+            inline-help="{{'LoginShibboleth_ShibbolethSuperUserGroupsDesc'|translate}}">
+        </div>
+        <h4>{{'LoginShibboleth_ManualGroups'|translate}}</h4>
+        <div piwik-field uicontrol="checkbox" name="shibboleth_groups_manual_active"
+            ng-model="adminController.data.shibboleth_groups_manual_active"
+            title="{{'LoginShibboleth_ShibbolethGroupManualActive'|translate}}"
+            {{ shibbolethConfig.shibboleth_groups_manual_active == "true" ? 'value=1' : 'value=0' }}
+            inline-help="{{'LoginShibboleth_ShibbolethGroupManualActiveDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="shibboleth_groups_manual"
+            ng-model="adminController.data.shibboleth_groups_manual"
+            title="{{'LoginShibboleth_ShibbolethGroupManual'|translate}}"
+            {% if shibbolethConfig.shibboleth_groups_manual != '' %} value="{{ shibbolethConfig.shibboleth_groups_manual }}" {% endif %}
+            inline-help="{{'LoginShibboleth_ShibbolethGroupManualDesc'|translate}}">
+        </div> 
+        <h4>{{'LoginShibboleth_ViewGroups'|translate}}</h4>
+        <div piwik-field uicontrol="text" name="shibboleth_view_groups"
+            ng-model="adminController.data.shibboleth_view_groups"
+            title="{{'LoginShibboleth_ShibbolethViewGroups'|translate}}"
+            {% if shibbolethConfig.shibboleth_view_groups !='' %} value="{{ shibbolethConfig.shibboleth_view_groups }}" {%endif%}
+            inline-help="{{'LoginShibboleth_ShibbolethViewGroupsDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="radio" name="shibboleth_view_groups_option"
+            ng-model="adminController.data.shibboleth_view_groups_option"
+            title="{{'LoginShibboleth_ShibbolethViewGroupsOptions'|translate}}"
+            options='{shibboleth_view_groups_domains_active: "{{'LoginShibboleth_ShibbolethViewGroupsContainsDomain'|translate}}", shibboleth_view_groups_ldap_active: "{{'LoginShibboleth_ShibbolethViewGroupLdapActive'|translate}}" }'
+            {% if shibbolethConfig.shibboleth_view_groups_option !='' %} value="{{ shibbolethConfig.shibboleth_view_groups_option }}" {%endif%}
+            inline-help="{{'LoginShibboleth_ShibbolethViewGroupsContainsDomainDesc'|translate}}<br/>{{'LoginShibboleth_ShibbolethViewGroupLdapActiveDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="shibboleth_view_groups_ldap_attr"
+            ng-model="adminController.data.shibboleth_view_groups_ldap_attr"
+            title="{{'LoginShibboleth_ShibbolethViewGroupsLdapAttr'|translate}}"
+            {% if shibbolethConfig.shibboleth_view_groups_ldap_attr !='' %} value="{{ shibbolethConfig.shibboleth_view_groups_ldap_attr }}" {%endif%}
+            inline-help="{{'LoginShibboleth_ShibbolethViewGroupsLdapAttrDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="shibboleth_view_groups_ldap_dn"
+            ng-model="adminController.data.shibboleth_view_groups_ldap_dn"
+            title="{{'LoginShibboleth_ShibbolethViewGroupsLdapDN'|translate}}"
+            {% if shibbolethConfig.shibboleth_view_groups_ldap_dn !='' %} value="{{ shibbolethConfig.shibboleth_view_groups_ldap_dn }}" {%endif%}
+            inline-help="{{'LoginShibboleth_ShibbolethViewGroupsLdapDNDesc'|translate}}">
+        </div>
+        <h4>{{'LoginShibboleth_AdminGroups'|translate}}</h4>
+        <div piwik-field uicontrol="text" name="shibboleth_admin_groups"
+            ng-model="adminController.data.shibboleth_admin_groups"
+            title="{{'LoginShibboleth_ShibbolethAdminGroups'|translate}}"
+            {% if shibbolethConfig.shibboleth_admin_groups !='' %} value="{{ shibbolethConfig.shibboleth_admin_groups }}" {%endif%}
+            inline-help="{{'LoginShibboleth_ShibbolethAdminGroupsDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="radio" name="shibboleth_admin_groups_option"
+            ng-model="adminController.data.shibboleth_admin_groups_option"
+            title="{{'LoginShibboleth_ShibbolethAdminGroupsOptions'|translate}}"
+            options='{shibboleth_admin_groups_domains_active: "{{'LoginShibboleth_ShibbolethAdminGroupsContainsDomain'|translate}}", shibboleth_admin_groups_ldap_active: "{{'LoginShibboleth_ShibbolethAdminGroupLdapActive'|translate}}" }'
+            {% if shibbolethConfig.shibboleth_admin_groups_option !='' %} value="{{ shibbolethConfig.shibboleth_admin_groups_option }}" {%endif%}
+            inline-help="{{'LoginShibboleth_ShibbolethAdminGroupsContainsDomainDesc'|translate}}<br/>{{'LoginShibboleth_ShibbolethAdminGroupLdapActiveDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="shibboleth_admin_groups_ldap_attr"
+            ng-model="adminController.data.shibboleth_admin_groups_ldap_attr"
+            title="{{'LoginShibboleth_ShibbolethAdminGroupsLdapAttr'|translate}}"
+            {% if shibbolethConfig.shibboleth_admin_groups_ldap_attr !='' %} value="{{ shibbolethConfig.shibboleth_admin_groups_ldap_attr }}" {%endif%}
+            inline-help="{{'LoginShibboleth_ShibbolethAdminGroupsLdapAttrDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="shibboleth_admin_groups_ldap_dn"
+            ng-model="adminController.data.shibboleth_admin_groups_ldap_dn"
+            title="{{'LoginShibboleth_ShibbolethAdminGroupsLdapDN'|translate}}"
+            {% if shibbolethConfig.shibboleth_admin_groups_ldap_dn !='' %} value="{{ shibbolethConfig.shibboleth_admin_groups_ldap_dn }}" {%endif%}
+            inline-help="{{'LoginShibboleth_ShibbolethAdminGroupsLdapDNDesc'|translate}}">
+        </div>
+        <h2>{{'LoginShibboleth_LdapSettings'|translate}}</h2>
+        <h3>{{'LoginShibboleth_LdapBasic'|translate}}</h3>
+        <div piwik-field uicontrol="checkbox" name="ldap_active"
+            ng-model="adminController.data.ldap_active"
+            title="{{'LoginShibboleth_ActivateLdap'|translate}}"
+            {{ shibbolethConfig.ldap_active == "true" ? 'value=1' : 'value=0' }}
+            inline-help="{{'LoginShibboleth_ActivateLdapDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="ldap_user_name"
+            ng-model="adminController.data.ldap_user_name"
+            title="{{'LoginShibboleth_LdapUserName'|translate}}"
+            {% if shibbolethConfig.ldap_user_name !='' %} value="{{ shibbolethConfig.ldap_user_name }}" {%endif%}
+            inline-help="{{'LoginShibboleth_LdapUserNameDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="password" name="ldap_password"
+            ng-model="adminController.data.ldap_password"
+            title="{{'LoginShibboleth_LdapPassword'|translate}}"
+            {% if shibbolethConfig.ldap_password !='' %} value="{{ shibbolethConfig.ldap_password }}" {%endif%}
+            inline-help="{{'LoginShibboleth_LdapPasswordDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="ldap_host"
+            ng-model="adminController.data.ldap_host"
+            title="{{'LoginShibboleth_LdapHost'|translate}}"
+            {% if shibbolethConfig.ldap_host !='' %} value="{{ shibbolethConfig.ldap_host }}" {%endif%}
+            inline-help="{{'LoginShibboleth_LdapHostDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="ldap_port"
+            ng-model="adminController.data.ldap_port"
+            title="{{'LoginShibboleth_LdapPort'|translate}}"
+            {% if shibbolethConfig.ldap_port !='' %} value="{{ shibbolethConfig.ldap_port }}" {%endif%}
+            inline-help="{{'LoginShibboleth_LdapPortDesc'|translate}}">
+        </div>
+        <h3>{{'LoginShibboleth_LdapUserData'|translate}}</h3>
+        <div piwik-field uicontrol="checkbox" name="ldap_user_data_active"
+            ng-model="adminController.data.ldap_user_data_active"
+            title="{{'LoginShibboleth_LdapUserDataActive'|translate}}"
+            {{ shibbolethConfig.ldap_user_data_active == "true" ? 'value=1' : 'value=0' }}
+            inline-help="{{'LoginShibboleth_LdapUserDataActiveDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="ldap_dn_user"
+            ng-model="adminController.data.ldap_dn_user"
+            title="{{'LoginShibboleth_LdapDNForUserSearch'|translate}}"
+            {% if shibbolethConfig.ldap_dn_user !='' %} value="{{ shibbolethConfig.ldap_dn_user }}" {%endif%}
+            inline-help="{{'LoginShibboleth_LdapDNForUserSearchDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="ldap_user_username"
+            ng-model="adminController.data.ldap_user_username"
+            title="{{'LoginShibboleth_LdapUserUserName'|translate}}"
+            {% if shibbolethConfig.ldap_user_username !='' %} value="{{ shibbolethConfig.ldap_user_username }}" {%endif%}
+            inline-help="{{'LoginShibboleth_LdapUserUserNameDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="adminController"
+            ng-model="adminController.data.adminController"
+            title="{{'LoginShibboleth_LdapUserAlias'|translate}}"
+            {% if shibbolethConfig.ldap_user_alias !='' %} value="{{ shibbolethConfig.ldap_user_alias }}" {%endif%}
+            inline-help="{{'LoginShibboleth_LdapUserAliasDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="ldap_user_email"
+            ng-model="adminController.data.ldap_user_email"
+            title="{{'LoginShibboleth_LdapUserEmail'|translate}}"
+            {% if shibbolethConfig.ldap_user_email !='' %} value="{{ shibbolethConfig.ldap_user_email }}" {%endif%}
+            inline-help="{{'LoginShibboleth_LdapUserEmailDesc'|translate}}">
+        </div>
+        <h3>{{'LoginShibboleth_LdapAccessData'|translate}}</h3>
+        <div piwik-field uicontrol="text" name="ldap_dn_access"
+            ng-model="adminController.data.ldap_dn_access"
+            title="{{'LoginShibboleth_LdapDNForAccessSearch'|translate}}"
+            {% if shibbolethConfig.ldap_dn_access !='' %} value="{{ shibbolethConfig.ldap_dn_access }}" {%endif%}
+            inline-help="{{'LoginShibboleth_LdapDNForAccessSearch'|translate}}">
+        </div>
+        <div piwik-field uicontrol="multiselect" name="ldap_active_data"
+            ng-model="adminController.data.ldap_active_data"
+            title="{{'LoginShibboleth_LdapActiveData'|translate}}"
+            value= '{{ shibbolethConfig.ldap_active_data|json_encode()|raw}}'
+            inline-help="{{'LoginShibboleth_LdapActiveDataDesc'|translate}}"
+            options='{"": "{{'LoginShibboleth_Nothing'|translate}}", "ldapView":"{{'LoginShibboleth_LdapView'|translate}}", "ldapAdmin":"{{'LoginShibboleth_LdapAdmin'|translate}}", "ldapSuperUser":"{{'LoginShibboleth_LdapSuperUser'|translate}}"}'>
+        </div>
+        <div piwik-field uicontrol="text" name="ldap_view_filter"
+            ng-model="adminController.data.ldap_view_filter"
+            title="{{'LoginShibboleth_LdapViewFilter'|translate}}"
+            {% if shibbolethConfig.ldap_view_filter !='' %} value="{{ shibbolethConfig.ldap_view_filter }}" {%endif%}
+            inline-help="{{'LoginShibboleth_LdapViewFilterDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="ldap_view_attr"
+            ng-model="adminController.data.ldap_view_attr"
+            title="{{'LoginShibboleth_LdapViewAttr'|translate}}"
+            {% if shibbolethConfig.ldap_view_attr !='' %} value="{{ shibbolethConfig.ldap_view_attr }}" {%endif%}
+            inline-help="{{'LoginShibboleth_LdapViewAttrDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="ldap_admin_filter"
+            ng-model="adminController.data.ldap_admin_filter"
+            title="{{'LoginShibboleth_LdapAdminFilter'|translate}}"
+            {% if shibbolethConfig.ldap_admin_filter !='' %} value="{{ shibbolethConfig.ldap_admin_filter }}" {%endif%}
+            inline-help="{{'LoginShibboleth_LdapAdminFilterDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="ldap_admin_attr"
+            ng-model="adminController.data.ldap_admin_attr"
+            title="{{'LoginShibboleth_LdapAdminAttr'|translate}}"
+            {% if shibbolethConfig.ldap_admin_attr !='' %} value="{{ shibbolethConfig.ldap_admin_attr }}" {%endif%}
+            inline-help="{{'LoginShibboleth_LdapAdminAttrDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="ldap_superuser_filter"
+            ng-model="adminController.data.ldap_superuser_filter"
+            title="{{'LoginShibboleth_LdapSuperUserFilter'|translate}}"
+            {% if shibbolethConfig.ldap_superuser_filter !='' %} value="{{ shibbolethConfig.ldap_superuser_filter }}" {%endif%}
+            inline-help="{{'LoginShibboleth_LdapSuperUserFilterDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="ldap_superuser_attr"
+            ng-model="adminController.data.ldap_superuser_attr"
+            title="{{'LoginShibboleth_LdapSuperUserAttr'|translate}}"
+            {% if shibbolethConfig.ldap_superuser_attr !='' %} value="{{ shibbolethConfig.ldap_superuser_attr }}" {%endif%}
+            inline-help="{{'LoginShibboleth_LdapSuperUserAttrDesc'|translate}}">
+        </div>
+        <div piwik-field uicontrol="text" name="ldap_superuser_value"
+            ng-model="adminController.data.ldap_superuser_value"
+            title="{{'LoginShibboleth_LdapSuperUserValue'|translate}}"
+            {% if shibbolethConfig.ldap_superuser_value !='' %} value="{{ shibbolethConfig.ldap_superuser_value }}" {%endif%}
+            inline-help="{{'LoginShibboleth_LdapSuperUserValueDesc'|translate}}">
+        </div>
+        <div piwik-save-button
+            onconfirm="adminController.save()"
+            saving="locationSelector.isLoading">
+        </div>
+    </div>
 </div>
 {% endblock %}
