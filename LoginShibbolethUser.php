@@ -6,9 +6,10 @@
 
 namespace Piwik\Plugins\LoginShibboleth;
 
-use Piwik\Plugins\UsersManager\Model as Model;
+use Piwik\Common;
 use Piwik\Date;
 use Piwik\Db;
+use Piwik\Plugins\UsersManager\Model as Model;
 
 /**
  * LoginShibbolethUser is the user Model class for Shibboleth.
@@ -263,9 +264,11 @@ class LoginShibbolethUser extends Model
     {
         $parsedDomain = parse_url($domain);
         $domain = 'http://'.$parsedDomain['path'];
-        $siteId = Db::fetchOne('SELECT idsite FROM piwik_site WHERE main_url=?', array($domain));
+        $siteId = Db::fetchOne('SELECT idsite FROM ' . Common::prefixTable('site') . ' WHERE main_url=?',
+            array($domain));
         if (!$siteId) {
-            $siteId = Db::fetchOne('SELECT idsite FROM piwik_site_url WHERE url=?', array($domain));
+            $siteId = Db::fetchOne('SELECT idsite FROM ' . Common::prefixTable('site_url') . '  WHERE url=?',
+                array($domain));
         }
 
         return $siteId;
