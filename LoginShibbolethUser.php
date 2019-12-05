@@ -7,6 +7,7 @@
 namespace Piwik\Plugins\LoginShibboleth;
 
 use Exception;
+use Piwik\Common;
 use Piwik\Date;
 use Piwik\Db;
 use Piwik\Plugins\UsersManager\Model as UserModel;
@@ -255,9 +256,11 @@ class LoginShibbolethUser extends UserModel
     {
         $parsedDomain = parse_url($domain);
         $domain = 'http://' . $parsedDomain['path'];
-        $siteId = Db::fetchOne('SELECT idsite FROM piwik_site WHERE main_url=?', array($domain));
-        if (!$siteId) {
-            $siteId = Db::fetchOne('SELECT idsite FROM piwik_site_url WHERE url=?', array($domain));
+	$siteId = Db::fetchOne('SELECT idsite FROM ' . Common::prefixTable('site') . ' WHERE main_url=?',
+            array($domain));
+	if (!$siteId) {
+		$siteId = Db::fetchOne('SELECT idsite FROM ' . Common::prefixTable('site_url') . '  WHERE url=?',
+                array($domain));
         }
         return $siteId;
     }
