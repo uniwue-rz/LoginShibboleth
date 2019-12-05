@@ -6,11 +6,14 @@
 
 namespace Piwik\Plugins\LoginShibboleth;
 
+use DI\NotFoundException;
 use Exception;
+use Piwik\Auth;
+use Piwik\Container\StaticContainer;
+use Piwik\Exception\PluginDeactivatedException;
 use Piwik\FrontController;
-use Piwik\Piwik;
+use Piwik\Plugin;
 use Piwik\Plugin\Manager;
-use Piwik\Plugins\Login\Login;
 
 /**
  * Main Login Shibboleth Settings.
@@ -22,11 +25,16 @@ use Piwik\Plugins\Login\Login;
  *
  * @author Pouyan Azari <pouyan.azari@uni-wuerzburg.de>
  * @license MIT
- * @copyright 2014-2016 University of Wuerzburg
- * @copyright 2014-2016 Pouyan Azari
+ * @copyright 2014-2019 University of Wuerzburg
+ * @copyright 2014-2019 Pouyan Azari
  */
-class LoginShibboleth extends \Piwik\Plugin
+class LoginShibboleth extends Plugin
 {
+    public function __construct($pluginName = false)
+    {
+        parent::__construct($pluginName);
+    }
+
     /**
      * Register the hooks to this Plugin.
      */
@@ -38,7 +46,6 @@ class LoginShibboleth extends \Piwik\Plugin
             'API.Request.authenticate' => 'ApiRequestAuthenticate',
             'AssetManager.getJavaScriptFiles' => 'getJsFiles',
         );
-
         return $hooks;
     }
 
@@ -57,7 +64,6 @@ class LoginShibboleth extends \Piwik\Plugin
      * Adds the style sheets files that the plug-in needs to the global list.
      *
      * @param array $stylesheetFiles The array containing the style sheet file paths
-
      */
     public function getStylesheetFiles(&$stylesheetFiles)
     {
@@ -71,26 +77,24 @@ class LoginShibboleth extends \Piwik\Plugin
      */
     public function activate()
     {
-        if (Manager::getInstance()->isPluginActivated('Login') == true) {
+        if (Manager::getInstance()->isPluginActivated('Login') === true) {
             Manager::getInstance()->deactivatePlugin('Login');
         }
     }
 
     /**
-     * Activate default Login module, as one of them is needed to access Piwik.
+     * @throws Exception
      */
     public function deactivate()
     {
-        if (Manager::getInstance()->isPluginActivated('Login') == false) {
+        if (Manager::getInstance()->isPluginActivated('Login') === false) {
             Manager::getInstance()->activatePlugin('Login');
         }
     }
 
     /**
-     * Redirects to Login form with error message.
-     * Listens to User.isNotAuthorized hook.
-     *
-     * @param \Exception $exception The exception to be return when no access.
+     * @param Exception $exception
+     * @throws PluginDeactivatedException
      */
     public function noAccess(Exception $exception)
     {
@@ -99,27 +103,26 @@ class LoginShibboleth extends \Piwik\Plugin
     }
 
     /**
-     * Set login name and autehntication token for authentication request.
-     * Listens to API.Request.authenticate hook.
+     * Returns the Api Request Authentication
      *
-     * @param string $tokenAuth The token that can be used for auth to API
+     * @param $tokenAuth
+     * @throws NotFoundException
      */
     public function ApiRequestAuthenticate($tokenAuth)
     {
-        \Piwik\Registry::get('auth')->setLogin($login = null);
-        \Piwik\Registry::get('auth')->setTokenAuth($tokenAuth);
+        StaticContainer::get(Auth::class)->setLogin($login = null);
+        StaticContainer::get(Auth::class)->setTokenAuth($tokenAuth);
     }
 
     /**
      * Initializes the authentication object.
      * Listens to Request.initAuthenticationObject hook.
      *
-     * @param bool $activateCookieAuth If the authentication is cookie based.
+     * @param bool
      */
     public function initAuthenticationObject($activateCookieAuth = false)
     {
         $auth = new LoginShibbolethAuth();
-        \Piwik\Registry::set('auth', $auth);
-        Login::initAuthenticationFromCookie($auth, $activateCookieAuth);
+        StaticContainer::getContainer()->set(Auth::class, $auth);
     }
 }

@@ -18,24 +18,18 @@ use Piwik\Version;
  *
  * @author Pouyan Azari <pouyan.azari@uni-wuerzburg.de>
  * @license MIT
- * @copyright 2014-2016 University of Wuerzburg
- * @copyright 2014-2016 Pouyan Azari
+ * @copyright 2014-2019 University of Wuerzburg
+ * @copyright 2014-2019 Pouyan Azari
  */
 class Menu extends \Piwik\Plugin\Menu
 {
     /**
-     * Configures the menu inherited from Menu.
-     *
-     * @param Menu $menu The global Menu object.
+     * @param MenuAdmin $menu
      */
     public function configureAdminMenu(MenuAdmin $menu)
     {
         if (Piwik::hasUserSuperUserAccess()) {
-            if (Version::VERSION >= 3) {
-                $menu->addSystemItem('Login Shibboleth', $this->urlForAction('admin'), $order = 30);
-            } else {
-                $menu->addSettingsItem('Login Shibboleth', $this->urlForAction('admin'), $order = 30);
-            }
+            $menu->addSystemItem('Login Shibboleth', $this->urlForAction('admin'), $order = 30);
         }
     }
 }

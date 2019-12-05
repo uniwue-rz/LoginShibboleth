@@ -7,11 +7,10 @@
 namespace Piwik\Plugins\LoginShibboleth;
 
 use Piwik\AuthResult;
+use Piwik\Plugins\Login\Auth;
 use Piwik\Plugins\LoginShibboleth\LoginShibbolethUser as UserModel;
-use Piwik\Plugins\Login\SessionInitializer;
-use Piwik\Plugins\UsersManager\Model as PiwikUserModel;
-use Piwik\Container\StaticContainer;
-use Piwik\Piwik;
+use Piwik\Session\SessionInitializer;
+use RuntimeException;
 
 /**
  * LoginShibbolethAuth does the authentication.
@@ -22,17 +21,11 @@ use Piwik\Piwik;
  *
  * @author Pouyan Azari <pouyan.azari@uni-wuerzburg.de>
  * @license MIT
- * @copyright 2014-2016 University of Wuerzburg
- * @copyright 2014-2016 Pouyan Azari
+ * @copyright 2014-2019 University of Wuerzburg
+ * @copyright 2014-2019 Pouyan Azari
  */
-class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
+class LoginShibbolethAuth extends Auth
 {
-    /**
-     * Placeholder for the logging interface.
-     *
-     * @var
-     */
-    protected $logger;
     /**
      * Placeholder for the login (UserName).
      *
@@ -53,22 +46,6 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
     protected $token_auth;
 
     /**
-     * Placeholder for the Hash Password.
-     *
-     * @var
-     */
-    protected $hashedPassword;
-
-    /**
-     * Initiator.
-     */
-    public function __construct()
-    {
-        if (!isset($logger)) {
-            $this->logger = StaticContainer::get('Psr\Log\LoggerInterface');
-        }
-    }
-    /**
      * Authentication module's name, e.g., "Login".
      *
      * @return string
@@ -79,9 +56,8 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
     }
 
     /**
-     * Authenticates user.
-     *
      * @return AuthResult
+     * @throws \Exception
      */
     public function authenticate()
     {
@@ -91,65 +67,63 @@ class LoginShibbolethAuth extends \Piwik\Plugins\Login\Auth
             $model = new UserModel();
             $user = $model->getUser($this->login);
             $code = $user['superuser_access'] ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
-
             return new AuthResult($code, $this->login, $this->token_auth);
-        } elseif (!empty($this->hashedPassword)) {
-            return $this->authenticateWithPassword($this->login, $this->getTokenAuthSecret());
-        } elseif (is_null($this->login)) {
-            return $this->authenticateWithToken($this->token_auth);
+        }
+        if ($this->login === null) {
+            $model = new UserModel();
+            $user = $model->getUserByTokenAuth($this->token_auth);
+            if (!empty($user['login'])) {
+                $code = $user['superuser_access'] ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
+
+                return new AuthResult($code, $user['login'], $this->token_auth);
+            }
         } elseif (!empty($this->login)) {
-            return $this->authenticateWithTokenOrHashToken($this->token_auth, $this->login);
+            if ($this->login !== 'anonymous') {
+                $model = new UserModel();
+                $login = $this->login;
+                $user = $model->getUser($login);
+                $userToken = null;
+                if (!empty($user['token_auth'])) {
+                    $userToken = $user['token_auth'];
+                }
+                if (!empty($userToken)
+                    && ((SessionInitializer::getHashTokenAuth($login, $userToken) === $this->token_auth)
+                        || $userToken === $this->token_auth)
+                ) {
+                    $this->setTokenAuth($userToken);
+                    $code = !empty($user['superuser_access']) ?
+                        AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
+                    return new AuthResult($code, $login, $userToken);
+                }
+            }
         }
 
         return new AuthResult(AuthResult::FAILURE, $this->login, $this->token_auth);
     }
 
-    private function authenticateWithPassword($login, $passwordHash)
+    /**
+     * Returns the secret used to calculate a user's token auth.
+     *
+     * @return string
+     *
+     * @throws RuntimeException if the token auth cannot be calculated at the current time.
+     */
+    public function getTokenAuthSecret()
     {
-        $piwikUserModel = new PiwikUserModel();
-        $user = $piwikUserModel->getUser($login);
-        if (!empty($user['login']) && $user['password'] === $passwordHash) {
-            return $this->authenticationSuccess($user);
+        $user = $this->login;
+        if (empty($user)) {
+            throw new RuntimeException("Cannot find user '{$this->login}'");
         }
-
-        return new AuthResult(AuthResult::FAILURE, $login, null);
+        return $user['password'];
     }
 
-    private function authenticateWithToken($token)
+    /**
+     * Accessor to set password.
+     *
+     * @param string $password password
+     */
+    public function setPassword($password)
     {
-        $piwikUserModel = new PiwikUserModel();
-        $user = $piwikUserModel->getUser($login);
-
-        if (!empty($user['login'])) {
-            return $this->authenticationSuccess($user);
-        }
-
-        return new AuthResult(AuthResult::FAILURE, null, $token);
-    }
-
-    private function authenticateWithTokenOrHashToken($token, $login)
-    {
-        $piwikUserModel = new PiwikUserModel();
-        $user = $piwikUserModel->getUser($login);
-
-        if (!empty($user['token_auth'])
-            // authenticate either with the token or the "hash token"
-            && ((SessionInitializer::getHashTokenAuth($login, $user['token_auth']) === $token)
-                || $user['token_auth'] === $token)
-        ) {
-            return $this->authenticationSuccess($user);
-        }
-
-        return new AuthResult(AuthResult::FAILURE, $login, $token);
-    }
-
-    private function authenticationSuccess(array $user)
-    {
-        $this->setTokenAuth($user['token_auth']);
-
-        $isSuperUser = (int) $user['superuser_access'];
-        $code = $isSuperUser ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
-
-        return new AuthResult($code, $user['login'], $user['token_auth']);
+        $this->password = $password;
     }
 }

@@ -6,12 +6,12 @@
 
 namespace Piwik\Plugins\LoginShibboleth;
 
-use Piwik\Common;
-use Piwik\Piwik;
 use Exception;
+use Piwik\Piwik;
+use RuntimeException;
 
 /**
- * API functionalities for settings.
+ * API functionality for settings.
  *
  * API is used by the Setting to write or read settings from the configuration file.
  * If this plug-in should have any other API related functions, they should be added here.
@@ -26,6 +26,7 @@ class API extends \Piwik\Plugin\API
     public function __construct()
     {
     }
+
     /**
      * Saves the Login Shibboleth settings in the config file automatically.
      *
@@ -51,8 +52,8 @@ class API extends \Piwik\Plugin\API
      */
     private function checkHttpMethodIsPost()
     {
-        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-            throw new Exception('Invalid HTTP method.');
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            throw new RuntimeException('Invalid HTTP method.');
         }
     }
 }

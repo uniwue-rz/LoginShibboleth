@@ -12,19 +12,20 @@ use Piwik\Url;
 use Piwik\Notification;
 use Piwik\Plugin\ControllerAdmin;
 use Piwik\Plugin\Manager as PluginManager;
+use Exception;
 
 /*
  * @author Pouyan Azari <pouyan.azari@uni-wuerzburg.de>
  * @license MIT
- * @copyright 2014-2016 University of Wuerzburg
- * @copyright 2014-2016 Pouyan Azari
+ * @copyright 2014-2019 University of Wuerzburg
+ * @copyright 2014-2019 Pouyan Azari
  */
+
 class Controller extends \Piwik\Plugins\Login\Controller
 {
     /**
-     * The Admin page for the Login Shibboleth Plugin.
-     *
-     * @return mix
+     * @return string
+     * @throws Exception
      */
     public function admin()
     {
@@ -42,32 +43,11 @@ class Controller extends \Piwik\Plugins\Login\Controller
         $this->setBasicVariablesView($view);
         $view->shibbolethConfig = Config::getPluginOptionValuesWithDefaults();
         $view->isLoginControllerActivated = PluginManager::getInstance()->isPluginActivated('Login');
-
         return $view->render();
     }
 
     /**
-     * @param int $length Length of the password to be created.
-     *
      * @return string
-     */
-    private function generatePassword($length)
-    {
-        $chars = '1234567890abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $i = 0;
-        $password = '';
-        while ($i <= $length) {
-            $password .= $chars{mt_rand(0, strlen($chars) - 1)};
-            ++$i;
-        }
-
-        return $password;
-    }
-
-    /**
-     * Default function.
-     *
-     *@return index
      */
     public function index()
     {
@@ -75,8 +55,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
     }
 
     /**
-     * Logout function for the application. As Shibboleth does not have a Logout.
-     * This will be linked to a logout description page.
+     * @throws Exception
      */
     public function logout()
     {

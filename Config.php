@@ -6,6 +6,7 @@
 
 namespace Piwik\Plugins\LoginShibboleth;
 
+use DI\NotFoundException;
 use Piwik\Config as PiwikConfig;
 use Piwik\Container\StaticContainer;
 
@@ -27,45 +28,46 @@ class Config
      * Default configuration for this plugin.
      */
     public static $defaultConfig = array(
-      'primary_adapter' => 'shibboleth',
-      'logout_url' => '',
-      'ldap_user_name' => '',
-      'ldap_password' => '',
-      'ldap_dn_access' => '',
-      'ldap_dn_user' => '',
-      'ldap_host' => '',
-      'ldap_port' => '',
-      'ldap_active' => false,
-      'ldap_view_filter' => '',
-      'ldap_view_attr' => '',
-      'ldap_admin_filter' => '',
-      'ldap_admin_attr' => '',
-      'ldap_superuser_filter' => '',
-      'ldap_superuser_attr' => '',
-      'ldap_superuser_value' => '',
-      'ldap_user_alias' => '',
-      'ldap_user_email' => '',
-      'ldap_active_data' => '',
-      'ldap_user_data_active' => '',
-      'ldap_user_username' => '',
-      'delete_old_user' => '',
-      'shibboleth_user_login' => '',
-      'shibboleth_user_alias' => '',
-      'shibboleth_user_email' => '',
-      'shibboleth_separator' => ';',
-      'shibboleth_group' => '',
-      'shibboleth_view_groups' => '',
-      'shibboleth_groups_manual' => '',
-      'shibboleth_groups_manual_active' => '',
-      'shibboleth_admin_groups' => '',
-      'shibboleth_superuser_groups' => '',
-      'shibboleth_view_groups_option' => '',
-      'shibboleth_view_groups_ldap_dn' => '',
-      'shibboleth_view_groups_ldap_attr' => '',
-      'shibboleth_admin_groups_option' => '',
-      'shibboleth_admin_groups_ldap_dn' => '',
-      'shibboleth_admin_groups_ldap_attr' => '',
+        'primary_adapter' => 'shibboleth',
+        'logout_url' => '',
+        'ldap_user_name' => '',
+        'ldap_password' => '',
+        'ldap_dn_access' => '',
+        'ldap_dn_user' => '',
+        'ldap_host' => '',
+        'ldap_port' => '',
+        'ldap_active' => false,
+        'ldap_view_filter' => '',
+        'ldap_view_attr' => '',
+        'ldap_admin_filter' => '',
+        'ldap_admin_attr' => '',
+        'ldap_superuser_filter' => '',
+        'ldap_superuser_attr' => '',
+        'ldap_superuser_value' => '',
+        'ldap_user_alias' => '',
+        'ldap_user_email' => '',
+        'ldap_active_data' => '',
+        'ldap_user_data_active' => '',
+        'ldap_user_username' => '',
+        'delete_old_user' => '',
+        'shibboleth_user_login' => '',
+        'shibboleth_user_alias' => '',
+        'shibboleth_user_email' => '',
+        'shibboleth_separator' => ';',
+        'shibboleth_group' => '',
+        'shibboleth_view_groups' => '',
+        'shibboleth_groups_manual' => '',
+        'shibboleth_groups_manual_active' => '',
+        'shibboleth_admin_groups' => '',
+        'shibboleth_superuser_groups' => '',
+        'shibboleth_view_groups_option' => '',
+        'shibboleth_view_groups_ldap_dn' => '',
+        'shibboleth_view_groups_ldap_attr' => '',
+        'shibboleth_admin_groups_option' => '',
+        'shibboleth_admin_groups_ldap_dn' => '',
+        'shibboleth_admin_groups_ldap_attr' => '',
     );
+
     /**
      * Returns an INI option value that is stored in the `[ShibbolethLogin]` config section.
      *
@@ -80,10 +82,9 @@ class Config
     }
 
     /**
-     * Returns the configuration options from the form.
-     *
-     * @param mix    $config     Option to be set.
-     * @param string $optionName The name of option.
+     * @param $config
+     * @param $optionName
+     * @return mixed
      */
     public static function getConfigOptionFrom($config, $optionName)
     {
@@ -99,7 +100,7 @@ class Config
      *
      * @param string $optionName
      *
-     * @return mix
+     * @return string
      */
     public static function getDefaultConfigOptionValue($optionName)
     {
@@ -129,7 +130,7 @@ class Config
     /**
      * Returns the primary Adapter for the login.
      *
-     * @return mix
+     * @return mixed
      */
     public static function getPrimaryAdapter()
     {
@@ -199,7 +200,7 @@ class Config
     /**
      * Returns the sources in which LDAP data will be used.
      *
-     * @return array
+     * @return mixed
      */
     public static function getLdapActiveData()
     {
@@ -507,7 +508,7 @@ class Config
         foreach ($result as $name => $ignore) {
             $actualValue = self::getConfigOption($name);
             // special check for useKerberos which can be a string
-            if ($name == 'use_webserver_auth'
+            if ($name === 'use_webserver_auth'
                 && $actualValue === 'false'
             ) {
                 $actualValue = 0;
@@ -521,13 +522,12 @@ class Config
     }
 
     /**
-     * Save the plugin options.
-     *
      * @param $config
+     * @throws NotFoundException
      */
     public static function savePluginOptions($config)
     {
-        $logger = StaticContainer::getContainer()->get('Psr\Log\LoggerInterface');
+        $logger = StaticContainer::get('Psr\Log\LoggerInterface');
         $loginShibboleth = PiwikConfig::getInstance()->LoginShibboleth;
         foreach (self::$defaultConfig as $name => $value) {
             if (isset($config[$name])) {
@@ -536,6 +536,6 @@ class Config
         }
         PiwikConfig::getInstance()->LoginShibboleth = $loginShibboleth;
         PiwikConfig::getInstance()->forceSave();
-        $logger->info("LoginShibboleth Plugin Settings Changed");
+        $logger->info('LoginShibboleth Plugin Settings Changed');
     }
 }
