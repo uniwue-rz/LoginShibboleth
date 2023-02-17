@@ -20,7 +20,7 @@ use Piwik\Plugin\Manager;
  *
  * Here the different JavaScript, function and activation hooks are added.
  * If there is another JavaScript file is to be added or functions needed
- *to be run before or after this plug-in activation
+ * to be run before or after this plug-in activation
  * use this class to reflect them.
  *
  * @author Pouyan Azari <pouyan.azari@uni-wuerzburg.de>
@@ -38,7 +38,7 @@ class LoginShibboleth extends Plugin
     /**
      * Register the hooks to this Plugin.
      */
-    public function getListHooksRegistered()
+    public function registerEvents()
     {
         $hooks = array(
             'Request.initAuthenticationObject' => 'initAuthenticationObject',

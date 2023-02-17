@@ -9,7 +9,7 @@ namespace Piwik\Plugins\LoginShibboleth;
 use Piwik\AuthResult;
 use Piwik\Plugins\Login\Auth;
 use Piwik\Plugins\LoginShibboleth\LoginShibbolethUser as UserModel;
-use Piwik\Session\SessionInitializer;
+use \Piwik\Plugins\Login\SessionInitializer;
 use RuntimeException;
 
 /**
