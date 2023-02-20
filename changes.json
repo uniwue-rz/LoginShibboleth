@@ -1,7 +1,12 @@
 [
-    {
-      "title":       "Matomo v4 Support",
-      "description": "Matomo v4 is now supported in combination with php >= v8.1",
-      "version":     "1.3.0"
-    }
-  ]
+  {
+    "title":       "Bugfixes",
+    "description": "Fix https-domain support in LoginShibbolethUser::getSiteId",
+    "version":     "1.3.1"
+  },
+  {
+    "title":       "Matomo v4 Support",
+    "description": "Matomo v4 is now supported in combination with php >= v8.1",
+    "version":     "1.3.0"
+  }
+]

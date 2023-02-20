@@ -255,14 +255,13 @@ class LoginShibbolethUser extends UserModel
     private function getSiteId($domain)
     {
         $parsedDomain = parse_url($domain);
-        $domain = 'http://' . $parsedDomain['path'];
-	$siteId = Db::fetchOne('SELECT idsite FROM ' . Common::prefixTable('site') . ' WHERE main_url=?',
-            array($domain));
-	if (!$siteId) {
-		$siteId = Db::fetchOne('SELECT idsite FROM ' . Common::prefixTable('site_url') . '  WHERE url=?',
-                array($domain));
-        }
-        return $siteId;
+        $domainRegexp = sprintf('https?\://%s', preg_quote($parsedDomain['path']));
+
+        return Db::fetchOne(
+            'SELECT idsite FROM ' . Common::prefixTable('site') . ' WHERE main_url REGEXP ?', [$domainRegexp]
+        ) ?: Db::fetchOne(
+            'SELECT idsite FROM ' . Common::prefixTable('site_url') . '  WHERE url REGEXP ?', [$domainRegexp]
+        );
     }
 
     /**
